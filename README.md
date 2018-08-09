@@ -1,4 +1,2 @@
 # Client
-
-
 Kenny was here
