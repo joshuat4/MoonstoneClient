@@ -1,13 +1,16 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -56,7 +59,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         String email = mAuth.getCurrentUser().getEmail();
         final String Uid = mAuth.getUid();
 
-        Map<String, Object> userMap = new HashMap<>();
+        final Map<String, Object> userMap = new HashMap<>();
 
         userMap.put("email", email);
         userMap.put("counter", 0);
@@ -64,20 +67,23 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-               Object a = documentSnapshot.get("email");
-               Object b = documentSnapshot.get("counter");
-               Toast.makeText(MainPageActivity.this, a.toString(), Toast.LENGTH_SHORT).show();
+                if(!documentSnapshot.exists()){
+                    db.collection("users").document(Uid).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(MainPageActivity.this, "Database successfully changed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else{
+                    Object a = documentSnapshot.get("email");
+                    Object b = documentSnapshot.get("counter");
+                    Toast.makeText(MainPageActivity.this, a.toString(), Toast.LENGTH_SHORT).show();
 
-               db.collection("users").document(Uid).update("counter", Integer.parseInt(b.toString()) + 1);
+                    db.collection("users").document(Uid).update("counter", Integer.parseInt(b.toString()) + 1);
+                }
             }
         });
-
-//        db.collection("users").document(Uid).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                Toast.makeText(MainPageActivity.this, "Database successfully changed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
@@ -90,5 +96,20 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 testDatabase();
                 break;
         }
+    }
+
+
+
+
+
+
+
+
+
+
+    //----------------------------Helper functions----------------------------------------//
+    //Generate and show a toast message containing specified string
+    public void toastMessage(String s){
+        Toast.makeText(MainPageActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 }
