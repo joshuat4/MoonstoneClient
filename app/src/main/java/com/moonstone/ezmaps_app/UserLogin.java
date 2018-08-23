@@ -8,56 +8,66 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.TextView;
+import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import butterknife.ButterKnife;
+import butterknife.BindView;
+
 
 public class UserLogin extends AppCompatActivity implements View.OnClickListener{
 
-    private EditText emailField;
-    private EditText passwordField;
     private FirebaseAuth mAuth;
-    private ProgressBar progressBar;
+    @BindView(R.id.emailField) EditText _emailField;
+    @BindView(R.id.passwordField) EditText _passwordField;
+    @BindView(R.id.loginButton) Button _loginButton;
+    @BindView(R.id.textViewSignUp) TextView _signupLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //Set it to listen for clicks
-        findViewById(R.id.textViewSignUp).setOnClickListener(this);
-        findViewById(R.id.loginButton).setOnClickListener(this);
-
-        emailField = findViewById(R.id.emailField);
-        passwordField = findViewById(R.id.passwordFieldS);
+        ButterKnife.bind(this);
+        _signupLink.setOnClickListener(this);
+        _loginButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
     }
 
     private void userLogin(){
 
-        String email = emailField.getText().toString().trim();
-        String password = passwordField.getText().toString().trim();
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        // Retrieve the email and password from user input
+        String email = _emailField.getText().toString().trim();
+        String password = _passwordField.getText().toString().trim();
+
+        // Authenticate the user
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(
+                new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
             if(task.isSuccessful()){
-                //Switch to main app
+                // Go to Main Page
                 Intent intent = new Intent(UserLogin.this, MainPage.class);
-                //Clears all activities currently active on the stack as the login stage is done now
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);
-            }
-            else{
+
+            } else {
                 if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(getApplicationContext(), "Invalid login", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Invalid login. Please try again.",
+                            Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
         }
         }
+
     });
     }
 
@@ -65,12 +75,13 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view){
         switch(view.getId()){
             case R.id.textViewSignUp:
-                //Opens signUpActivity
                 startActivity(new Intent(this, UserSignUp.class));
                 break;
+
             case R.id.loginButton:
                 userLogin();
                 break;
+
         }
     }
 }
