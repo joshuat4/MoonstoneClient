@@ -16,7 +16,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
+public class UserSignUp extends AppCompatActivity implements View.OnClickListener{
     EditText emailField;
     EditText passwordField;
     ProgressBar progressBar;
@@ -30,7 +30,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         emailField = findViewById(R.id.emailFieldS);
         passwordField = findViewById(R.id.passwordFieldS);
-        progressBar = findViewById(R.id.progressBarSignUp);
 
         findViewById(R.id.textViewLogIn).setOnClickListener(this);
         findViewById(R.id.signUpButton).setOnClickListener(this);
@@ -76,7 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 if (task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
                     //Switch to main app
-                    Intent intent = new Intent(SignUpActivity.this, MainPageActivity.class);
+                    Intent intent = new Intent(UserSignUp.this, MainPage.class);
                     //Clears all activities currently active on the stack as the login stage is done now
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -100,7 +99,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 registerUser();
                 break;
             case R.id.textViewLogIn:
-                startActivity(new Intent(this, UserIdentification.class));
+                startActivity(new Intent(this, UserLogin.class));
                 break;
         }
     }

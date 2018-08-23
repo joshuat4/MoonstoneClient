@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e6b800"
-    tools:context=".UserIdentification">
+    tools:context=".UserLogin">
 
     <TextView
         android:layout_width="wrap_content"
@@ -96,15 +96,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progressBarLogin"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="218dp" />
 
 </android.support.constraint.ConstraintLayout>

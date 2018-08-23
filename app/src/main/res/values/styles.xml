@@ -10,5 +10,12 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
+    <style name="MyButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/grey</item>
+        <item name="colorButtonNormal">@color/colorForeground</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20dp</item>
+
+    </style>
 
 </resources>

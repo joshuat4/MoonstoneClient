@@ -21,7 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainPage extends AppCompatActivity implements View.OnClickListener {
 
     private Button logOutButton, databaseTestButton;
     private FirebaseAuth mAuth;
@@ -47,12 +47,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         welcomeText = findViewById(R.id.welcomeText);
         welcomeText.setText("Welcome " + mAuth.getCurrentUser().getEmail());
 
-
     }
 
     private void userSignOut(){
         mAuth.signOut();
-        startActivity(new Intent(this, UserIdentification.class));
+        startActivity(new Intent(this, UserLogin.class));
     }
 
     private void testDatabase(){
@@ -71,14 +70,14 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     db.collection("users").document(Uid).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(MainPageActivity.this, "Database successfully changed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainPage.this, "Database successfully changed", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
                 else{
                     Object a = documentSnapshot.get("email");
                     Object b = documentSnapshot.get("counter");
-                    Toast.makeText(MainPageActivity.this, a.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainPage.this, a.toString(), Toast.LENGTH_SHORT).show();
 
                     db.collection("users").document(Uid).update("counter", Integer.parseInt(b.toString()) + 1);
                 }
@@ -110,6 +109,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     //----------------------------Helper functions----------------------------------------//
     //Generate and show a toast message containing specified string
     public void toastMessage(String s){
-        Toast.makeText(MainPageActivity.this, s, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainPage.this, s, Toast.LENGTH_SHORT).show();
     }
 }
