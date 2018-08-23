@@ -19,21 +19,22 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import butterknife.ButterKnife;
 import butterknife.BindView;
 
-
 public class UserLogin extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
     @BindView(R.id.loginButton) Button _loginButton;
-    @BindView(R.id.textViewSignUp) TextView _signupLink;
+    @BindView(R.id.textViewSignUp) TextView _signUpLink;
+    @BindView(R.id.progressBar) ProgressBar _progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        _signupLink.setOnClickListener(this);
+
+        _signUpLink.setOnClickListener(this);
         _loginButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
     }
@@ -49,7 +50,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
+            _progressBar.setVisibility(View.GONE);
             if(task.isSuccessful()){
                 // Go to Main Page
                 Intent intent = new Intent(UserLogin.this, MainPage.class);
@@ -79,6 +80,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 break;
 
             case R.id.loginButton:
+                _progressBar.setVisibility(View.VISIBLE);
                 userLogin();
                 break;
 

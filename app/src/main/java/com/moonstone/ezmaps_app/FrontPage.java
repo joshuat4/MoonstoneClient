@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -18,7 +16,7 @@ import butterknife.BindView;
 public class FrontPage extends AppCompatActivity {
 
     @BindView(R.id.loginButton) Button _loginButton;
-    @BindView(R.id.signUpButton) TextView _signupButton;
+    @BindView(R.id.signUpButton) Button _signupButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +29,7 @@ public class FrontPage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(FrontPage.this, UserSignUp.class);
                 startActivity(intent);
-
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
 
