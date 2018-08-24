@@ -78,7 +78,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                 if (task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
                     //Switch to main app
-                    Intent intent = new Intent(UserSignUp.this, MainPage.class);
+                    Intent intent = new Intent(UserSignUp.this, MainActivity.class);
                     //Clears all activities currently active on the stack as the login stage is done now
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);

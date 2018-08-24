@@ -22,11 +22,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+
         adapter = new TabAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Tab1Fragment(), "Tab 1");
-        adapter.addFragment(new Tab2Fragment(), "Tab 2");
-        adapter.addFragment(new Tab3Fragment(), "Tab 3");
+
+        // These are the tabs the Main Activity displays
+        adapter.addFragment(new Tab1Fragment(), "Profile");
+        adapter.addFragment(new Tab2Fragment(), "Home");
+        adapter.addFragment(new Tab3Fragment(), "Contacts");
+
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
         tabLayout.setupWithViewPager(viewPager);
     }
 }
