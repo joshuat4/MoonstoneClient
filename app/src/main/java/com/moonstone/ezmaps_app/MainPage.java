@@ -1,52 +1,41 @@
 package com.moonstone.ezmaps_app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainPage extends AppCompatActivity implements View.OnClickListener {
-
-    private Button logOutButton, databaseTestButton;
     private FirebaseAuth mAuth;
-    private TextView welcomeText;
-
     private FirebaseFirestore db;
+    @BindView(R.id.logOutButton) Button _logOutButton;
+    @BindView(R.id.dbTestButton) Button _dbTestButton;
+    @BindView(R.id.welcomeText) TextView _welcomeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
-
+        ButterKnife.bind(this);
+        _logOutButton.setOnClickListener(this);
+        _dbTestButton.setOnClickListener(this);
+        _welcomeText.setText("Welcome " + mAuth.getCurrentUser().getEmail());
         db = FirebaseFirestore.getInstance();
-
-        logOutButton = findViewById(R.id.logOutButton);
-        logOutButton.setOnClickListener(this);
-
-        databaseTestButton = findViewById(R.id.databaseTestButton);
-        databaseTestButton.setOnClickListener(this);
-
         mAuth = FirebaseAuth.getInstance();
-
-        welcomeText = findViewById(R.id.welcomeText);
-        welcomeText.setText("Welcome " + mAuth.getCurrentUser().getEmail());
-
     }
 
     private void userSignOut(){
@@ -91,19 +80,11 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             case R.id.logOutButton:
                 userSignOut();
                 break;
-            case R.id.databaseTestButton:
+            case R.id.dbTestButton:
                 testDatabase();
                 break;
         }
     }
-
-
-
-
-
-
-
-
 
 
     //----------------------------Helper functions----------------------------------------//

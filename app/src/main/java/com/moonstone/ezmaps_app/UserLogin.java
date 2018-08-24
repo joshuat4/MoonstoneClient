@@ -53,7 +53,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             _progressBar.setVisibility(View.GONE);
             if(task.isSuccessful()){
                 // Go to Main Page
-                Intent intent = new Intent(UserLogin.this, MainPage.class);
+                System.out.println("I CLIKED IT");
+                Intent intent = new Intent(UserLogin.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);
 
