@@ -18,17 +18,20 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme">
+
             <!-- Intent Filter changes the start up activity for the app -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FrontPage">
-        </activity>
+        <activity android:name=".FrontPage"></activity>
         <activity android:name=".UserSignUp" />
         <activity android:name=".UserLogin" />
-
+        <activity
+            android:name=".ProfileSetup"
+            android:label="@string/title_activity_profile_setup"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
