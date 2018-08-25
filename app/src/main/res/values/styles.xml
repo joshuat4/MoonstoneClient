@@ -15,8 +15,16 @@
         <item name="colorButtonNormal">@color/colorForeground</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">20dp</item>
-
     </style>
+
+    <style name="AcceptButton">
+        <item name="colorControlHighlight">@color/darkBlue</item>
+        <item name="colorButtonNormal">@color/colorSearchButton</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/colorForeground</item>
+    </style>
+
 
     <style name="MyToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
         <item name="colorControlNormal">@color/colorForeground</item>

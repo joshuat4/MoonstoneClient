@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EzMaps_app</string>
     <string name="title_activity_front_page">Front Page</string>
@@ -15,7 +16,6 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="set_up_text">Oops, it looks like you haven\'t set up your profile. Would you like to do so?</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
