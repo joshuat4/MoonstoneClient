@@ -41,10 +41,10 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:enabled="true"
-            android:exported="true"></service>
+        <!--<service-->
+            <!--android:name=".MyFirebaseMessagingService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true"></service>-->
     </application>
 
 </manifest>
