@@ -8,6 +8,138 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1080551389655:android:440c6a3c53ba0c33",
+        "android_client_info": {
+          "package_name": "com.example.josh.chatfirebasepoc.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080551389655-mnf4qedlnlbpcpsrau9jodkt6u8tbdqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.josh.chatfirebasepoc.app",
+            "certificate_hash": "9b34ef34d22ecb97173fd95e095bca384ff50ff6"
+          }
+        },
+        {
+          "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBl0nwslLllTYtEK-O_NM9_dvAaBs7AyE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080551389655:android:3cbe781b5bec404f",
+        "android_client_info": {
+          "package_name": "com.example.josh.firebasechatexample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080551389655-6u7kb1oe62ejoe44lbo7nveljadohjvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.josh.firebasechatexample",
+            "certificate_hash": "9b34ef34d22ecb97173fd95e095bca384ff50ff6"
+          }
+        },
+        {
+          "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBl0nwslLllTYtEK-O_NM9_dvAaBs7AyE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080551389655:android:632b4a7bd5196699",
+        "android_client_info": {
+          "package_name": "com.example.josh.friendlychatandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080551389655-gqkkgve6h38k7r44bov2mtrdb5gq9c41.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.josh.friendlychatandroid",
+            "certificate_hash": "9b34ef34d22ecb97173fd95e095bca384ff50ff6"
+          }
+        },
+        {
+          "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBl0nwslLllTYtEK-O_NM9_dvAaBs7AyE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080551389655-0d1rvjno8funplc400l9dbohr3874sq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1080551389655:android:7722a7412fb0a95a",
         "android_client_info": {
           "package_name": "com.moonstone.ezmaps_app"
@@ -20,6 +152,14 @@
           "android_info": {
             "package_name": "com.moonstone.ezmaps_app",
             "certificate_hash": "63ffd6a50926f8ccfa0568aa3be8263a00b245c5"
+          }
+        },
+        {
+          "client_id": "1080551389655-54jj27ddu520aj0mfa8ivoha1i86f3ri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moonstone.ezmaps_app",
+            "certificate_hash": "79b75a1d7fb346ad64e1bec649937bc5e269fdba"
           }
         },
         {
