@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserSignUp" />
+        <activity android:name=".NewContactSearch" />
         <activity android:name=".UserLogin" />
         <activity
             android:name=".MainActivity"
