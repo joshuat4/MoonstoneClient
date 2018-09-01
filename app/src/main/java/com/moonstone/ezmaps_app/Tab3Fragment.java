@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -42,10 +43,10 @@ public class Tab3Fragment extends Fragment {
     private Button newContactButton;
 
     //Arrays needed for recyclerView
-    private ArrayList<String> profilePics = new ArrayList<>() ;
-    private ArrayList<String> ids = new ArrayList<>();
-    private ArrayList<String> emails = new ArrayList<>();
-    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<String> profilePics;
+    private ArrayList<String> ids;
+    private ArrayList<String> emails;
+    private ArrayList<String> names;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +57,11 @@ public class Tab3Fragment extends Fragment {
         contactFiler = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
 
-        Task<QuerySnapshot> d = db.collection("users").get();
+
+        profilePics = new ArrayList<>() ;
+        ids = new ArrayList<>();
+        emails = new ArrayList<>();
+        names = new ArrayList<>();
 
         //Filter code
         contactFiler.addTextChangedListener(new TextWatcher() {
@@ -76,20 +81,38 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        final String Uid = mAuth.getUid();
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<DocumentSnapshot> l = task.getResult().getDocuments();
-                //Fill in the necessary arrays
-                for (DocumentSnapshot doc : l) {
-                    profilePics.add(doc.get("profilePic").toString());
-                    emails.add(doc.get("email").toString());
-                    names.add(doc.get("name").toString());
-                    ids.add(doc.getId());
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                for (String contact : contacts){
+                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                            emails.add(documentSnapshot.get("email").toString());
+                            names.add(documentSnapshot.get("name").toString());
+                            ids.add(documentSnapshot.getId());
+                            adapter.refreshData();
+                        }
+                    });
                 }
+                fragmentLayout.findViewById(R.id.contactsLoading).setVisibility(View.GONE);
                 initRecyclerView();
             }
         });
+
+
+        //Set up add new contacts button
+        newContactButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                newContact();
+            }
+        });
+
+
         return fragmentLayout;
     }
 
@@ -124,4 +147,11 @@ public class Tab3Fragment extends Fragment {
         }
         adapter.filterList(fnames, fprofilePics, fids, femails);
     }
+
+    private void newContact(){
+        startActivity(new Intent(getActivity(), NewContactSearch.class));
+    }
+
+
+
 }
