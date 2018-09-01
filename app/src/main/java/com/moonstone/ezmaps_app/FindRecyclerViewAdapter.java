@@ -12,6 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -28,6 +32,9 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     public FindRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics,
                                    ArrayList<String> ids, ArrayList<String> emails, ArrayList<String> contacts){
         this.contactNames = contactNames;
@@ -36,6 +43,9 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         this.ids = ids;
         this.emails = emails;
         this.contacts = contacts;
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     //Actually recycles the view holders
@@ -49,7 +59,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
     //Called every time a new item is added to the list
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         //Gets the image and puts it into the referenced imageView
         Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
 
@@ -63,18 +73,52 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
             }
         });
 
+
         viewHolder.id = ids.get(i);
         viewHolder.email = emails.get(i);
 
-        viewHolder.itemView.findViewById(R.id.addUser).setOnClickListener(new View.OnClickListener() {
+        final Button butt = viewHolder.itemView.findViewById(R.id.addUser);
+
+        //Add/remove contact handling code
+        final String Uid = mAuth.getUid();
+
+        if(contacts.contains(viewHolder.id)){
+            butt.setText("REMOVE");
+        }
+        else{
+            //Not in contacts list
+        }
+        butt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(  v.getContext(),  Integer.toString(i), Toast.LENGTH_SHORT).show();
+            public void onClick(final View v) {
+                Toast.makeText(  v.getContext(),  butt.getText().toString(), Toast.LENGTH_SHORT).show();
+                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        ArrayList<String > recieved = (ArrayList<String>)documentSnapshot.get("contacts");
+                        String check = butt.getText().toString();
+                        switch (check.toUpperCase()){
+                            case "ADD CONTACT":
+                                Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
+                                recieved.add(viewHolder.id);
+                                contacts.add(viewHolder.id);
+                                db.collection("users").document(Uid).update("contacts", recieved);
+                                butt.setText("REMOVE");
+                                break;
+                            case "REMOVE":
+                                Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
+                                recieved.remove(viewHolder.id);
+                                contacts.remove(viewHolder.id);
+                                db.collection("users").document(Uid).update("contacts", recieved);
+                                butt.setText("ADD CONTACT");
+                                break;
+                        }
+                    }
+                });
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
