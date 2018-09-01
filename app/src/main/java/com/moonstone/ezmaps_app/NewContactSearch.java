@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,10 +69,15 @@ public class NewContactSearch extends AppCompatActivity{
                 List<DocumentSnapshot> l = task.getResult().getDocuments();
                 //Fill in the necessary arrays
                 for (DocumentSnapshot doc : l) {
-                    profilePics.add(doc.get("profilePic").toString());
-                    emails.add(doc.get("email").toString());
-                    names.add(doc.get("name").toString());
-                    ids.add(doc.getId());
+                    if(doc.getId().equals(mAuth.getUid())){
+
+                    }
+                    else{
+                        profilePics.add(doc.get("profilePic").toString());
+                        emails.add(doc.get("email").toString());
+                        names.add(doc.get("name").toString());
+                        ids.add(doc.getId());
+                    }
                 }
 
                 final String Uid = mAuth.getUid();
@@ -82,6 +89,23 @@ public class NewContactSearch extends AppCompatActivity{
                         initRecyclerView(contacts);
                     }
                 });
+            }
+        });
+
+        filterSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
             }
         });
 
@@ -98,4 +122,27 @@ public class NewContactSearch extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Toast.makeText(NewContactSearch.this, Integer.toString(adapter.getItemCount()), Toast.LENGTH_SHORT).show();
     }
+
+    private void filter(String text){
+
+        //Filtered arrays
+        ArrayList<String> fprofilePics = new ArrayList<>() ;
+        ArrayList<String> fids = new ArrayList<>();
+        ArrayList<String> femails = new ArrayList<>();
+        ArrayList<String> fnames = new ArrayList<>();
+
+        int counter = 0;
+
+        for(String name : names){
+            if(name.toLowerCase().contains(text.toLowerCase())){
+                fprofilePics.add(profilePics.get(counter));
+                fids.add(ids.get(counter));
+                femails.add(emails.get(counter));
+                fnames.add(names.get(counter));
+            }
+            counter += 1;
+        }
+        adapter.filterList(fnames, fprofilePics, fids, femails);
+    }
+
 }
