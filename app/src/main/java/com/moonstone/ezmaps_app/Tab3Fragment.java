@@ -85,7 +85,6 @@ public class Tab3Fragment extends Fragment {
                 filter(s.toString());
             }
         });
-
         final String Uid = mAuth.getUid();
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -158,34 +157,51 @@ public class Tab3Fragment extends Fragment {
         startActivity(new Intent(getActivity(), NewContactSearch.class));
     }
 
+    private void refresh(){
+        contactsLoading.setVisibility(View.VISIBLE);
+        adapter.clear();
+        adapter.refreshData();
+        final String Uid = mAuth.getUid();
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                for (String contact : contacts){
+                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                            emails.add(documentSnapshot.get("email").toString());
+                            names.add(documentSnapshot.get("name").toString());
+                            ids.add(documentSnapshot.getId());
+                            adapter.refreshData();
+                        }
+                    });
+                }
+                initRecyclerView();
+            }
+        });
+    }
+
 
     @Override
     public void onResume(){
         if(notFirstTime){
-            contactsLoading.setVisibility(View.VISIBLE);
-            adapter.clear();
-            final String Uid = mAuth.getUid();
-            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                    for (String contact : contacts){
-                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                profilePics.add(documentSnapshot.get("profilePic").toString());
-                                emails.add(documentSnapshot.get("email").toString());
-                                names.add(documentSnapshot.get("name").toString());
-                                ids.add(documentSnapshot.getId());
-                                adapter.refreshData();
-                            }
-                        });
-                    }
-                    initRecyclerView();
-                }
-            });
+            refresh();
         }
         super.onResume();
         //other stuff
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            refresh();
+        }
+        Fragment fragment = getChildFragmentManager().findFragmentByTag("Contacts"); // find current child fragment
+        if (fragment != null) {
+            fragment.setUserVisibleHint(isVisibleToUser); // send visible from parent to this child fragment
+        }
     }
 }
