@@ -199,9 +199,5 @@ public class Tab3Fragment extends Fragment {
         if (isVisibleToUser) {
             refresh();
         }
-        Fragment fragment = getChildFragmentManager().findFragmentByTag("Contacts"); // find current child fragment
-        if (fragment != null) {
-            fragment.setUserVisibleHint(isVisibleToUser); // send visible from parent to this child fragment
-        }
     }
 }
