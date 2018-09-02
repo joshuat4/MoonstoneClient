@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -40,6 +42,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contactlistitem, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
+        holder.setIsRecyclable(false);
         return holder;
     }
 
@@ -62,6 +65,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         viewHolder.id = ids.get(i);
         viewHolder.email = emails.get(i);
 
+        //last one
+        if(i == contactNames.size() - 1){
+            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
+        }
     }
 
 
@@ -99,5 +106,19 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
     public void refreshData(){
         notifyDataSetChanged();
+    }
+
+    public void clear() {
+        final int size = contactNames.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                contactNames.remove(0);
+                profilePics.remove(0);
+                ids.remove(0);
+                emails.remove(0);
+            }
+
+            notifyItemRangeRemoved(0, size);
+        }
     }
 }
