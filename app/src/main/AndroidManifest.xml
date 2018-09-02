@@ -28,11 +28,6 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".MyFirebaseInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
 
         <service
             android:name=".MyFirebaseMessagingService">
@@ -41,10 +36,7 @@
             </intent-filter>
         </service>
 
-        <!--<service-->
-            <!--android:name=".MyFirebaseMessagingService"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true"></service>-->
+
     </application>
 
 </manifest>
