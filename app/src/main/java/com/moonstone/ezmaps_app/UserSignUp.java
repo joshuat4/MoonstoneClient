@@ -13,10 +13,17 @@ import android.widget.Toast;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +31,10 @@ import butterknife.ButterKnife;
 public class UserSignUp extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
+    @BindView(R.id.nameField) EditText _nameField;
     @BindView(R.id.signUpButton) Button _signUpButton;
     @BindView(R.id.textViewLogin) TextView _loginLink;
     @BindView(R.id.progressBar) ProgressBar _progressBar;
@@ -39,11 +48,12 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         _loginLink.setOnClickListener(this);
         _signUpButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     private void registerUser(){
-        String email = _emailField.getText().toString().trim();
-        String password = _passwordField.getText().toString().trim();
+        final String email = _emailField.getText().toString().trim();
+        final String password = _passwordField.getText().toString().trim();
 
         if(email.isEmpty()){
             _emailField.setError("Email is required");
@@ -78,10 +88,32 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                 if (task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
                     //Switch to main app
-                    Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+                    final Intent intent = new Intent(UserSignUp.this, MainActivity.class);
                     //Clears all activities currently active on the stack as the login stage is done now
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+
+                    //Set up basic parameters
+                    final Map<String, Object> userMap = new HashMap<>();
+                    final ArrayList<String> contacts = new ArrayList<>();
+                    userMap.put("email", email);
+                    userMap.put("contacts", contacts);
+                    userMap.put("profilePic", "https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&h=350");
+                    userMap.put("name", _nameField.getText().toString().trim());
+
+                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if(!documentSnapshot.exists()){
+                                db.collection("users").document(mAuth.getUid()).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        //Setup complete
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
                 else{
                     if(task.getException() instanceof FirebaseAuthUserCollisionException){

@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,9 +40,11 @@ public class Tab3Fragment extends Fragment {
     private FirebaseFirestore db;
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
+    private boolean notFirstTime;
 
     private EditText contactFiler;
     private Button newContactButton;
+    public static ProgressBar contactsLoading;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -56,6 +60,7 @@ public class Tab3Fragment extends Fragment {
 
         contactFiler = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
+        contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
 
 
         profilePics = new ArrayList<>() ;
@@ -98,7 +103,8 @@ public class Tab3Fragment extends Fragment {
                         }
                     });
                 }
-                fragmentLayout.findViewById(R.id.contactsLoading).setVisibility(View.GONE);
+                contactsLoading.setVisibility(View.GONE);
+                notFirstTime = true;
                 initRecyclerView();
             }
         });
@@ -153,5 +159,33 @@ public class Tab3Fragment extends Fragment {
     }
 
 
-
+    @Override
+    public void onResume(){
+        if(notFirstTime){
+            contactsLoading.setVisibility(View.VISIBLE);
+            adapter.clear();
+            final String Uid = mAuth.getUid();
+            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                    for (String contact : contacts){
+                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                profilePics.add(documentSnapshot.get("profilePic").toString());
+                                emails.add(documentSnapshot.get("email").toString());
+                                names.add(documentSnapshot.get("name").toString());
+                                ids.add(documentSnapshot.getId());
+                                adapter.refreshData();
+                            }
+                        });
+                    }
+                    initRecyclerView();
+                }
+            });
+        }
+        super.onResume();
+        //other stuff
+    }
 }

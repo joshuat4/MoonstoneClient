@@ -91,7 +91,6 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Toast.makeText(  v.getContext(),  butt.getText().toString(), Toast.LENGTH_SHORT).show();
                 db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -100,14 +99,14 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                         String check = butt.getText().toString();
                         switch (check.toUpperCase()){
                             case "ADD CONTACT":
-                                Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
                                 recieved.add(viewHolder.id);
                                 contacts.add(viewHolder.id);
                                 db.collection("users").document(Uid).update("contacts", recieved);
                                 butt.setText("REMOVE");
                                 break;
                             case "REMOVE":
-                                Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
                                 recieved.remove(viewHolder.id);
                                 contacts.remove(viewHolder.id);
                                 db.collection("users").document(Uid).update("contacts", recieved);
