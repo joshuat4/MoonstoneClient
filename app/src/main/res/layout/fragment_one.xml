@@ -12,7 +12,7 @@
         android:paddingRight="30dp">
 
         <TextView
-            android:id="@+id/setUpText"
+            android:id="@+id/nameField"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,14 +21,14 @@
 
         <Button
             android:theme="@style/AcceptButton"
-            android:id="@+id/setUpButton"
+            android:id="@+id/editProfileButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/setUpText"
+            android:layout_below="@+id/nameField"
             android:padding="15dp"
             android:layout_marginTop="10dp"
             android:layout_centerInParent="true"
-            android:text="Yes, I would like to" />
+            android:text="Edit Profile" />
 
     </RelativeLayout>
 

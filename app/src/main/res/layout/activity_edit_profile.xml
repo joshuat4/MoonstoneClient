@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ProfileSetup">
+    tools:context=".EditProfile">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -33,7 +33,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_profile_setup" />
+    <include layout="@layout/content_edit_profile" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/but"

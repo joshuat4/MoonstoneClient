@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 public class UserSignUp extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
+    @BindView(R.id.nameField) EditText _nameField;
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
     @BindView(R.id.signUpButton) Button _signUpButton;
@@ -35,61 +37,97 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-
+        mAuth = FirebaseAuth.getInstance();
         _loginLink.setOnClickListener(this);
         _signUpButton.setOnClickListener(this);
-        mAuth = FirebaseAuth.getInstance();
+
     }
 
+
+    /* This method automatically logs user in
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
+    */
+
     private void registerUser(){
-        String email = _emailField.getText().toString().trim();
+        final String name = _nameField.getText().toString().trim();
+        final String email = _emailField.getText().toString().trim();
         String password = _passwordField.getText().toString().trim();
 
-        if(email.isEmpty()){
-            _emailField.setError("Email is required");
-            _emailField.requestFocus();
+        if(name.isEmpty()){
+            _nameField.setError(getString(R.string.input_error_name));
+            _nameField.requestFocus();
             return;
         }
-        if(password.isEmpty()){
-            _passwordField.setError("Password is required");
-            _passwordField.requestFocus();
+
+        if(email.isEmpty()){
+            _emailField.setError(getString(R.string.input_error_email));
+            _emailField.requestFocus();
             return;
         }
 
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            _emailField.setError("Please enter valid email");
+            _emailField.setError(getString(R.string.input_error_emaiL_invalid));
             _emailField.requestFocus();
             return;
         }
 
-        if(password.length()<5){
-            _passwordField.setError("Password is required to be longer than 5 characters");
+        if(password.isEmpty()){
+            _passwordField.setError(getString(R.string.input_error_password));
             _passwordField.requestFocus();
             return;
         }
 
-        _progressBar.setVisibility(View.VISIBLE);
+        if(password.length()<5){
+            _passwordField.setError(getString(R.string.input_error_password_length));
+            _passwordField.requestFocus();
+            return;
+        }
 
-        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            //Anonymous listener class
+
+        _progressBar.setVisibility(View.VISIBLE);
+        mAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                _progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
-                    //Switch to main app
-                    Intent intent = new Intent(UserSignUp.this, MainActivity.class);
-                    //Clears all activities currently active on the stack as the login stage is done now
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-                else{
-                    if(task.getException() instanceof FirebaseAuthUserCollisionException){
-                        Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+
+                    User user = new User(name, email);
+
+                    FirebaseDatabase.getInstance().getReference("Users")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            _progressBar.setVisibility(View.GONE);
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            } else {
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.input_error_email_registered), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }
+
+                        });
+
+                } else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
