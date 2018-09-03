@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +33,7 @@ public class NewContactSearch extends AppCompatActivity{
 
     private Button backButton;
     private EditText filterSearch;
+    public static ProgressBar findContactsLoading;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -51,6 +53,7 @@ public class NewContactSearch extends AppCompatActivity{
 
         backButton = findViewById(R.id.backButton);
         filterSearch = findViewById(R.id.filterAllContacts);
+        findContactsLoading = findViewById(R.id.findContactsLoading);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +124,6 @@ public class NewContactSearch extends AppCompatActivity{
         adapter = new FindRecyclerViewAdapter(this, names, profilePics, ids, emails, contacts);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Toast.makeText(NewContactSearch.this, Integer.toString(adapter.getItemCount()), Toast.LENGTH_SHORT).show();
     }
 
     private void filter(String text){
