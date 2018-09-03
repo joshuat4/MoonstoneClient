@@ -34,13 +34,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
-    private boolean notFirstTime;
+    private boolean notFirstTime = false;
 
     private EditText contactFiler;
     private Button newContactButton;
@@ -85,28 +86,33 @@ public class Tab3Fragment extends Fragment {
                 filter(s.toString());
             }
         });
-        final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
-                            adapter.refreshData();
-                        }
-                    });
+        if(!notFirstTime){
+            final String Uid = mAuth.getUid();
+            Log.d("HERE", "please don't run");
+            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                    for (String contact : contacts){
+                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                profilePics.add(documentSnapshot.get("profilePic").toString());
+                                emails.add(documentSnapshot.get("email").toString());
+                                names.add(documentSnapshot.get("name").toString());
+                                ids.add(documentSnapshot.getId());
+                                //adapter.refreshData();
+                                if(names.size() == contacts.size()){
+                                    contactsLoading.setVisibility(View.GONE);
+                                    initRecyclerView();
+                                    notFirstTime = true;
+                                }
+                            }
+                        });
+                    }
                 }
-                contactsLoading.setVisibility(View.GONE);
-                notFirstTime = true;
-                initRecyclerView();
-            }
-        });
+            });
+        }
 
 
         //Set up add new contacts button
@@ -126,6 +132,7 @@ public class Tab3Fragment extends Fragment {
     //Sets up the recycler view
     private void initRecyclerView(){
         RecyclerView recyclerView =  fragmentLayout.findViewById(R.id.contactRecyclerView);
+        Log.d("HERE", names.toString());
         adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -158,14 +165,16 @@ public class Tab3Fragment extends Fragment {
     }
 
     private void refresh(){
+        Log.d("HERE", "refresh");
         contactsLoading.setVisibility(View.VISIBLE);
         adapter.clear();
+
         adapter.refreshData();
         final String Uid = mAuth.getUid();
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
                 for (String contact : contacts){
                     db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -175,10 +184,12 @@ public class Tab3Fragment extends Fragment {
                             names.add(documentSnapshot.get("name").toString());
                             ids.add(documentSnapshot.getId());
                             adapter.refreshData();
+                            if(names.size() == contacts.size()){
+                                initRecyclerView();
+                            }
                         }
                     });
                 }
-                initRecyclerView();
             }
         });
     }
@@ -193,11 +204,11 @@ public class Tab3Fragment extends Fragment {
         //other stuff
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            refresh();
-        }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            refresh();
+//        }
+//    }
 }

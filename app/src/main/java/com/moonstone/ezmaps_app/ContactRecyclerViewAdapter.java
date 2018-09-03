@@ -3,6 +3,7 @@ package com.moonstone.ezmaps_app;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> emails = new ArrayList<>();
 
     public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
+        Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
@@ -49,6 +51,8 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     //Called every time a new item is added to the list
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+        Log.d("HERE", Integer.toString(i));
+
         //Gets the image and puts it into the referenced imageView
         Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
 
