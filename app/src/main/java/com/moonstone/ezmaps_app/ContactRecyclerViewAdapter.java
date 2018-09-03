@@ -63,6 +63,14 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
             @Override
             public void onClick(View view){
                 Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
+
+                //--------------------------------READ THIS----------------------//
+                //--Here's where you would link to the messaging page for that person
+                //-----ids.get(i) will give you the id of the person you clicked on which can then be linked to message functionality
+                // E.g. sendMessageTo(ids.get(i));
+
+
+
             }
         });
 
