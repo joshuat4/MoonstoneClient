@@ -8,19 +8,20 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/contactRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="494dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="0dp"
         android:padding="0dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/contactFilter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contactFilter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.03"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.03" />
 
     <EditText
         android:id="@+id/contactFilter"
+
         android:layout_width="283dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -28,7 +29,6 @@
         android:ems="10"
         android:hint="Search contacts"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/contactRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,6 @@
         android:text="+"
         android:textAllCaps="false"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/contactRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/contactFilter"
         app:layout_constraintTop_toTopOf="parent" />
