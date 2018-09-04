@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,21 +33,20 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TEST_CHILD = "testing";
-
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
-        ImageView messageImageView;
+//        ImageView messageImageView;
         TextView senderTextView;
 
         public MessageViewHolder(View v) {
             super(v);
             messageTextView = (TextView) itemView.findViewById(R.id.messageText);
-            messageImageView = (ImageView) itemView.findViewById(R.id.messageImage);
+//            messageImageView = (ImageView) itemView.findViewById(R.id.messageImage);
             senderTextView = (TextView) itemView.findViewById(R.id.senderText);
         }
     }
 
+    private static final String TEST_CHILD = "testing";
     private DatabaseReference mFirebaseDatabaseReference;
     private RecyclerView mMessageRecyclerView;
     private FirebaseRecyclerAdapter<EzMessage, MessageViewHolder> mFirebaseAdapter;
@@ -55,10 +54,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mSendButton;
     private EditText mMessageEditText;
+    private LinearLayoutManager mLinearLayoutManager;
 
     private TabAdapter adapter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 //        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setStackFromEnd(true);
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -144,21 +149,39 @@ public class MainActivity extends AppCompatActivity {
 //                            .load(ezMessage.getAttachmentUrl()Url())
 //                            .into(viewHolder.messageImageView);
                 }
-                viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
+//                viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
                 viewHolder.messageTextView.setVisibility(TextView.GONE);
                 viewHolder.senderTextView.setText(ezMessage.getFromUserId());
             }
 
             // log a view action on it
-//                FirebaseUserActions.getInstance().end(getMessageViewAction(friendlyMessage));
+//                FirebaseUserActions.getInstance().end(getMessageViewAction(ezMessage));
         };
+
+        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int ezMessageCount = mFirebaseAdapter.getItemCount();
+                int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                // If the recycler view is initially being loaded or the user is at the bottom of the list, scroll
+                // to the bottom of the list to show the newly added message.
+                if (lastVisiblePosition == -1 ||
+                        (positionStart >= (ezMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
+                    mMessageRecyclerView.scrollToPosition(positionStart);
+                }
+            }
+        });
+
+        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
         mMessageEditText = (EditText) findViewById(R.id.textField);
         mSendButton = (Button) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFirebaseDatabaseReference.child(TEST_CHILD).push().setValue(mMessageEditText.getText().toString());
+                mFirebaseDatabaseReference.child(TEST_CHILD).push().setValue(new EzMessage(mMessageEditText.getText().toString(),"1","2"));
                 mMessageEditText.setText("");
             }
         });

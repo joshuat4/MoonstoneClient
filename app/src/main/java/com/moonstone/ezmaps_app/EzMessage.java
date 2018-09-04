@@ -8,11 +8,10 @@ public class EzMessage {
     private String fromUserId;
     private String attachmentUrl;
 
-    public EzMessage(String text, String toUserId, String fromUserId, String attachmentUrl){
+    public EzMessage(String text, String toUserId, String fromUserId){
         this.text = text;
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
-        this.attachmentUrl = attachmentUrl;
     }
 
     public String getMessageId() {
