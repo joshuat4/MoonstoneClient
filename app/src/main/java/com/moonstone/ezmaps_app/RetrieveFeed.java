@@ -62,6 +62,7 @@ public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
 
 
     protected void onPostExecute(JSONArray reply) {
+
         delegate.processFinish(reply);
     }
 

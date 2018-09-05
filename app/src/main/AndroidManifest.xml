@@ -37,6 +37,10 @@
         <activity
             android:name=".ezdirection"
             android:label="@string/title_activity_ezdirection"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".error"
+            android:label="@string/title_activity_error"
             android:theme="@style/AppTheme"></activity>
     </application>
 
