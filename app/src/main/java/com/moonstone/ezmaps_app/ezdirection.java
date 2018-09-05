@@ -20,15 +20,20 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String url = new String();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezdirection);
 
         //get search address from search bar
         Intent intent = getIntent();
         String destination = intent.getStringExtra("destination");
+        destination = destination.replaceAll(" ", "%20");
+        System.out.println("XX" + destination);
+
+        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + destination;
 
         //execute async task
-        new RetrieveFeed(this).execute("https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---Student%20Village,%20The%20University%20of%20Melbourne%20Campus,%20Leicester%20Street,%20Carlton%20VIC");
+        new RetrieveFeed(this).execute(url);
 
     }
 
@@ -36,19 +41,26 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     public void processFinish(JSONArray output){
         //Here you will receive the result fired from async class
         //of onPostExecute(result) method.;
-        imageUrlsList = new ArrayList<>();
-        textDirectionsList = new ArrayList<>();
-        for(int i=0; i<output.length(); i ++){
-            try {
-                JSONObject object = output.getJSONObject(i);
-                imageUrlsList.add(object.getString("imageURL"));
-                textDirectionsList.add(object.getString("description"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
 
-        initRecyclerView();
+        if (output != null) {
+            imageUrlsList = new ArrayList<>();
+            textDirectionsList = new ArrayList<>();
+            for (int i = 0; i < output.length(); i++) {
+                try {
+                    JSONObject object = output.getJSONObject(i);
+                    imageUrlsList.add(object.getString("imageURL"));
+                    textDirectionsList.add(object.getString("description"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            initRecyclerView();
+        }
+        else{
+            Intent intent = new Intent(this , error.class);
+            startActivity(intent);
+        }
     }
 
 
