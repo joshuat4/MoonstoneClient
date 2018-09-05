@@ -5,13 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -25,11 +21,6 @@ public class FrontPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyFirebaseMessagingService.setDeviceToken((FirebaseInstanceId.getInstance().getToken()));
-
-        Log.d("FirebaseToken", "Init token ACCESSING FROM MyFirebaseMessagingService"+ MyFirebaseMessagingService.getDeviceToken());
-//        Log.d("FirebaseToken", "Init token "+ FirebaseInstanceId.getInstance().getToken());
-
         setContentView(R.layout.activity_front_page);
         ButterKnife.bind(this);
 

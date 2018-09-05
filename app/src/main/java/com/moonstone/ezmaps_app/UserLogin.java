@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -21,6 +22,9 @@ import butterknife.BindView;
 
 public class UserLogin extends AppCompatActivity implements View.OnClickListener{
 
+
+
+    private String userID;
     private FirebaseAuth mAuth;
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
@@ -52,9 +56,13 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
             public void onComplete(@NonNull Task<AuthResult> task) {
             _progressBar.setVisibility(View.GONE);
             if(task.isSuccessful()){
+                userID = mAuth.getUid();
+                Log.d("DEBUGGERUserLogin", "UID = "+ userID);
+                Log.d("DEBUGGERUserLogin", "DeviceToken = " +MyFirebaseMessagingService.fetchToken());
                 Intent intent = new Intent(UserLogin.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);
+
 
             } else {
                 if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -84,5 +92,12 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 break;
 
         }
+    }
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }
