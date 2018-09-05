@@ -23,6 +23,7 @@
         <activity android:name=".UserSignUp" />
         <activity android:name=".NewContactSearch" />
         <activity android:name=".UserLogin" />
+        <activity android:name=".ChatActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
