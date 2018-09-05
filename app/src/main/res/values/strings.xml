@@ -18,4 +18,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_ezmap">ezmap</string>
+    <string name="title_activity_ezdirection">ezdirection</string>
+    <string name="title_activity_error">error</string>
 </resources>
