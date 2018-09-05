@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".UserSignUp" />
         <activity android:name=".UserLogin" />
+        <activity android:name=".NewContactSearch" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
