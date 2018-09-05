@@ -36,6 +36,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .displayNotification(title, body);
 
     }
+
+    public static String fetchToken(){
+        deviceToken = FirebaseInstanceId.getInstance().getToken();
+        return deviceToken;
+    }
+
     public static String getDeviceToken() {
         return deviceToken;
     }

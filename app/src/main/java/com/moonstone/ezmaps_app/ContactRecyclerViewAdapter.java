@@ -1,6 +1,13 @@
 package com.moonstone.ezmaps_app;
 
+
+import android.support.v7.app.AppCompatActivity;
+import android.view.View.OnClickListener;
+import butterknife.ButterKnife;
+import butterknife.BindView;
+
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +22,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
+import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ViewHolder> {
@@ -68,7 +77,17 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 //--Here's where you would link to the messaging page for that person
                 //-----ids.get(i) will give you the id of the person you clicked on which can then be linked to message functionality
                 // E.g. sendMessageTo(ids.get(i));
+                Log.d("ContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
+                Log.d("ContactRecyclerView", "onClick: " + ids.get(i));
 
+
+                //-------------------------PLS HELP------------------------------
+                // Need this to redirect to chat_page
+//                Intent intent = new Intent(, FrontPage.class);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.enter, R.anim.exit);
+
+                mContext.startActivity(new Intent(mContext, FrontPage.class));
 
 
             }
