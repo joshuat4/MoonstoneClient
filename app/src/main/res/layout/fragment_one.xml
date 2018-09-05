@@ -16,7 +16,6 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/set_up_text"
             android:textSize="20dp" />
 
         <Button
@@ -31,8 +30,5 @@
             android:text="Edit Profile" />
 
     </RelativeLayout>
-
-
-
 
 </LinearLayout>
