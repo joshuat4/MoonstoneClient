@@ -86,8 +86,11 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //                Intent intent = new Intent(, FrontPage.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
+                ChatActivity.setToUserID(ids.get(i));
+                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
 
-                mContext.startActivity(new Intent(mContext, FrontPage.class));
+
+                mContext.startActivity(new Intent(mContext, ChatActivity.class));
 
 
             }
