@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse{
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
+    private View recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezdirection);
 
+        recyclerView = findViewById(R.id.recyclerView);
+
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView((RecyclerView) recyclerView);
         //get search address from search bar
         Intent intent = getIntent();
         String destination = intent.getStringExtra("destination");
