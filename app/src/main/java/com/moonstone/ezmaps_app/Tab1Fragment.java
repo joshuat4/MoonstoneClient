@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,7 +28,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.DocumentReference;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import android.util.Log;
+
 
 import butterknife.ButterKnife;
 
@@ -40,13 +46,15 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private EditText _nameField;
+    private TextView _nameField;
+    private TextView _emailField;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_one, container, false);
 
-        _nameField = (EditText)view.findViewById(R.id.text1);
+        _nameField = (TextView)view.findViewById(R.id.nameField);
+        _emailField = (TextView) view.findViewById(R.id.emailField);
 
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
@@ -59,57 +67,61 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         return view;
     }
 
-
-    /**
-     *
-     * GETTING ERRORS HERE
-     */
-    
     private void Gettingdata() {
         final String Uid = mAuth.getUid();
 
-        db.collection("users").document("JGMgxb1apTgnHQm7fi5zB8tsOtM2")
-            .get()
-            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        Log.w("DEBUGGERtabl1", "gettingdata");
+        db.collection("users").document(Uid)
+            .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Log.d("firestore", "FIRESTORE SUCCESS!!");
+                    Log.d("DEBUGGERtabl1", "FIRESTORE SUCCESS!!");
 
-                    final String name;
-                    final String email;
-                    final String profilePic;
+                    if (documentSnapshot.exists()) {
 
-                    if (documentSnapshot!=null) {
+                        Log.d("DEBUGGERtabl1", "DOCUMENT NOT NULL!!");
 
-                        Log.d("firestore", "DOCUMENT NOT NULL!!");
-
-                        name = documentSnapshot.getString("name");
-                        // name = documentSnapshot.get("name").toString();
+                        final String name = documentSnapshot.get("name").toString();
+                        final String email = documentSnapshot.get("email").toString();
+                        final String profilePic = documentSnapshot.get("profilePic").toString();
 
                         _nameField.setText(name);
+                        _emailField.setText(email);
+
+                        Log.d("DEBUGGERtabl1", "SUCCESSS HIP HIP");
 
                     } else {
-                        name="else case";
-                        Log.d("documentSnapshot", "else case");
-                        //Toast.makeText(this, "Document Does Not exists", Toast.LENGTH_SHORT).show();
+                        Log.d("DEBUGGERtabl1", "FIRESTORE FAILED");
+
                     }
                 }
         }).addOnFailureListener(new OnFailureListener() {
 
             @Override
             public void onFailure(Exception e) {
-                // Toast.makeText(, "", Toast.LENGTH_SHORT).show();
                 Log.d("Tag",e.toString());
             }
         });
     }
 
+
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editProfileButton:
-                // Difference between starting an Activity from Fragment and Activity is
-                // how you get context (getActivity(), this).
                 Intent intent = new Intent(getActivity(), EditProfile.class);
                 startActivity(intent);
                 break;
