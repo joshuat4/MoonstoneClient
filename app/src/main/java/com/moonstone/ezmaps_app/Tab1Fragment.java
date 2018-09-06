@@ -60,7 +60,11 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     }
 
 
-
+    /**
+     *
+     * GETTING ERRORS HERE
+     */
+    
     private void Gettingdata() {
         final String Uid = mAuth.getUid();
 
