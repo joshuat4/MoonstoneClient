@@ -52,8 +52,6 @@
             android:padding="20dp"
             android:text="Sign Up"/>
 
+
     </LinearLayout>
-
-
-
 </RelativeLayout>

@@ -10,68 +10,88 @@ import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Toast;
+import android.widget.EditText;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.firestore.DocumentReference;
+import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+
 
 import butterknife.BindView;
 
 public class Tab1Fragment extends Fragment implements OnClickListener{
 
     private Button editProfileButton;
-    private DatabaseReference fbRef;
-    private DatabaseReference profileRef;
-    private FirebaseAuth fbAuth;
-    private FirebaseUser fbUser;
-    private User user;
-    @BindView(R.id.nameField) TextView _nameField;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
+    private EditText _nameField;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_one, container, false);
 
+        _nameField = (EditText)view.findViewById(R.id.text1);
+
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
-        loadProfileInfo();
-        setProfileInfo();
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        //Gettingdata();
 
         return view;
     }
 
+    private void Gettingdata() {
+        final String Uid = mAuth.getUid();
 
-    private void setProfileInfo(){
-        _nameField.setText(user.getName());
+        db.collection("users").document(Uid)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-    }
+                        final String name;
+                        final String email;
+                        final String profilePic;
 
-    private void loadProfileInfo(){
+                        if (documentSnapshot!=null) {
+                            // name = documentSnapshot.toString().getString("name");
+                            name = documentSnapshot.get("name").toString();
 
-        fbAuth = FirebaseAuth.getInstance();
-        fbUser = fbAuth.getCurrentUser();
-        fbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(fbUser.getUid());
+                            _nameField.setText(name);
 
-        ValueEventListener postListener = new ValueEventListener() {
+                        } else {
+                            name="else case";
+                            Log.d("documentSnapshot", "else case");
+                            //Toast.makeText(this, "Document Does Not exists", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null){
-                    user = dataSnapshot.getValue(User.class);
-                }
+            public void onFailure(Exception e) {
+                // Toast.makeText(, "", Toast.LENGTH_SHORT).show();
+                Log.d("Tag",e.toString());
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("Tab1Fragment", "loadLog:onCancelled", databaseError.toException());
-            }
-        };
-        fbRef.addValueEventListener(postListener);
-
+        });
     }
-
 
     @Override
     public void onClick(View v){

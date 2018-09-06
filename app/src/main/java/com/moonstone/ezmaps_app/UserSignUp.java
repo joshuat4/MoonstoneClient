@@ -13,11 +13,19 @@ import android.widget.Toast;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,9 +33,11 @@ import butterknife.ButterKnife;
 public class UserSignUp extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
-    @BindView(R.id.nameField) EditText _nameField;
+    private FirebaseFirestore db;
+
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
+    @BindView(R.id.nameField) EditText _nameField;
     @BindView(R.id.signUpButton) Button _signUpButton;
     @BindView(R.id.textViewLogin) TextView _loginLink;
     @BindView(R.id.progressBar) ProgressBar _progressBar;
@@ -40,9 +50,9 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         mAuth = FirebaseAuth.getInstance();
         _loginLink.setOnClickListener(this);
         _signUpButton.setOnClickListener(this);
+        db = FirebaseFirestore.getInstance();
 
     }
-
 
     /* This method automatically logs user in
     @Override
@@ -59,7 +69,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
     private void registerUser(){
         final String name = _nameField.getText().toString().trim();
         final String email = _emailField.getText().toString().trim();
-        String password = _passwordField.getText().toString().trim();
+        final String password = _passwordField.getText().toString().trim();
 
         if(name.isEmpty()){
             _nameField.setError(getString(R.string.input_error_name));
@@ -95,42 +105,48 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         _progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+               if (task.isSuccessful()) {
+                   Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
+                   //Switch to main app
+                   final Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+                   //Clears all activities currently active on the stack as the login stage is done now
+                   intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    User user = new User(name, email);
+                   //Set up basic parameters
+                   final Map<String, Object> userMap = new HashMap<>();
+                   final ArrayList<String> contacts = new ArrayList<>();
+                   userMap.put("email", email);
+                   userMap.put("contacts", contacts);
+                   userMap.put("profilePic", "https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&h=350");
+                   userMap.put("name", _nameField.getText().toString().trim());
 
-                    FirebaseDatabase.getInstance().getReference("Users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                       @Override
+                       public void onSuccess(DocumentSnapshot documentSnapshot) {
+                           if (!documentSnapshot.exists()) {
+                               db.collection("users").document(mAuth.getUid()).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void aVoid) {
+                                       //Setup complete
+                                       startActivity(intent);
+                                   }
+                               });
+                           }
+                       }
+                   });
+               } else {
+                   if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                       Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+                   } else {
+                       Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                   }
 
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            _progressBar.setVisibility(View.GONE);
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(UserSignUp.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                            } else {
-                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    Toast.makeText(getApplicationContext(), getString(R.string.input_error_email_registered), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                        }
-
-                        });
-
-                } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                }
+               }
             }
         });
+
     }
 
     @Override
