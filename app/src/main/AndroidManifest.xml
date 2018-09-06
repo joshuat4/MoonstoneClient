@@ -16,20 +16,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme">
+        </activity>
+
         <activity android:name=".FrontPage">
+            <!-- Intent Filter changes the start up activity for the app -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".UserSignUp" />
         <activity android:name=".UserLogin" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".NewContactSearch" />
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
+            android:name=".EditProfile"
+            android:label="@string/title_activity_profile_setup"
             android:theme="@style/AppTheme" />
 
         <meta-data

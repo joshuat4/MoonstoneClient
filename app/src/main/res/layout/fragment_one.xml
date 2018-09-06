@@ -1,12 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Profile"
-        android:textSize="36sp" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="50dp"
+        android:layout_gravity="center_vertical">
+
+        <!--
+        <ImageView
+            android:id="@+id/profilePic"
+            android:text="Name Last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:id="@+id/ImageView01"
+            android:src = "http://l.yimg.com/a/i/us/we/52/21.gif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        -->
+
+        <TextView
+            android:id="@+id/nameField"
+            android:text="Name Last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20dp"
+            android:layout_below="@id/profilePic"/>
+
+        <TextView
+            android:text="email@email.com"
+            android:id="@+id/emailField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/nameField"/>
+
+        <Button
+            android:theme="@style/AcceptButton"
+            android:id="@+id/editProfileButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameField"
+            android:padding="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Edit Profile" />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

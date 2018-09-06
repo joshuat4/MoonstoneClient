@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EzMaps_app</string>
+    <string name="app_name">EZMap</string>
     <string name="title_activity_front_page">Front Page</string>
 
     <!-- Strings related to login -->
@@ -14,11 +15,28 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_main">MainActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- Strings related to Sign Up -->
+    <string name="action_settings">Settings</string>
+    <string name="input_error_name">"Name is required"</string>
+    <string name="input_error_email">"Email is required"</string>
+    <string name="input_error_email_registered">"Email already registered"</string>
+    <string name="input_error_emaiL_invalid">"Please enter a valid email"</string>
+    <string name="input_error_password">"Password is required"</string>
+    <string name="input_error_password_length">"Password is required to be longer than 5 characters"</string>
+    <string name="registration_success">"User Register Successful"</string>
+
+    <string name="title_activity_main">MainActivity</string>
+    <string name="set_up_text">Oops, it looks like you haven\'t set up your profile. Would you like to do so?</string>
+    <string name="title_activity_profile_setup">ProfileSetup</string>
+    <string name="large_text">
+        "Material is the metaphor.\n\n"
+    </string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_ezmap">ezmap</string>
     <string name="title_activity_ezdirection">ezdirection</string>
     <string name="title_activity_error">error</string>
+
 </resources>
