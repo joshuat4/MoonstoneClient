@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
     <TextView
+        android:id="@+id/textView2"
+        android:layout_width="320dp"
+        android:layout_height="130dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Where would you like to go?"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4" />
+
+    <Button
+        android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Home Page"
-        android:textSize="36sp" />
+        android:layout_alignEnd="@+id/textView2"
+        android:layout_alignTop="@+id/searchBar"
+        android:text="Search"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle.Inverse" />
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="199dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="136dp"
+        android:ems="10"
+        android:hint="Search Address.."
+        android:inputType="text" />
+
+    <!--<Button-->
+    <!--android:id="@+id/_mapsbutton"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="244dp"-->
+    <!--android:text="Open maps" />-->
 
 </RelativeLayout>
 
