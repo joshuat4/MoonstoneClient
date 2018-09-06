@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 import android.widget.EditText;
+import android.content.res.Resources;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,36 +54,42 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        //Gettingdata();
+        Gettingdata();
 
         return view;
     }
 
+
+
     private void Gettingdata() {
         final String Uid = mAuth.getUid();
 
-        db.collection("users").document(Uid)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("users").document("JGMgxb1apTgnHQm7fi5zB8tsOtM2")
+            .get()
+            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Log.d("firestore", "FIRESTORE SUCCESS!!");
 
-                        final String name;
-                        final String email;
-                        final String profilePic;
+                    final String name;
+                    final String email;
+                    final String profilePic;
 
-                        if (documentSnapshot!=null) {
-                            // name = documentSnapshot.toString().getString("name");
-                            name = documentSnapshot.get("name").toString();
+                    if (documentSnapshot!=null) {
 
-                            _nameField.setText(name);
+                        Log.d("firestore", "DOCUMENT NOT NULL!!");
 
-                        } else {
-                            name="else case";
-                            Log.d("documentSnapshot", "else case");
-                            //Toast.makeText(this, "Document Does Not exists", Toast.LENGTH_SHORT).show();
-                        }
+                        name = documentSnapshot.getString("name");
+                        // name = documentSnapshot.get("name").toString();
+
+                        _nameField.setText(name);
+
+                    } else {
+                        name="else case";
+                        Log.d("documentSnapshot", "else case");
+                        //Toast.makeText(this, "Document Does Not exists", Toast.LENGTH_SHORT).show();
                     }
+                }
         }).addOnFailureListener(new OnFailureListener() {
 
             @Override
