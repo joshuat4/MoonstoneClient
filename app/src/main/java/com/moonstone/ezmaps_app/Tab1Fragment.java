@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 
 
 import butterknife.BindView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Tab1Fragment extends Fragment implements OnClickListener{
 
@@ -48,6 +49,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
     private TextView _nameField;
     private TextView _emailField;
+    private CircleImageView _profilePic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
         _nameField = (TextView)view.findViewById(R.id.nameField);
         _emailField = (TextView) view.findViewById(R.id.emailField);
+        _profilePic = (CircleImageView) view.findViewById(R.id.profilePic);
 
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
@@ -62,12 +65,30 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        Gettingdata();
+        setProfileData();
+
+        //Drawable image = LoadImageFromWebOperations("https://source.unsplash.com/k1LNP6dnyAE/1600x900");
+        //_profilePic.setImageDrawable(image);
 
         return view;
     }
 
-    private void Gettingdata() {
+
+    public static Drawable LoadImageFromWebOperations(String url) {
+
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+
+            Log.w("DEBUGGERtabl1", "Loading Image");
+            return d;
+        } catch (Exception e) {
+            Log.w("DEBUGGERtabl1", "Failed to Load Image");
+            return null;
+        }
+    }
+
+    private void setProfileData() {
         final String Uid = mAuth.getUid();
 
         Log.w("DEBUGGERtabl1", "gettingdata");
@@ -106,15 +127,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     }
 
 
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+
 
 
 
