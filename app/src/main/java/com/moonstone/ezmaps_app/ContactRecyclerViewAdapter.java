@@ -119,7 +119,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         String email;
         String id;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
