@@ -42,6 +42,7 @@ public class Tab3Fragment extends Fragment {
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
     private boolean notFirstTime = false;
+    private boolean contactsAvailable = false;
 
     private EditText contactFiler;
     private Button newContactButton;
@@ -68,6 +69,8 @@ public class Tab3Fragment extends Fragment {
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
+        // Can't filter when you have no contacts
+
         //Filter code
         contactFiler.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,7 +85,11 @@ public class Tab3Fragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+
+                if(contactsAvailable){
+                    filter(s.toString());
+                }
+
             }
         });
 
@@ -93,23 +100,32 @@ public class Tab3Fragment extends Fragment {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                 final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
-                            //adapter.refreshData();
-                            if(names.size() == contacts.size()){
-                                contactsLoading.setVisibility(View.GONE);
-                                initRecyclerView();
-                                notFirstTime = true;
+
+                if(!contacts.isEmpty()){
+                    for (String contact : contacts){
+                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                profilePics.add(documentSnapshot.get("profilePic").toString());
+                                emails.add(documentSnapshot.get("email").toString());
+                                names.add(documentSnapshot.get("name").toString());
+                                ids.add(documentSnapshot.getId());
+                                //adapter.refreshData();
+                                if(names.size() == contacts.size()){
+                                    contactsLoading.setVisibility(View.GONE);
+                                    initRecyclerView();
+                                    notFirstTime = true;
+                                    contactsAvailable = true;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
+                }else{
+                    contactsLoading.setVisibility(View.GONE);
+                    contactsAvailable = false;
                 }
+
                 }
             });
         }
