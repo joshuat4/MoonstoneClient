@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
@@ -11,25 +11,28 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        tools:context=".UserLogin"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:paddingVertical="35dp"
+
+        android:id="@+id/intro">
 
         <ImageView android:src="@drawable/logo_title"
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-        <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="225dp"
-            android:layout_marginBottom="30dp"
-            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
-        <!-- Email Field -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingHorizontal="35dp"
+        android:paddingVertical="20dp"
+        tools:context=".UserLogin"
+        android:layout_below="@+id/intro">
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +45,6 @@
                 android:hint="Email" />
         </android.support.design.widget.TextInputLayout>
 
-        <!-- Password Field -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +57,17 @@
                 android:hint="Password"/>
         </android.support.design.widget.TextInputLayout>
 
-        <!-- Login Button -->
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingHorizontal="45dp"
+        android:paddingVertical="35dp">
+
         <Button
             android:theme="@style/MyButton"
             android:id="@+id/loginButton"
@@ -85,4 +97,9 @@
             tools:layout_editor_absoluteY="218dp" />
 
     </LinearLayout>
-</ScrollView>
+
+
+
+
+
+</RelativeLayout>
