@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import butterknife.ButterKnife;
+
 public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -80,6 +82,7 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("HERE", "CHAT INITIALISED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
         db = FirebaseFirestore.getInstance();
@@ -142,7 +145,7 @@ public class Chat extends AppCompatActivity {
         }
 
 
-        //Set up add new contacts button
+        //SEND MESSAGE
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -172,8 +175,6 @@ public class Chat extends AppCompatActivity {
             }
         });
     }
-
-    //(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
 
     //Sets up the recycler view
     private void initRecyclerView(){

@@ -30,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> textMessages;
+    private ArrayList<String> textMessages = new ArrayList<>();
     private Context mContext;
 
     //Never rendered but information is held here
@@ -38,7 +38,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     private ArrayList<String> emails = new ArrayList<>();
 
     public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
-        Log.d("HERE", "INITIALISED ");
+        Log.d("HERE", "MESSAGERECYCLERVIEWINITIALISED");
         this.textMessages = textMessages;
         this.mContext = context;
     }
@@ -68,32 +68,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
             public void onClick(View view){
                 Toast.makeText(mContext,textMessages.get(i), Toast.LENGTH_SHORT).show();
 
-                //--------------------------------READ THIS----------------------//
-                //--Here's where you would link to the messaging page for that person
-                //-----ids.get(i) will give you the id of the person you clicked on which can then be linked to message functionality
-                // E.g. sendMessageTo(ids.get(i));
-                Log.d("MessageRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
-                Log.d("MessageRecyclerView", "onClick: " + ids.get(i));
-
-
-                //-------------------------PLS HELP------------------------------
-                // Need this to redirect to chat_page
-//                Intent intent = new Intent(, FrontPage.class);
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.enter, R.anim.exit);
-                Chat.setToUserID(ids.get(i));
-                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
-
-
-                mContext.startActivity(new Intent(mContext, ChatActivity.class));
-
-
             }
         });
 
         //last one
         if(i == textMessages.size() - 1){
-//            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
+            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
         }
     }
 
