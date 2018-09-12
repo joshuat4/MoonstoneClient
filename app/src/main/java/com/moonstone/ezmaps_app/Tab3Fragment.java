@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Document;
@@ -183,8 +184,9 @@ public class Tab3Fragment extends Fragment {
                             emails.add(documentSnapshot.get("email").toString());
                             names.add(documentSnapshot.get("name").toString());
                             ids.add(documentSnapshot.getId());
-                            adapter.refreshData();
+                            //adapter.refreshData();
                             if(names.size() == contacts.size()){
+                                contactsLoading.setVisibility(View.GONE);
                                 initRecyclerView();
                             }
                         }

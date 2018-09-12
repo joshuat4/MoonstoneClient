@@ -30,14 +30,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<EzMessage> textMessages = new ArrayList<>();
+    private ArrayList<String> textMessages;
     private Context mContext;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public MessageRecyclerViewAdapter(Context context, ArrayList<EzMessage> textMessages){
+    public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
         Log.d("HERE", "INITIALISED ");
         this.textMessages = textMessages;
         this.mContext = context;
@@ -60,7 +60,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
         //Gets the image and puts it into the referenced imageView
 
-        viewHolder.messageText.setText(textMessages.get(i).getText());
+        viewHolder.messageText.setText(textMessages.get(i));
 
         //Add onclicklistener to each list entry
         viewHolder.MessageParentLayout.setOnClickListener(new View.OnClickListener(){
@@ -81,8 +81,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 //                Intent intent = new Intent(, FrontPage.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
-                ChatActivity.setToUserID(ids.get(i));
-                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
+                Chat.setToUserID(ids.get(i));
+                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
 
 
                 mContext.startActivity(new Intent(mContext, ChatActivity.class));

@@ -1,11 +1,6 @@
 package com.moonstone.ezmaps_app;
 
 
-import android.support.v7.app.AppCompatActivity;
-import android.view.View.OnClickListener;
-import butterknife.ButterKnife;
-import butterknife.BindView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -19,11 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -86,11 +76,11 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //                Intent intent = new Intent(, FrontPage.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
-                ChatActivity.setToUserID(ids.get(i));
-                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
+                Chat.setToUserID(ids.get(i));
+                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
 
 
-                mContext.startActivity(new Intent(mContext, ChatActivity.class));
+                mContext.startActivity(new Intent(mContext, Chat.class));
 
 
             }

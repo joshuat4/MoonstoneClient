@@ -20,12 +20,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Document;
@@ -36,22 +41,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class chat extends AppCompatActivity {
+public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private View fragmentLayout;
+
     private MessageRecyclerViewAdapter adapter;
     private boolean notFirstTime = false;
 
     private EditText textField;
     private Button sendButton;
     public static ProgressBar messagesLoading;
+    private static final String TEST_CHILD = "testing";
 
-    //Arrays needed for recyclerView
-    private ArrayList<String> textMessages;
+    private static String toUserID;
+    private static String fromUserID;
+
+    private ArrayList<String> text;
+    private ArrayList<String> from;
+    private ArrayList<String> to;
+
+    public String getFromUserID() {
+        return fromUserID;
+    }
+
+    public static void setFromUserID(String s) {
+        fromUserID = s;
+    }
+
+
+    public String getToUserID() {
+        return toUserID;
+    }
+
+    public static void setToUserID(String s) {
+        toUserID = s;
+    }
+
 
     @Override
-    public View onCreateView(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
         db = FirebaseFirestore.getInstance();
@@ -62,49 +90,52 @@ public class chat extends AppCompatActivity {
         messagesLoading = findViewById(R.id.messagesLoading);
 
 
-        textMessages = new ArrayList<>();
-
         //Filter code
-        textField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
+//        textField.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                filter(s.toString());
+//            }
+//        });
 
         if(!notFirstTime){
             final String Uid = mAuth.getUid();
             Log.d("HERE", "please don't run");
-            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                    for (String contact : contacts){
-                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                profilePics.add(documentSnapshot.get("profilePic").toString());
-                                emails.add(documentSnapshot.get("email").toString());
-                                names.add(documentSnapshot.get("name").toString());
-                                ids.add(documentSnapshot.getId());
-                                //adapter.refreshData();
-                                if(names.size() == contacts.size()){
-                                    messagesLoading.setVisibility(View.GONE);
-                                    initRecyclerView();
-                                    notFirstTime = true;
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        final int size = task.getResult().size();
+                        for (QueryDocumentSnapshot message : task.getResult()) {
+                            String messageId = message.getId();
+                            db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    text.add(documentSnapshot.get("text").toString());
+                                    from.add(documentSnapshot.get("fromUserId").toString());
+                                    to.add(documentSnapshot.get("toUserId").toString());
+                                    adapter.refreshData();
+                                    if(text.size() == size){
+                                        messagesLoading.setVisibility(View.GONE);
+                                        initRecyclerView();
+                                        notFirstTime = true;
+                                    }
                                 }
-                            }
-                        });
+                            });
+                            Log.d("SUCCESS", "contactId:" + messageId);
+                        }
+                    } else {
+                        Log.d("FAILURE", "Error getting documents: ", task.getException());
                     }
                 }
             });
@@ -112,79 +143,95 @@ public class chat extends AppCompatActivity {
 
 
         //Set up add new contacts button
-        newContactButton.setOnClickListener(new Button.OnClickListener(){
+        sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                newContact();
+                final String Uid = mAuth.getUid();
+                // Add a new document with a generated id.
+                Map<String, Object> message = new HashMap<>();
+                message.put("toUserId", toUserID);
+                message.put("text", textField.getText().toString());
+                message.put("fromUserId", Uid);
+
+                db.collection("messages")
+                        .add(message)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(documentReference.getId());
+                                Log.d("SUCCESS", "DocumentSnapshot written with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("FAILURE", "Error adding document", e);
+                            }
+                        });
+                textField.setText("");
             }
         });
-
-
-        return fragmentLayout;
     }
 
     //(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
 
     //Sets up the recycler view
     private void initRecyclerView(){
-        RecyclerView recyclerView =  fragmentLayout.findViewById(R.id.contactRecyclerView);
-        Log.d("HERE", names.toString());
-        adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
+        RecyclerView recyclerView =  findViewById(R.id.messageRecyclerView);
+        Log.d("HERE", text.toString());
+        adapter = new MessageRecyclerViewAdapter(this, text);
         recyclerView.setAdapter(adapter) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void filter(String text){
-
-        //Filtered arrays
-        ArrayList<String> fprofilePics = new ArrayList<>() ;
-        ArrayList<String> fids = new ArrayList<>();
-        ArrayList<String> femails = new ArrayList<>();
-        ArrayList<String> fnames = new ArrayList<>();
-
-        int counter = 0;
-
-        for(String name : names){
-            if(name.toLowerCase().contains(text.toLowerCase())){
-                fprofilePics.add(profilePics.get(counter));
-                fids.add(ids.get(counter));
-                femails.add(emails.get(counter));
-                fnames.add(names.get(counter));
-            }
-            counter += 1;
-        }
-        adapter.filterList(fnames, fprofilePics, fids, femails);
-    }
-
-    private void newContact(){
-        startActivity(new Intent(getActivity(), NewContactSearch.class));
-    }
+//    private void filter(String text){
+//
+//        //Filtered arrays
+//        ArrayList<String> ftext = new ArrayList<>();
+//
+//        int counter = 0;
+//
+//        for(String message : text){
+//            if(message.toLowerCase().contains(text.toLowerCase())){
+//                ftext.add(text.get());
+//            }
+//            counter += 1;
+//        }
+//        adapter.filterList(fmessages);
+//    }
 
     private void refresh(){
         Log.d("HERE", "refresh");
-        contactsLoading.setVisibility(View.VISIBLE);
+        messagesLoading.setVisibility(View.VISIBLE);
         adapter.clear();
 
         adapter.refreshData();
         final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        Log.d("HERE", "please don't run");
+        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
-                            adapter.refreshData();
-                            if(names.size() == contacts.size()){
-                                initRecyclerView();
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    final int size = task.getResult().size();
+                    for (QueryDocumentSnapshot message : task.getResult()) {
+                        String messageId = message.getId();
+                        db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                text.add(documentSnapshot.get("text").toString());
+                                from.add(documentSnapshot.get("fromUserId").toString());
+                                to.add(documentSnapshot.get("toUserId").toString());
+                                adapter.refreshData();
+                                if(text.size() == size){
+                                    messagesLoading.setVisibility(View.GONE);
+                                    initRecyclerView();
+                                }
                             }
-                        }
-                    });
+                        });
+                        Log.d("SUCCESS", "contactId:" + messageId);
+                    }
+                } else {
+                    Log.d("FAILURE", "Error getting documents: ", task.getException());
                 }
             }
         });
