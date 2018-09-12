@@ -39,7 +39,7 @@
 
         <activity
             android:name=".EditProfile"
-            android:label="@string/title_activity_profile_setup"
+            android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme" />
 
         <meta-data

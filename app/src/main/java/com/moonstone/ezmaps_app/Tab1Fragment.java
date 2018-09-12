@@ -126,11 +126,6 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         });
     }
 
-
-
-
-
-
     @Override
     public void onClick(View v){
         switch (v.getId()){
