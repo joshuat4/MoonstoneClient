@@ -99,9 +99,11 @@ public class Tab3Fragment extends Fragment {
             db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
 
-                if(!contacts.isEmpty()){
+
+                try {
+                    final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+
                     for (String contact : contacts){
                         db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
@@ -121,10 +123,11 @@ public class Tab3Fragment extends Fragment {
                         });
                     }
 
-                }else{
+                } catch (NullPointerException e) {
                     contactsLoading.setVisibility(View.GONE);
                     contactsAvailable = false;
                 }
+
 
                 }
             });
