@@ -7,6 +7,11 @@
         android:title="Exit"
         android:orderInCategory="500"
         android:icon="@drawable/clear"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/done"
+        android:title="Done"
+        android:orderInCategory="500"
+        android:icon="@drawable/done"
+        app:showAsAction="ifRoom"/>
 </menu>

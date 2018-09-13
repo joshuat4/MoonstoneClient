@@ -51,6 +51,10 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     private TextView _emailField;
     private CircleImageView _profilePic;
 
+    private static String name;
+    private static String email;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_one, container, false);
@@ -66,11 +70,20 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         mAuth = FirebaseAuth.getInstance();
 
         setProfileData();
+        name = _nameField.getText().toString();
+        email = _emailField.getText().toString();
 
-        //Drawable image = LoadImageFromWebOperations("https://source.unsplash.com/k1LNP6dnyAE/1600x900");
-        //_profilePic.setImageDrawable(image);
 
         return view;
+    }
+
+
+    public static String getName(){
+        return name;
+    }
+
+    public static String getEmail(){
+        return email;
     }
 
 

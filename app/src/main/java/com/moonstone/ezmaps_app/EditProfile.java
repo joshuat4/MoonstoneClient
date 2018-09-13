@@ -6,46 +6,101 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.MenuItem;
 import android.view.Menu;
 
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import android.text.TextWatcher;
+import android.text.Editable;
+import android.support.v7.app.ActionBar;
+
+import java.util.Map;
+import java.util.HashMap;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class EditProfile extends AppCompatActivity implements OnClickListener {
 
     private Toolbar toolbar;
+    private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
+    private EditText editNameField;
+    private EditText editEmailField;
+    private TextView editImage;
+    private FirebaseFirestore db;
+
+    private String name;
+    private String email;
+
+    private boolean textChanged = false;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        editNameField = (EditText) findViewById(R.id.editName);
+        editEmailField = (EditText) findViewById(R.id.editEmail);
+        editImage = (TextView) findViewById(R.id.editImage);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle("Edit Profile");
 
-        TextView tv=(TextView)findViewById(R.id.editImage);
+        editImage.setOnClickListener(this);
 
-        tv.setOnClickListener(new OnClickListener() {
+        name = Tab1Fragment.getName();
+        email = Tab1Fragment.getEmail();
+        editNameField.setText(name);
+        editEmailField.setText(email);
 
-            public void onClick(View v) {
-                //perform your action here
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        //mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        editNameField.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("EDITPROFILE", "AFTER TEXT CHANGED");
+
             }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.d("EDITPROFILE", "BEFORE TEXT CHANGED");
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("EDITPROFILE", "ON TEXT CHANGED");
+                textChanged = true;
+                invalidateOptionsMenu(); // this invokes onCreateOptionsMenu
+            }
+
         });
 
-
-            //mStorageRef = FirebaseStorage.getInstance().getReference();
-
-
-
     }
+
 
     @Override
     public void onClick(View v){
@@ -65,6 +120,49 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     }
 
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(textChanged) {
+            Log.d("EDITPROFILE", "TEXT IS CHANGED!!!");
+            menu.getItem(0).setVisible(false);
+            menu.getItem(1).setVisible(true);
+        } else {
+            menu.getItem(0).setVisible(true);
+            menu.getItem(1).setVisible(false);
+        }
+
+        return true;
+    }
+
+
+    public void editProfile(){
+        final String editName = editNameField.getText().toString().trim();
+        final String editEmail = editEmailField.getText().toString().trim();
+        final String Uid = mAuth.getUid();
+
+        DocumentReference docRef = db.collection("users").document(Uid);
+        /*
+        if(editName.equals(name)){
+            // Update Name
+            Map<String, Object> updateName = new HashMap<>();
+            updateName.put("name", editName);
+            ApiFuture<WriteResult> writeResult = docRef.update(updateName);
+            System.out.println("Update time : " + writeResult.get().getUpdateTime());
+
+        }
+
+
+        if(editEmail.equals(email)){
+
+
+
+        }
+
+        */
+
+
+    }
+
     public boolean onOptionsItemSelected(MenuItem item){
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -72,6 +170,12 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         int id = item.getItemId();
 
         if(id == R.id.exit){
+            finish();
+            return true;
+        }
+
+        if(id == R.id.done){
+            editProfile();
             finish();
             return true;
         }
