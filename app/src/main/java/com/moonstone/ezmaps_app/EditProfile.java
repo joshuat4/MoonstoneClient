@@ -1,19 +1,24 @@
 package com.moonstone.ezmaps_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.MenuItem;
 import android.view.Menu;
 
+import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class EditProfile extends AppCompatActivity {
+import butterknife.OnClick;
+
+public class EditProfile extends AppCompatActivity implements OnClickListener {
 
     private Toolbar toolbar;
     private StorageReference mStorageRef;
@@ -25,12 +30,32 @@ public class EditProfile extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Edit Profile");
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+        TextView tv=(TextView)findViewById(R.id.editImage);
+
+        tv.setOnClickListener(new OnClickListener() {
+
+            public void onClick(View v) {
+                //perform your action here
+            }
+        });
+
+
+            //mStorageRef = FirebaseStorage.getInstance().getReference();
+
+
 
     }
 
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.editImage:
+                //Intent intent = new Intent(getActivity(), EditProfile.class);
+                //startActivity(intent);
+                break;
+        }
+    }
 
     public boolean onCreateOptionsMenu(Menu menu){
         // Inflate the menu
