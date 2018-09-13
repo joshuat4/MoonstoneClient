@@ -9,9 +9,14 @@ import android.view.View;
 import android.view.MenuItem;
 import android.view.Menu;
 
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 public class EditProfile extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +27,10 @@ public class EditProfile extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Edit Profile");
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
     }
+
 
     public boolean onCreateOptionsMenu(Menu menu){
         // Inflate the menu
