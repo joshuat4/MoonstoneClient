@@ -93,24 +93,30 @@ public class Tab3Fragment extends Fragment {
             db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                    for (String contact : contacts){
-                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                profilePics.add(documentSnapshot.get("profilePic").toString());
-                                emails.add(documentSnapshot.get("email").toString());
-                                names.add(documentSnapshot.get("name").toString());
-                                ids.add(documentSnapshot.getId());
-                                //adapter.refreshData();
-                                if(names.size() == contacts.size()){
-                                    contactsLoading.setVisibility(View.GONE);
-                                    initRecyclerView();
-                                    notFirstTime = true;
-                                }
-                            }
-                        });
+                    if(documentSnapshot.exists()){
+                        //Do nothing
                     }
+                    else{
+                        final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                        for (String contact : contacts){
+                            db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    profilePics.add(documentSnapshot.get("profilePic").toString());
+                                    emails.add(documentSnapshot.get("email").toString());
+                                    names.add(documentSnapshot.get("name").toString());
+                                    ids.add(documentSnapshot.getId());
+                                    //adapter.refreshData();
+                                    if(names.size() == contacts.size()){
+                                        contactsLoading.setVisibility(View.GONE);
+                                        initRecyclerView();
+                                        notFirstTime = true;
+                                    }
+                                }
+                            });
+                        }
+                    }
+
                 }
             });
         }

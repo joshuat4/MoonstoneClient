@@ -151,7 +151,7 @@ public class Chat extends AppCompatActivity {
             public void onClick(View v){
                 final String Uid = mAuth.getUid();
                 // Add a new document with a generated id.
-                Map<String, Object> message = new HashMap<>();
+                final Map<String, Object> message = new HashMap<>();
                 message.put("toUserId", toUserID);
                 message.put("text", textField.getText().toString());
                 message.put("fromUserId", Uid);
@@ -161,7 +161,8 @@ public class Chat extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId());
+                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId()).set(message);
+                                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").document(documentReference.getId()).set(message);
                                 Log.d("SUCCESS", "DocumentSnapshot written with ID: " + documentReference.getId());
                             }
                         })
