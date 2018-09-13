@@ -161,7 +161,7 @@ public class Chat extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(documentReference.getId());
+                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId());
                                 Log.d("SUCCESS", "DocumentSnapshot written with ID: " + documentReference.getId());
                             }
                         })
