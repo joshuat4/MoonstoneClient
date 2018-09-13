@@ -141,25 +141,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         final String Uid = mAuth.getUid();
 
         DocumentReference docRef = db.collection("users").document(Uid);
-        /*
-        if(editName.equals(name)){
-            // Update Name
-            Map<String, Object> updateName = new HashMap<>();
-            updateName.put("name", editName);
-            ApiFuture<WriteResult> writeResult = docRef.update(updateName);
-            System.out.println("Update time : " + writeResult.get().getUpdateTime());
-
-        }
-
-
-        if(editEmail.equals(email)){
-
-
-
-        }
-
-        */
-
 
     }
 

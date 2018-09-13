@@ -82,8 +82,16 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         return name;
     }
 
+    public static void setName(String s){
+        name = s;
+    }
+
     public static String getEmail(){
         return email;
+    }
+
+    public static void setEmail(String s){
+        email = s;
     }
 
 
@@ -122,6 +130,8 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
                         _nameField.setText(name);
                         _emailField.setText(email);
+                        setName(name);
+                        setEmail(email);
 
                         Log.d("DEBUGGERtabl1", "SUCCESSS HIP HIP");
 
