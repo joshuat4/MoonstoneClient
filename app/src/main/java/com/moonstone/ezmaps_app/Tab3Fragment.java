@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,39 +88,42 @@ public class Tab3Fragment extends Fragment {
                 filter(s.toString());
             }
         });
-        if(!notFirstTime){
-            final String Uid = mAuth.getUid();
-            Log.d("HERE", "please don't run");
-            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if(documentSnapshot.exists()){
-                        //Do nothing
-                    }
-                    else{
-                        final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                        for (String contact : contacts){
-                            db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    profilePics.add(documentSnapshot.get("profilePic").toString());
-                                    emails.add(documentSnapshot.get("email").toString());
-                                    names.add(documentSnapshot.get("name").toString());
-                                    ids.add(documentSnapshot.getId());
-                                    //adapter.refreshData();
-                                    if(names.size() == contacts.size()){
-                                        contactsLoading.setVisibility(View.GONE);
-                                        initRecyclerView();
-                                        notFirstTime = true;
-                                    }
-                                }
-                            });
-                        }
-                    }
 
-                }
-            });
-        }
+        loadDataFromFirebase();
+
+//        if(!notFirstTime){
+//            final String Uid = mAuth.getUid();
+//            Log.d("HERE", "please don't run");
+//            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                @Override
+//                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                    if(documentSnapshot.exists()){
+//                        //Do nothing
+//                    }
+//                    else{
+//                        final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+//                        for (String contact : contacts){
+//                            db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                                @Override
+//                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                    profilePics.add(documentSnapshot.get("profilePic").toString());
+//                                    emails.add(documentSnapshot.get("email").toString());
+//                                    names.add(documentSnapshot.get("name").toString());
+//                                    ids.add(documentSnapshot.getId());
+//                                    //adapter.refreshData();
+//                                    if(names.size() == contacts.size()){
+//                                        contactsLoading.setVisibility(View.GONE);
+//                                        initRecyclerView();
+//                                        notFirstTime = true;
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }
+//
+//                }
+//            });
+//        }
 
 
         //Set up add new contacts button
@@ -173,43 +177,60 @@ public class Tab3Fragment extends Fragment {
 
     private void refresh(){
         Log.d("HERE", "refresh");
-        contactsLoading.setVisibility(View.VISIBLE);
-        adapter.clear();
+//        contactsLoading.setVisibility(View.VISIBLE);
+//        adapter.clear();
 
-        adapter.refreshData();
-        final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                final ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
-                            //adapter.refreshData();
-                            if(names.size() == contacts.size()){
-                                contactsLoading.setVisibility(View.GONE);
-                                initRecyclerView();
-                            }
-                        }
-                    });
-                }
-            }
-        });
+//        adapter.refreshData();
+        loadDataFromFirebase();
     }
 
 
     @Override
     public void onResume(){
-        if(notFirstTime){
-            refresh();
-        }
+        refresh();
         super.onResume();
         //other stuff
+    }
+
+    private void loadDataFromFirebase() {
+        contactsLoading.setVisibility(View.VISIBLE);
+        if (names.size() > 0) {
+            profilePics.clear();
+            ids.clear();
+            emails.clear();
+        }
+        final String Uid = mAuth.getUid();
+        Log.d("HERE", "please don't run");
+        db.collection("users").document(Uid).collection("contacts").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot querySnapshot : task.getResult()) {
+                            final String docId = querySnapshot.getId();
+                            db.collection("users").document(docId).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
+                                            DocumentSnapshot doc = task2.getResult();
+                                            names.add(doc.getString("name"));
+                                            profilePics.add(doc.getString("profilePic"));
+                                            ids.add(docId);
+                                            emails.add(doc.getString("profilePic"));
+                                        }
+                                    });
+                        }
+                        contactsLoading.setVisibility(View.GONE);
+                        initRecyclerView();
+                        notFirstTime = true;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getActivity(), "FAIL", Toast.LENGTH_SHORT).show();
+                        Log.d("FAILURE IN CONTACTS", e.getMessage());
+                    }
+                });
     }
 
 //    @Override

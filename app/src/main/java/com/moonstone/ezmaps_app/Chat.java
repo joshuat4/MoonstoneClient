@@ -58,9 +58,9 @@ public class Chat extends AppCompatActivity {
     private static String toUserID;
     private static String fromUserID;
 
-    private ArrayList<String> text;
-    private ArrayList<String> from;
-    private ArrayList<String> to;
+    private ArrayList<String> text = new ArrayList<>();
+    private ArrayList<String> from = new ArrayList<>();
+    private ArrayList<String> to = new ArrayList<>();
 
     public String getFromUserID() {
         return fromUserID;
@@ -111,38 +111,36 @@ public class Chat extends AppCompatActivity {
 //            }
 //        });
 
-        if(!notFirstTime){
-            final String Uid = mAuth.getUid();
-            Log.d("HERE", "please don't run");
-            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        final int size = task.getResult().size();
-                        for (QueryDocumentSnapshot message : task.getResult()) {
-                            String messageId = message.getId();
-                            db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    text.add(documentSnapshot.get("text").toString());
-                                    from.add(documentSnapshot.get("fromUserId").toString());
-                                    to.add(documentSnapshot.get("toUserId").toString());
-                                    adapter.refreshData();
-                                    if(text.size() == size){
-                                        messagesLoading.setVisibility(View.GONE);
-                                        initRecyclerView();
-                                        notFirstTime = true;
-                                    }
-                                }
-                            });
-                            Log.d("SUCCESS", "contactId:" + messageId);
-                        }
-                    } else {
-                        Log.d("FAILURE", "Error getting documents: ", task.getException());
-                    }
-                }
-            });
-        }
+        loadDataFromFirebase();
+//                    addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        final int size = task.getResult().size();
+//                        for (QueryDocumentSnapshot message : task.getResult()) {
+//                            String messageId = message.getId();
+//                            db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                                @Override
+//                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                    text.add(documentSnapshot.get("text").toString());
+//                                    from.add(documentSnapshot.get("fromUserId").toString());
+//                                    to.add(documentSnapshot.get("toUserId").toString());
+//                                    adapter.refreshData();
+//                                    if(text.size() == size){
+//                                        messagesLoading.setVisibility(View.GONE);
+//                                        initRecyclerView();
+//                                        notFirstTime = true;
+//                                    }
+//                                }
+//                            });
+//                            Log.d("SUCCESS", "contactId:" + messageId);
+//                        }
+//                    } else {
+//                        Log.d("FAILURE", "Error getting documents: ", task.getException());
+//                    }
+//                }
+//            });
+
 
 
         //SEND MESSAGE
@@ -155,14 +153,16 @@ public class Chat extends AppCompatActivity {
                 message.put("toUserId", toUserID);
                 message.put("text", textField.getText().toString());
                 message.put("fromUserId", Uid);
+                final Map<String, Object> nullContent = new HashMap<>();
+                message.put("k", "teamSnapchat");
 
                 db.collection("messages")
                         .add(message)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId()).set(message);
-                                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").document(documentReference.getId()).set(message);
+                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId()).set(nullContent);
+                                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").document(documentReference.getId()).set(nullContent);
                                 Log.d("SUCCESS", "DocumentSnapshot written with ID: " + documentReference.getId());
                             }
                         })
@@ -204,49 +204,59 @@ public class Chat extends AppCompatActivity {
 
     private void refresh(){
         Log.d("HERE", "refresh");
-        messagesLoading.setVisibility(View.VISIBLE);
-        adapter.clear();
+//        adapter.clear();
 
-        adapter.refreshData();
-        final String Uid = mAuth.getUid();
-        Log.d("HERE", "please don't run");
-        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    final int size = task.getResult().size();
-                    for (QueryDocumentSnapshot message : task.getResult()) {
-                        String messageId = message.getId();
-                        db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                text.add(documentSnapshot.get("text").toString());
-                                from.add(documentSnapshot.get("fromUserId").toString());
-                                to.add(documentSnapshot.get("toUserId").toString());
-                                adapter.refreshData();
-                                if(text.size() == size){
-                                    messagesLoading.setVisibility(View.GONE);
-                                    initRecyclerView();
-                                }
-                            }
-                        });
-                        Log.d("SUCCESS", "contactId:" + messageId);
-                    }
-                } else {
-                    Log.d("FAILURE", "Error getting documents: ", task.getException());
-                }
-            }
-        });
+//        adapter.refreshData();
+        loadDataFromFirebase();
     }
 
 
     @Override
     public void onResume(){
-        if(notFirstTime){
-            refresh();
-        }
+        refresh();
         super.onResume();
         //other stuff
+    }
+
+    private void loadDataFromFirebase() {
+        messagesLoading.setVisibility(View.VISIBLE);
+        if (text.size() > 0) {
+            text.clear();
+            from.clear();
+            to.clear();
+        }
+        final String Uid = mAuth.getUid();
+        Log.d("HERE", "please don't run");
+        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot querySnapshot : task.getResult()) {
+                            final String docId = querySnapshot.getId();
+                            db.collection("messages").document(docId).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
+                                            DocumentSnapshot doc = task2.getResult();
+                                            text.add(doc.getString("name"));
+                                            from.add(doc.getString("profilePic"));
+                                            to.add(doc.getString("profilePic"));
+                                        }
+                                    });
+                        }
+                        messagesLoading.setVisibility(View.GONE);
+                        initRecyclerView();
+                        notFirstTime = true;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Chat.this, "FAIL", Toast.LENGTH_SHORT).show();
+                        Log.d(
+                                "FAILURE IN CHAT", e.getMessage());
+                    }
+                });
     }
 
 //    @Override
