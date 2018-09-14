@@ -93,54 +93,7 @@ public class Chat extends AppCompatActivity {
         messagesLoading = findViewById(R.id.messagesLoading);
 
 
-        //Filter code
-//        textField.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                filter(s.toString());
-//            }
-//        });
-
-        loadDataFromFirebase();
-//                    addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        final int size = task.getResult().size();
-//                        for (QueryDocumentSnapshot message : task.getResult()) {
-//                            String messageId = message.getId();
-//                            db.collection("messages").document(messageId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                    text.add(documentSnapshot.get("text").toString());
-//                                    from.add(documentSnapshot.get("fromUserId").toString());
-//                                    to.add(documentSnapshot.get("toUserId").toString());
-//                                    adapter.refreshData();
-//                                    if(text.size() == size){
-//                                        messagesLoading.setVisibility(View.GONE);
-//                                        initRecyclerView();
-//                                        notFirstTime = true;
-//                                    }
-//                                }
-//                            });
-//                            Log.d("SUCCESS", "contactId:" + messageId);
-//                        }
-//                    } else {
-//                        Log.d("FAILURE", "Error getting documents: ", task.getException());
-//                    }
-//                }
-//            });
-
+//        loadDataFromFirebase();
 
 
         //SEND MESSAGE
@@ -150,28 +103,17 @@ public class Chat extends AppCompatActivity {
                 final String Uid = mAuth.getUid();
                 // Add a new document with a generated id.
                 final Map<String, Object> message = new HashMap<>();
+
+                //Add to recycler view
                 message.put("toUserId", toUserID);
                 message.put("text", textField.getText().toString());
                 message.put("fromUserId", Uid);
-                final Map<String, Object> nullContent = new HashMap<>();
-                message.put("k", "teamSnapchat");
 
-                db.collection("messages")
-                        .add(message)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").document(documentReference.getId()).set(nullContent);
-                                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").document(documentReference.getId()).set(nullContent);
-                                Log.d("SUCCESS", "DocumentSnapshot written with ID: " + documentReference.getId());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("FAILURE", "Error adding document", e);
-                            }
-                        });
+                //Add to map for actual database
+                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(message);
+                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").add(message);
+                Log.d("messages", "Message written");
+
                 textField.setText("");
             }
         });
@@ -203,17 +145,16 @@ public class Chat extends AppCompatActivity {
 //    }
 
     private void refresh(){
-        Log.d("HERE", "refresh");
-//        adapter.clear();
-
-//        adapter.refreshData();
+        Log.d("messages", "refresh");
+        adapter.clear();
+        adapter.refreshData();
         loadDataFromFirebase();
     }
 
 
     @Override
     public void onResume(){
-        refresh();
+        loadDataFromFirebase();
         super.onResume();
         //other stuff
     }
@@ -232,21 +173,31 @@ public class Chat extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (DocumentSnapshot querySnapshot : task.getResult()) {
-                            final String docId = querySnapshot.getId();
-                            db.collection("messages").document(docId).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
-                                            DocumentSnapshot doc = task2.getResult();
-                                            text.add(doc.getString("name"));
-                                            from.add(doc.getString("profilePic"));
-                                            to.add(doc.getString("profilePic"));
-                                        }
-                                    });
+//                            final String docId = querySnapshot.getId();
+//                            db.collection("messages").document(docId).get()
+//                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
+//                                            DocumentSnapshot doc = task2.getResult();
+//                                            Log.d("messages", "aaaaaaa");
+//                                            text.add(doc.getString("name"));
+//                                            from.add(doc.getString("profilePic"));
+//                                            to.add(doc.getString("profilePic"));
+//                                        }
+//                                    });
+                            text.add(querySnapshot.getString("text"));
                         }
                         messagesLoading.setVisibility(View.GONE);
-                        initRecyclerView();
-                        notFirstTime = true;
+                        Log.d("messages", "1");
+                        if(!notFirstTime){
+                            initRecyclerView();
+                            Log.d("messages", "2");
+                            notFirstTime = true;
+                        } else {
+                            Log.d("messages", "3");
+                            adapter.clear();
+                            adapter.refreshData();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

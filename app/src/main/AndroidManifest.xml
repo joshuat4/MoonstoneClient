@@ -29,6 +29,7 @@
         <activity android:name=".NewContactSearch" />
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
 

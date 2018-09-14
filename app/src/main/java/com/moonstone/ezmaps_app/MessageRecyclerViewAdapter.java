@@ -38,7 +38,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     private ArrayList<String> emails = new ArrayList<>();
 
     public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
-        Log.d("HERE", "MESSAGERECYCLERVIEWINITIALISED");
+        Log.d("messages", textMessages.toString());
         this.textMessages = textMessages;
         this.mContext = context;
     }
@@ -47,6 +47,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        Log.d("messages", "view holder" + Integer.toString(i));
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
         holder.setIsRecyclable(false);
@@ -56,7 +57,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     //Called every time a new item is added to the list
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-        Log.d("HERE", Integer.toString(i));
+        Log.d("messages", "view" + Integer.toString(i));
 
         //Gets the image and puts it into the referenced imageView
 
@@ -72,9 +73,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         });
 
         //last one
-        if(i == textMessages.size() - 1){
-            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
-        }
+//        if(i == textMessages.size() - 1){
+//            chat_page.messagesLoading.setVisibility(View.GONE);
+//        }
     }
 
 
@@ -98,10 +99,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    public void filterList(ArrayList<String> textMessages){
-        this.textMessages = textMessages;
-        notifyDataSetChanged();
-    }
 
     public void refreshData(){
         notifyDataSetChanged();
