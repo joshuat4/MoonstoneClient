@@ -33,11 +33,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import android.util.Log;
-
+import android.app.FragmentTransaction;
 
 import butterknife.ButterKnife;
 
-
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -54,6 +55,23 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     private static String name;
     private static String email;
 
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
+    public static Tab1Fragment newInstance() {
+        Tab1Fragment fragment = new Tab1Fragment();
+        return fragment;
+    }
+
+    public Tab1Fragment(){
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,15 +84,28 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
+        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFragment();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
         setProfileData();
         name = _nameField.getText().toString();
         email = _emailField.getText().toString();
 
-
         return view;
+    }
+
+
+    public void refreshFragment(){
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
     }
 
 
@@ -110,6 +141,9 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     }
 
     private void setProfileData() {
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
         final String Uid = mAuth.getUid();
 
         Log.w("DEBUGGERtabl1", "gettingdata");

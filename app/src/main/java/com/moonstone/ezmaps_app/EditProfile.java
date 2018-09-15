@@ -28,6 +28,9 @@ import android.text.TextWatcher;
 import android.text.Editable;
 import android.support.v7.app.ActionBar;
 
+import android.support.annotation.NonNull;
+
+
 import java.util.Map;
 import java.util.HashMap;
 import butterknife.BindView;
@@ -71,10 +74,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         editNameField.setText(name);
         editEmailField.setText(email);
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
-        //mStorageRef = FirebaseStorage.getInstance().getReference();
 
         editNameField.addTextChangedListener(new TextWatcher() {
 
@@ -136,11 +135,33 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
 
     public void editProfile(){
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
         final String editName = editNameField.getText().toString().trim();
         final String editEmail = editEmailField.getText().toString().trim();
         final String Uid = mAuth.getUid();
 
         DocumentReference docRef = db.collection("users").document(Uid);
+
+        docRef
+                .update("name", editName)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("EDITPROFILE", "Error updating document", e);
+                    }
+                });
+
+
+
 
     }
 
