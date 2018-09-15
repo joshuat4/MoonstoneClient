@@ -57,7 +57,7 @@
                     android:text="Edit Image"
                     android:clickable="true"
                     android:textSize="20dp"
-                    android:textColor="@color/darkBlue"
+                    android:textColor="@color/textBlue"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/profilePic"/>
@@ -75,8 +75,7 @@
                     android:id="@+id/editName"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:inputType="text"
-                    android:hint="Edit Name"/>
+                    android:inputType="text" />
 
                 <!-- Edit Email does not change the Auth of User at Firebase -->
                 <EditText
@@ -85,8 +84,7 @@
                     android:layout_below="@+id/editName"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:inputType="none"
-                    android:hint="Edit Email"/>
+                    android:inputType="none" />
 
             </RelativeLayout>
         </LinearLayout>
