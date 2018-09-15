@@ -33,7 +33,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import android.util.Log;
-import android.app.FragmentTransaction;
 
 import butterknife.ButterKnife;
 
@@ -84,7 +83,6 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -94,7 +92,6 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-
 
         setProfileData();
         name = _nameField.getText().toString();

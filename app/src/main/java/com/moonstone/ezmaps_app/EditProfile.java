@@ -79,19 +79,34 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d("EDITPROFILE", "AFTER TEXT CHANGED");
-
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.d("EDITPROFILE", "BEFORE TEXT CHANGED");
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("EDITPROFILE", "ON TEXT CHANGED");
+                Log.d("EDITPROFILE", "ON NAME CHANGED");
+                textChanged = true;
+                invalidateOptionsMenu(); // this invokes onCreateOptionsMenu
+            }
+
+        });
+
+        editEmailField.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("EDITPROFILE", "ON EMAIL CHANGED");
                 textChanged = true;
                 invalidateOptionsMenu(); // this invokes onCreateOptionsMenu
             }
@@ -146,7 +161,7 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         DocumentReference docRef = db.collection("users").document(Uid);
 
         docRef
-                .update("name", editName)
+                .update("name", editName, "email", editEmail)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -159,8 +174,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                         Log.w("EDITPROFILE", "Error updating document", e);
                     }
                 });
-
-
 
 
     }

@@ -21,7 +21,15 @@
         <item name="colorControlHighlight">@color/darkBlue</item>
         <item name="colorButtonNormal">@color/colorSearchButton</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorForeground</item>
+    </style>
+
+    <style name="AnotherButton">
+        <item name="colorControlHighlight">@color/darkGreen</item>
+        <item name="colorButtonNormal">@color/lightGreen</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15dp</item>
         <item name="android:textColor">@color/colorForeground</item>
     </style>
 
