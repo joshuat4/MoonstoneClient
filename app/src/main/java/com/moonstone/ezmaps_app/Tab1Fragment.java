@@ -2,6 +2,7 @@ package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.DocumentReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -53,6 +56,8 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
     private static String name;
     private static String email;
+
+    private ImageView _test;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -80,8 +85,13 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         _emailField = (TextView) view.findViewById(R.id.emailField);
         _profilePic = (CircleImageView) view.findViewById(R.id.profilePic);
 
+        _test = (ImageView) view.findViewById(R.id.test);
+
         editProfileButton = (Button) view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
         mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
@@ -123,23 +133,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     }
 
 
-    public static Drawable LoadImageFromWebOperations(String url) {
-
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-
-            Log.w("DEBUGGERtabl1", "Loading Image");
-            return d;
-        } catch (Exception e) {
-            Log.w("DEBUGGERtabl1", "Failed to Load Image");
-            return null;
-        }
-    }
-
     private void setProfileData() {
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
 
         final String Uid = mAuth.getUid();
 
@@ -155,14 +149,15 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
                         Log.d("DEBUGGERtabl1", "DOCUMENT NOT NULL!!");
 
-                        final String name = documentSnapshot.get("name").toString();
-                        final String email = documentSnapshot.get("email").toString();
-                        final String profilePic = documentSnapshot.get("profilePic").toString();
+                        final String fsName = documentSnapshot.get("name").toString();
+                        final String fsEmail = documentSnapshot.get("email").toString();
+                        final String fsProfilePic = documentSnapshot.get("profilePic").toString();
 
-                        _nameField.setText(name);
-                        _emailField.setText(email);
-                        setName(name);
-                        setEmail(email);
+                        _nameField.setText(fsName);
+                        _emailField.setText(fsEmail);
+                        setName(fsName);
+                        setEmail(fsEmail);
+                        Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_test);
 
                         Log.d("DEBUGGERtabl1", "SUCCESSS HIP HIP");
 

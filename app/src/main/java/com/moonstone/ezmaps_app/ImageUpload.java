@@ -76,7 +76,7 @@ public class ImageUpload extends AppCompatActivity {
                     Toast.makeText(ImageUpload.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
-                    finish();
+
                 }
             }
         });
@@ -173,6 +173,7 @@ public class ImageUpload extends AppCompatActivity {
                             editProfilePic(downloadUrl);
 
                             Toast.makeText(ImageUpload.this, "Upload Successful", Toast.LENGTH_LONG).show();
+                            finish();
 
                         }
                     })
