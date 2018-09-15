@@ -30,6 +30,7 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements OnC
 
     private Button _choosePhote;
     private Button _takePhoto;
+    private Button _cancelButton;
 
     @Nullable
     @Override
@@ -38,9 +39,11 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements OnC
 
         Button _choosePhoto = view.findViewById(R.id.choosePhoto);
         Button _takePhoto = view.findViewById(R.id.takePhoto);
+        Button _cancelButton = view.findViewById(R.id.cancelButton);
 
         _choosePhoto.setOnClickListener(this);
         _takePhoto.setOnClickListener(this);
+        _cancelButton.setOnClickListener(this);
 
         return view;
     }
@@ -50,14 +53,20 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements OnC
     public void onClick(View v){
         switch (v.getId()){
             case R.id.choosePhoto:
+                getFragmentManager().beginTransaction().remove(this).commit();
                 Intent intent = new Intent(getActivity(), ImageUpload.class);
                 startActivity(intent);
                 break;
 
             case R.id.takePhoto:
                 break;
+
+            case R.id.cancelButton:
+                getFragmentManager().beginTransaction().remove(this).commit();
+                break;
         }
     }
+
 
 
 }

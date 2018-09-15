@@ -37,10 +37,8 @@ public class ImageUpload extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    private Button mButtonChooseImage;
-    private Button mButtonUpload;
-    private TextView mTextViewShowUploads;
-    private EditText mEditTextFileName;
+    private Button cancelButton;
+    private Button uploadButton;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
 
@@ -56,43 +54,37 @@ public class ImageUpload extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_upload);
 
-        mButtonChooseImage = findViewById(R.id.button_choose_image);
-        mButtonUpload = findViewById(R.id.button_upload);
-        mTextViewShowUploads = findViewById(R.id.text_view_show_uploads);
-        mEditTextFileName = findViewById(R.id.edit_text_file_name);
-        mImageView = findViewById(R.id.image_view);
-        mProgressBar = findViewById(R.id.progress_bar);
+        // Open Image Gallery
+        openFileChooser();
+
+        // Display the Layout
+        setContentView(R.layout.activity_image_upload);
+        cancelButton = findViewById(R.id.cancelButton);
+        uploadButton = findViewById(R.id.uploadButton);
+        mImageView = findViewById(R.id.imageView);
+        mProgressBar = findViewById(R.id.progressBar);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 
-
-        mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileChooser();
-            }
-        });
-
-
-        mButtonUpload.setOnClickListener(new View.OnClickListener() {
+        uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
                     Toast.makeText(ImageUpload.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
+                    finish();
                 }
             }
         });
 
-        mTextViewShowUploads.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                finish();
             }
         });
 
@@ -104,6 +96,21 @@ public class ImageUpload extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    // Display Image on Activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            mImageView.setImageURI(mImageUri);
+
+        }else{
+            finish();
+        }
     }
 
 
@@ -130,20 +137,6 @@ public class ImageUpload extends AppCompatActivity {
     }
 
 
-
-    // Display Image on Activity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            mImageUri = data.getData();
-            mImageView.setImageURI(mImageUri);
-        }
-    }
-
-
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -158,7 +151,6 @@ public class ImageUpload extends AppCompatActivity {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));
 
-
             fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -171,7 +163,7 @@ public class ImageUpload extends AppCompatActivity {
                                 public void run(){
                                     mProgressBar.setProgress(0);
                                 }
-                            }, 5000);
+                            }, 500);
 
 
                             // Get the download URL of the Image from Firebase Storage

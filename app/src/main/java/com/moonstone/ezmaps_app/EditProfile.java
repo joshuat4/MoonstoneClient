@@ -1,5 +1,6 @@
 package com.moonstone.ezmaps_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ import android.support.annotation.NonNull;
 
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import android.view.LayoutInflater;
+import android.app.Activity;
 
 public class EditProfile extends AppCompatActivity implements OnClickListener {
 
@@ -44,6 +46,8 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     private boolean textChanged = false;
     private ActionBar actionBar;
     private BottomSheetLayout bottomSheet;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,17 +96,11 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editImage:
-                //Intent intent = new Intent(getActivity(), EditProfile.class);
-                //startActivity(intent);
-
                 BottomSheetDialog bottomSheet = new BottomSheetDialog();
                 bottomSheet.show(getSupportFragmentManager(), "BottomSheetDialog");
-
                 break;
         }
     }
-
-
 
     public boolean onCreateOptionsMenu(Menu menu){
         // Inflate the menu
@@ -152,7 +150,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                         Log.w("EDITPROFILE", "Error updating document", e);
                     }
                 });
-
 
     }
 
