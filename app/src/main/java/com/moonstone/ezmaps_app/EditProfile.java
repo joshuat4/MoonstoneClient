@@ -1,9 +1,6 @@
 package com.moonstone.ezmaps_app;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,10 +15,8 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.text.TextWatcher;
@@ -30,11 +25,8 @@ import android.support.v7.app.ActionBar;
 
 import android.support.annotation.NonNull;
 
-
-import java.util.Map;
-import java.util.HashMap;
-import butterknife.BindView;
-import butterknife.OnClick;
+import com.flipboard.bottomsheet.BottomSheetLayout;
+import android.view.LayoutInflater;
 
 public class EditProfile extends AppCompatActivity implements OnClickListener {
 
@@ -51,6 +43,7 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
     private boolean textChanged = false;
     private ActionBar actionBar;
+    private BottomSheetLayout bottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +67,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         editNameField.setText(name);
         editEmailField.setText(email);
 
-
         editNameField.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -94,27 +86,7 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
         });
 
-        editEmailField.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("EDITPROFILE", "ON EMAIL CHANGED");
-                textChanged = true;
-                invalidateOptionsMenu(); // this invokes onCreateOptionsMenu
-            }
-
-        });
-
     }
-
 
     @Override
     public void onClick(View v){
@@ -122,9 +94,15 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
             case R.id.editImage:
                 //Intent intent = new Intent(getActivity(), EditProfile.class);
                 //startActivity(intent);
+
+                BottomSheetDialog bottomSheet = new BottomSheetDialog();
+                bottomSheet.show(getSupportFragmentManager(), "BottomSheetDialog");
+
                 break;
         }
     }
+
+
 
     public boolean onCreateOptionsMenu(Menu menu){
         // Inflate the menu
