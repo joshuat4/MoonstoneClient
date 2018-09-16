@@ -157,7 +157,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                         _emailField.setText(fsEmail);
                         setName(fsName);
                         setEmail(fsEmail);
-                        Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_test);
+                        Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_profilePic);
 
                         Log.d("DEBUGGERtabl1", "SUCCESSS HIP HIP");
 

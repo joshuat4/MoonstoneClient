@@ -31,6 +31,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 
 public class ImageUpload extends AppCompatActivity {
@@ -72,8 +73,11 @@ public class ImageUpload extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Check if there is an upload happening currently, prevent Spamming
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
                     Toast.makeText(ImageUpload.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+
                 } else {
                     uploadFile();
 
@@ -106,7 +110,8 @@ public class ImageUpload extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-            mImageView.setImageURI(mImageUri);
+            //mImageView.setImageURI(mImageUri);
+            Picasso.with(this).load(mImageUri).into(mImageView);
 
         }else{
             finish();
@@ -114,7 +119,7 @@ public class ImageUpload extends AppCompatActivity {
     }
 
 
-    // Edit Profile Pic in Cloud Firestore
+    // Edit profilePic (field) in Cloud Firestore
     public void editProfilePic(String downloadUrl){
         final String Uid = mAuth.getUid();
         DocumentReference docRef = db.collection("users").document(Uid);
@@ -148,10 +153,10 @@ public class ImageUpload extends AppCompatActivity {
         if (mImageUri != null) {
 
             // Set the chosen file (image) a unique name
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+            final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));
 
-            fileReference.putFile(mImageUri)
+            mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -165,12 +170,24 @@ public class ImageUpload extends AppCompatActivity {
                                 }
                             }, 500);
 
-
                             // Get the download URL of the Image from Firebase Storage
-                            String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                            // And set it to User in Cloud Firestore
-                            editProfilePic(downloadUrl);
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+
+                                    Log.d("IMAGEUPLOAD", "Download Url received");
+                                    editProfilePic(uri.toString());
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    Log.d("IMAGEUPLOAD", "Download Url NOT received");
+                                }
+                            });
+
 
                             Toast.makeText(ImageUpload.this, "Upload Successful", Toast.LENGTH_LONG).show();
                             finish();
