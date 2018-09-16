@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
@@ -137,17 +140,49 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
         final String Uid = mAuth.getUid();
 
+        final DocumentReference docRef = db.collection("users").document(Uid);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("TAB1", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+
+                    Log.d("TAB1", "Current data: " + snapshot.getData());
+
+                    final String fsName = snapshot.get("name").toString();
+                    final String fsEmail = snapshot.get("email").toString();
+                    final String fsProfilePic = snapshot.get("profilePic").toString();
+
+                    _nameField.setText(fsName);
+                    _emailField.setText(fsEmail);
+                    setName(fsName);
+                    setEmail(fsEmail);
+                    Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_profilePic);
+
+                } else {
+                    Log.d("TAB1", "Current data: null");
+                }
+            }
+        });
+
+
+        /*
         Log.w("DEBUGGERtabl1", "gettingdata");
         db.collection("users").document(Uid)
             .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
 
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Log.d("DEBUGGERtabl1", "FIRESTORE SUCCESS!!");
+                    Log.d("TAB1", "FIRESTORE SUCCESS!!");
 
                     if (documentSnapshot.exists()) {
 
-                        Log.d("DEBUGGERtabl1", "DOCUMENT NOT NULL!!");
+                        Log.d("TAB1", "DOCUMENT NOT NULL!!");
 
                         final String fsName = documentSnapshot.get("name").toString();
                         final String fsEmail = documentSnapshot.get("email").toString();
@@ -159,10 +194,10 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                         setEmail(fsEmail);
                         Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_profilePic);
 
-                        Log.d("DEBUGGERtabl1", "SUCCESSS HIP HIP");
+                        Log.d("TAB1", "SUCCESSS HIP HIP");
 
                     } else {
-                        Log.d("DEBUGGERtabl1", "FIRESTORE FAILED");
+                        Log.d("TAB1", "FIRESTORE FAILED");
 
                     }
                 }
@@ -173,6 +208,8 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                 Log.d("Tag",e.toString());
             }
         });
+
+        */
     }
 
     @Override
