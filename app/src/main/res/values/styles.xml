@@ -21,8 +21,32 @@
         <item name="colorControlHighlight">@color/darkBlue</item>
         <item name="colorButtonNormal">@color/colorSearchButton</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">15dp</item>
         <item name="android:textColor">@color/colorForeground</item>
+    </style>
+
+    <style name="AnotherButton">
+        <item name="colorControlHighlight">@color/darkGreen</item>
+        <item name="colorButtonNormal">@color/lightGreen</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorForeground</item>
+    </style>
+
+    <style name="CancelButton">
+        <item name="colorControlHighlight">@color/grey</item>
+        <item name="colorButtonNormal">@color/colorForeground</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="FrontButton">
+        <item name="colorControlHighlight">@color/textBlue</item>
+        <item name="colorButtonNormal">@color/colorForeground</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/colorBlack</item>
     </style>
 
 
@@ -31,9 +55,27 @@
         <item name="titleTextColor">@color/colorForeground</item>
     </style>
 
+    <style name="dividerBase">
+        <item name="android:background">@color/colorBackground</item>
+    </style>
+
+    <style name="dividerHorizontal" parent="dividerBase">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item> // You can change thickness here.
+
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PopMe">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+
+    </style>
+
+
 
 
 </resources>

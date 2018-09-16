@@ -39,4 +39,6 @@
     <string name="title_activity_ezdirection">ezdirection</string>
     <string name="title_activity_error">error</string>
 
+    <string name="title_edit_profile">Edit Profile</string>
+
 </resources>

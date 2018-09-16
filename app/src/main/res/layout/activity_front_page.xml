@@ -10,35 +10,41 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="35dp">
+        android:paddingTop="50dp"
+        android:id="@+id/intro">
 
         <ImageView android:src="@drawable/logo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-        <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds ="true"/>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/intro"
+        android:layout_above="@+id/buttons"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingHorizontal="45dp"
-        android:paddingVertical="35dp">
+        android:paddingHorizontal="28dp"
+        android:paddingBottom="24dp"
+        android:id="@+id/buttons">
 
         <Button
             android:theme="@style/MyButton"
             android:id="@+id/loginButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
+            android:padding="18dp"
             android:text="Login with Email"/>
 
         <Button
@@ -46,8 +52,7 @@
             android:id="@+id/signUpButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:padding="20dp"
+            android:padding="18dp"
             android:text="Sign Up"/>
 
     </LinearLayout>
