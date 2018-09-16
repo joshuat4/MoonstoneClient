@@ -68,7 +68,7 @@ dependencies {
     implementation 'com.flipboard:bottomsheet-commons:1.5.3' // optional
 
     // Picasso
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
 

@@ -2,6 +2,7 @@ package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,8 +17,11 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.StorageReference;
 
 import android.text.TextWatcher;
@@ -27,51 +31,61 @@ import android.support.v7.app.ActionBar;
 import android.support.annotation.NonNull;
 
 import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.squareup.picasso.Picasso;
+
 import android.view.LayoutInflater;
 import android.app.Activity;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class EditProfile extends AppCompatActivity implements OnClickListener {
 
-    private Toolbar toolbar;
-    private FirebaseAuth mAuth;
+    private Toolbar _toolbar;
     private StorageReference mStorageRef;
-    private EditText editNameField;
-    private EditText editEmailField;
-    private TextView editImage;
-    private FirebaseFirestore db;
+    private EditText _editNameField;
+    private EditText _editEmailField;
+    private TextView _editImage;
+    private CircleImageView _editProfilePic;
 
-    private String name;
-    private String email;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     private boolean textChanged = false;
     private ActionBar actionBar;
     private BottomSheetLayout bottomSheet;
 
-
+    private String name;
+    private String email;
+    private String profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        editNameField = (EditText) findViewById(R.id.editName);
-        editEmailField = (EditText) findViewById(R.id.editEmail);
-        editImage = (TextView) findViewById(R.id.editImage);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        _editNameField = (EditText) findViewById(R.id.editName);
+        _editEmailField = (EditText) findViewById(R.id.editEmail);
+        _editImage = (TextView) findViewById(R.id.editImage);
+        _editProfilePic = (CircleImageView) findViewById(R.id.editProfilePic);
+        _toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(_toolbar);
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle("Edit Profile");
 
-        editImage.setOnClickListener(this);
+        _editImage.setOnClickListener(this);
 
         name = Tab1Fragment.getName();
         email = Tab1Fragment.getEmail();
-        editNameField.setText(name);
-        editEmailField.setText(email);
+        profilePic = Tab1Fragment.getProfilePic();
 
-        editNameField.addTextChangedListener(new TextWatcher() {
+        _editNameField.setText(name);
+        _editEmailField.setText(email);
+        Picasso.get().load(profilePic).into(_editProfilePic);
+
+
+        _editNameField.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -89,8 +103,9 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
             }
 
         });
-
     }
+
+
 
     @Override
     public void onClick(View v){
@@ -130,8 +145,8 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        final String editName = editNameField.getText().toString().trim();
-        final String editEmail = editEmailField.getText().toString().trim();
+        final String editName = _editNameField.getText().toString().trim();
+        final String editEmail = _editEmailField.getText().toString().trim();
         final String Uid = mAuth.getUid();
 
         DocumentReference docRef = db.collection("users").document(Uid);

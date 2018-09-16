@@ -41,7 +41,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/profilePic"
+                    android:id="@+id/editProfilePic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     app:civ_border_width="3dp"
@@ -59,8 +59,8 @@
                     android:textSize="20dp"
                     android:textColor="@color/textBlue"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/profilePic"/>
+                    android:layout_marginLeft="18dp"
+                    android:layout_toRightOf="@+id/editProfilePic"/>
 
             </RelativeLayout>
 
@@ -77,7 +77,6 @@
                     android:layout_width="match_parent"
                     android:inputType="text" />
 
-                <!-- Edit Email does not change the Auth of User at Firebase -->
                 <EditText
                     android:id="@+id/editEmail"
                     android:layout_marginVertical="25dp"

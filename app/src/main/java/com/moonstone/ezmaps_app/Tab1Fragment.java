@@ -59,6 +59,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
     private static String name;
     private static String email;
+    private static String profilePic;
 
     private ImageView _test;
 
@@ -135,6 +136,14 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         email = s;
     }
 
+    public static String getProfilePic(){
+        return profilePic;
+    }
+
+    public static void setProfilePic(String s){
+        profilePic = s;
+    }
+
 
     private void setProfileData() {
 
@@ -160,9 +169,11 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
                     _nameField.setText(fsName);
                     _emailField.setText(fsEmail);
+                    Picasso.get().load(fsProfilePic).into(_profilePic);
+
                     setName(fsName);
                     setEmail(fsEmail);
-                    Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_profilePic);
+                    setProfilePic(fsProfilePic);
 
                 } else {
                     Log.d("TAB1", "Current data: null");
@@ -170,47 +181,11 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
             }
         });
 
-
-        /*
-        Log.w("DEBUGGERtabl1", "gettingdata");
-        db.collection("users").document(Uid)
-            .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Log.d("TAB1", "FIRESTORE SUCCESS!!");
-
-                    if (documentSnapshot.exists()) {
-
-                        Log.d("TAB1", "DOCUMENT NOT NULL!!");
-
-                        final String fsName = documentSnapshot.get("name").toString();
-                        final String fsEmail = documentSnapshot.get("email").toString();
-                        final String fsProfilePic = documentSnapshot.get("profilePic").toString();
-
-                        _nameField.setText(fsName);
-                        _emailField.setText(fsEmail);
-                        setName(fsName);
-                        setEmail(fsEmail);
-                        Picasso.with(getActivity()).load(fsProfilePic).fit().centerCrop().into(_profilePic);
-
-                        Log.d("TAB1", "SUCCESSS HIP HIP");
-
-                    } else {
-                        Log.d("TAB1", "FIRESTORE FAILED");
-
-                    }
-                }
-        }).addOnFailureListener(new OnFailureListener() {
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.d("Tag",e.toString());
-            }
-        });
-
-        */
     }
+
+
+
+
 
     @Override
     public void onClick(View v){
