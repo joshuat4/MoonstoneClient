@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="35dp"
+        android:paddingTop="50dp"
         android:id="@+id/intro">
 
         <ImageView android:src="@drawable/logo_title"
@@ -92,7 +92,7 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:text="Don't have an acount? Create one"
-            android:textSize="16dip" />
+            android:textSize="16dp" />
 
     </LinearLayout>
 

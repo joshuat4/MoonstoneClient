@@ -72,6 +72,8 @@ dependencies {
 
     implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
 
+    // Crop image
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
 
 }
 

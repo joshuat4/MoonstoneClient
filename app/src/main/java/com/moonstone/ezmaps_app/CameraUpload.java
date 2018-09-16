@@ -1,22 +1,31 @@
 package com.moonstone.ezmaps_app;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.Manifest;
 import android.content.ContentResolver;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.Uri;
+
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,27 +36,29 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class ImageUpload extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
+public class CameraUpload extends AppCompatActivity {
 
     private Button cancelButton;
     private Button uploadButton;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
 
-    private Uri mImageUri;
+    private Uri mImageUri = null;
+
+    private static final int CAMERA_REQUEST_CODE=1;
 
     private StorageReference mStorageRef;
-
     private StorageTask mUploadTask;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -56,34 +67,21 @@ public class ImageUpload extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Open Image Gallery
-        openFileChooser();
+        openCamera();
 
-        // Display the Layout
-        setContentView(R.layout.activity_image_upload);
-        cancelButton = findViewById(R.id.cancelButton);
-        uploadButton = findViewById(R.id.uploadButton);
-        mImageView = findViewById(R.id.imageView);
-        mProgressBar = findViewById(R.id.progressBar);
+        setContentView(R.layout.activity_camera_upload);
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        db = FirebaseFirestore.getInstance();
+
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Check if there is an upload happening currently, prevent Spamming
-                if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(ImageUpload.this, "Upload in progress", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    uploadFile();
-
-                }
+                uploadFile();
             }
         });
+
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,15 +89,16 @@ public class ImageUpload extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
-    // Choose Image from Folder
-    private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    // Open Camera App
+    private void openCamera() {
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
+        }
+
     }
 
     // Display Image on Activity
@@ -107,16 +106,34 @@ public class ImageUpload extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
+
             mImageUri = data.getData();
             Picasso.get().load(mImageUri).into(mImageView);
 
-        }else{
-            finish();
-        }
-    }
+            CropImage.activity(mImageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1,1)
+                    .start(this);
 
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+
+                Picasso.get().load(resultUri).into(mImageView);
+                mImageUri = resultUri;
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
+
+    }
 
     // Edit profilePic (field) in Cloud Firestore
     public void editProfilePic(String downloadUrl){
@@ -128,24 +145,24 @@ public class ImageUpload extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("ImageUpload", "DocumentSnapshot successfully updated!");
+                        Log.d("CameraUpload", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("ImageUpload", "Error updating document", e);
+                        Log.w("CameraUpload", "Error updating document", e);
                     }
                 });
 
     }
-
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
 
     // Upload Image to Firebase Storage
     private void uploadFile() {
@@ -176,7 +193,7 @@ public class ImageUpload extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
 
-                                    Log.d("IMAGEUPLOAD", "Download Url received");
+                                    Log.d("CameraUpload", "Download Url received");
                                     editProfilePic(uri.toString());
 
                                 }
@@ -184,12 +201,12 @@ public class ImageUpload extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
                                     // Handle any errors
-                                    Log.d("IMAGEUPLOAD", "Download Url NOT received");
+                                    Log.d("CameraUpload", "Download Url NOT received");
                                 }
                             });
 
 
-                            Toast.makeText(ImageUpload.this, "Upload Successful", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CameraUpload.this, "Upload Successful", Toast.LENGTH_LONG).show();
                             finish();
 
                         }
@@ -197,7 +214,7 @@ public class ImageUpload extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ImageUpload.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CameraUpload.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     })
@@ -215,6 +232,7 @@ public class ImageUpload extends AppCompatActivity {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 }

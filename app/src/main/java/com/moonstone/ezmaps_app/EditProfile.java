@@ -84,7 +84,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         _editEmailField.setText(email);
         Picasso.get().load(profilePic).into(_editProfilePic);
 
-
         _editNameField.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -104,8 +103,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
         });
     }
-
-
 
     @Override
     public void onClick(View v){

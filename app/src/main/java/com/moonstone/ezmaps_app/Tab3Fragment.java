@@ -93,7 +93,7 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-        if(!notFirstTime){
+        if(!notFirstTime && contactsAvailable){
             final String Uid = mAuth.getUid();
             Log.d("HERE", "please don't run");
             db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
