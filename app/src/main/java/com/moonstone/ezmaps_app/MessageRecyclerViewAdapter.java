@@ -37,21 +37,35 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
+    private int testing = 0;
+
     public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
         Log.d("messages", textMessages.toString());
         this.textMessages = textMessages;
         this.mContext = context;
     }
 
-    //Actually recycles the view holders
+
+        //Actually recycles the view holders
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        Log.d("messages", "view holder" + Integer.toString(i));
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
-        holder.setIsRecyclable(false);
-        return holder;
+        if(testing % 2 == 0){
+            Log.d("messages", "view holder 1 " + Integer.toString(i));
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
+            ViewHolder holder = new ViewHolder(view);
+            holder.setIsRecyclable(false);
+            testing +=1;
+            return holder;
+        }
+        else{
+            Log.d("messages", "view holder 2 " + Integer.toString(i));
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
+            ViewHolder holder = new ViewHolder(view);
+            holder.setIsRecyclable(false);
+            testing +=1;
+            return holder;
+        }
     }
 
     //Called every time a new item is added to the list
@@ -114,4 +128,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
             notifyItemRangeRemoved(0, size);
         }
     }
+
+
 }

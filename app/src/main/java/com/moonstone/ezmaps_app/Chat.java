@@ -4,9 +4,11 @@ package com.moonstone.ezmaps_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,11 +54,14 @@ public class Chat extends AppCompatActivity {
 
     private EditText textField;
     private Button sendButton;
+    private static Toolbar toolbar;
+    private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
     private static final String TEST_CHILD = "testing";
 
     private static String toUserID;
     private static String fromUserID;
+    private String userName;
 
     private ArrayList<String> text = new ArrayList<>();
     private ArrayList<String> from = new ArrayList<>();
@@ -71,6 +76,7 @@ public class Chat extends AppCompatActivity {
     }
 
 
+
     public String getToUserID() {
         return toUserID;
     }
@@ -82,6 +88,13 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        //Get data passed through from ContactRecyclerViewAdapter
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            userName = extras.getString("name");
+        }
+
         Log.d("HERE", "CHAT INITIALISED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
@@ -91,7 +104,17 @@ public class Chat extends AppCompatActivity {
         textField = findViewById(R.id.textField);
         sendButton = findViewById(R.id.sendButton);
         messagesLoading = findViewById(R.id.messagesLoading);
+        toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle(userName);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 //        loadDataFromFirebase();
 

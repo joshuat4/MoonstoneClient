@@ -221,7 +221,8 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
+
+                //Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
 
                 //--------------------------------READ THIS----------------------//
                 //--Here's where you would link to the messaging page for that person
@@ -236,12 +237,13 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 //                Intent intent = new Intent(, FrontPage.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
+
                 Chat.setToUserID(ids.get(i));
                 Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
-
-
-                mContext.startActivity(new Intent(mContext, Chat.class));
-
+                String name = contactNames.get(i);
+                Intent i = new Intent(mContext, Chat.class);
+                i.putExtra("name", name);
+                mContext.startActivity(i);
 
             }
         });
