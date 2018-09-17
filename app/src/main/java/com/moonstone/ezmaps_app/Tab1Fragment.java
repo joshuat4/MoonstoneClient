@@ -1,5 +1,7 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -180,6 +183,21 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                 startActivity(new Intent(getActivity(), PopUpActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        //hide keyboard when any fragment of this class has been detached
+        showSoftwareKeyboard(false);
+    }
+
+    protected void showSoftwareKeyboard(boolean showKeyboard){
+        final Activity activity = getActivity();
+        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 
