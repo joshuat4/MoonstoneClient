@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -96,6 +97,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         ArrayList<String > recieved = (ArrayList<String>)documentSnapshot.get("contacts");
+                        HashMap<String,String> newContact = new HashMap<>();
                         String check = butt.getText().toString();
                         switch (check.toUpperCase()){
                             case "ADD CONTACT":
@@ -103,6 +105,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                                 recieved.add(viewHolder.id);
                                 contacts.add(viewHolder.id);
                                 db.collection("users").document(Uid).update("contacts", recieved);
+                                newContact.put("name", contactNames.get(i));
+                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).set(newContact);
                                 butt.setText("REMOVE");
                                 break;
                             case "REMOVE":
@@ -110,6 +114,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                                 recieved.remove(viewHolder.id);
                                 contacts.remove(viewHolder.id);
                                 db.collection("users").document(Uid).update("contacts", recieved);
+                                //Hmm
+                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).delete();
                                 butt.setText("ADD CONTACT");
                                 break;
                         }

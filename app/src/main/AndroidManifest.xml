@@ -25,11 +25,8 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
         <activity android:name=".FrontPage">
-
-            <!-- Intent Filter changes the start up activity for the app -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -48,6 +45,7 @@
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
 
         <activity android:name=".ezmap" />
+        <activity android:name=".Chat"/>
         <activity
             android:name=".ezdirection"
             android:label="@string/title_activity_ezdirection"
