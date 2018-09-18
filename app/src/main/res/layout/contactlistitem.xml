@@ -27,5 +27,4 @@
             android:textSize="18dp"
             android:layout_gravity="center"/>
 
-
 </RelativeLayout>

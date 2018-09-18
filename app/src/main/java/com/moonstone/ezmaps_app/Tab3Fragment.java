@@ -50,7 +50,6 @@ public class Tab3Fragment extends Fragment {
     private FirebaseFirestore db;
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
-    private boolean notFirstTime = false;
     private boolean contactsAvailable = false;
 
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -130,7 +129,6 @@ public class Tab3Fragment extends Fragment {
 
     private void loadContactsFromDB(){
 
-        // Start loading
         contactsLoading.setVisibility(View.VISIBLE);
 
         final String Uid = mAuth.getUid();
