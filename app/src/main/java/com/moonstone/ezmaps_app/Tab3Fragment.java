@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -50,6 +52,8 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private boolean notFirstTime = false;
     private boolean contactsAvailable = false;
+
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private EditText contactFiler;
     private Button newContactButton;
@@ -100,6 +104,18 @@ public class Tab3Fragment extends Fragment {
 
             }
         });
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) fragmentLayout.findViewById(R.id.swipeToRefresh);
+        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFragment();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
         //Set up add new contacts button
         newContactButton.setOnClickListener(new Button.OnClickListener(){
@@ -226,7 +242,7 @@ public class Tab3Fragment extends Fragment {
         super.onDetach();
 
         //hide keyboard when any fragment of this class has been detached
-        // showSoftwareKeyboard(false);
+        showSoftwareKeyboard(false);
     }
 
     protected void showSoftwareKeyboard(boolean showKeyboard){
@@ -240,8 +256,12 @@ public class Tab3Fragment extends Fragment {
             Log.d("TAB3", "Keybaord " + e.getMessage());
         }
 
-
     }
+
+    public void refreshFragment(){
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
 
     /*
     @Override
