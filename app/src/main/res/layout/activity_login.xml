@@ -11,8 +11,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="35dp"
-
+        android:paddingTop="50dp"
         android:id="@+id/intro">
 
         <ImageView android:src="@drawable/logo_title"
@@ -27,17 +26,15 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:paddingHorizontal="35dp"
-        android:paddingVertical="20dp"
+        android:paddingHorizontal="28dp"
         tools:context=".UserLogin"
+        android:id="@+id/fields"
         android:layout_below="@+id/intro">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginVertical="5dp">
             <EditText android:id="@+id/emailField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,8 +45,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginVertical="5dp">
             <EditText android:id="@+id/passwordField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,47 +55,45 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/fields"
+        android:layout_above="@+id/buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="218dp" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingHorizontal="45dp"
-        android:paddingVertical="35dp">
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp"
+        android:paddingBottom="24dp">
 
         <Button
-            android:theme="@style/MyButton"
             android:id="@+id/loginButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:padding="20dp"
-            android:text="Login with Email"/>
+            android:padding="18dp"
+            android:text="Login with Email"
+            android:theme="@style/MyButton" />
 
-        <TextView android:id="@+id/textViewSignUp"
+        <TextView
+            android:id="@+id/textViewSignUp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Don't have an acount? Create one"
             android:gravity="center"
-            android:textSize="16dip"/>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:layout_editor_absoluteY="218dp" />
+            android:text="Don't have an acount? Create one"
+            android:textSize="16dp" />
 
     </LinearLayout>
-
-
-
-
 
 </RelativeLayout>
