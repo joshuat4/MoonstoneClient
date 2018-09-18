@@ -74,10 +74,8 @@ public class CameraUpload extends Upload {
         super.onActivityResult(requestCode, resultCode, data);
 
         // When the activity takes a picture, the app does returns data.getData() == null
-        // A way to circumvent this is by
+        // A way to circumvent this is by opening up the Camera roll after taking a picture
         if(data.getData() == null){
-
-
             Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             if (pickImageIntent.resolveActivity(getPackageManager()) != null)
                 Log.d("CAMERAUPLOAD", "DATA == NULL, new INTENT");
