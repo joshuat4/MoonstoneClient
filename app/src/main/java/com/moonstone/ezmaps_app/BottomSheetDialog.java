@@ -55,16 +55,20 @@ public class BottomSheetDialog  extends BottomSheetDialogFragment implements OnC
     public void onClick(View v){
         switch (v.getId()){
             case R.id.choosePhoto:
-                getFragmentManager().beginTransaction().remove(this).commit();
-                Intent intent = new Intent(getActivity(), ImageUpload.class);
-                startActivity(intent);
+                this.dismiss();
+
+
+                startActivity(new Intent(getActivity(), ImageUpload.class));
                 break;
 
             case R.id.takePhoto:
+                this.dismiss();
+
+                startActivity(new Intent(getActivity(), CameraUpload.class));
                 break;
 
             case R.id.cancelButton:
-                getFragmentManager().beginTransaction().remove(this).commit();
+                this.dismiss();
                 break;
         }
     }
