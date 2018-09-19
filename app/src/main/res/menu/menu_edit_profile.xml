@@ -6,12 +6,13 @@
     <item android:id="@+id/cancel"
         android:title="Cancel"
         android:orderInCategory="100"
+        android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/done"
         android:title="Done"
         android:orderInCategory="200"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="ifRoom"/>
 
 </menu>

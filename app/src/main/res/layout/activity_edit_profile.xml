@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".EditProfile"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorBackground"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -22,68 +22,156 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:navigationContentDescription="Navigation button description"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorForeground"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:paddingHorizontal="20dp"
-            android:layout_marginVertical="25dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorForeground"
+            android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/editProfilePic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:civ_border_width="3dp"
-                app:civ_border_color="@color/colorAccent"
-                android:src="@mipmap/ic_launcher"
-                android:layout_centerInParent="true"
-                android:layout_alignParentLeft="true"/>
-
-            <TextView
-                android:id="@+id/editImage"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Edit Image"
-                android:clickable="true"
-                android:textSize="20dp"
-                android:textColor="@color/textBlue"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="18dp"
-                android:layout_toRightOf="@+id/editProfilePic"/>
+                android:layout_marginTop="12dp"
+                android:background="@color/colorForeground"
+                android:id="@+id/profile"
+                android:gravity="center_vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/editProfilePic"
+                    android:layout_marginLeft="16dp"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    app:civ_border_width="3dp"
+                    app:civ_border_color="@color/colorAccent"
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_alignParentLeft="true"/>
+
+                <TextView
+                    android:id="@+id/editImage"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Edit Image"
+                    android:clickable="true"
+                    android:textSize="16dp"
+                    android:textColor="@color/textBlue"
+                    android:layout_marginLeft="18dp"
+                    android:layout_toRightOf="@+id/editProfilePic"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBackground"
+                android:layout_below="@+id/profile"
+                android:id="@+id/nameLayout"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="14dp">
+
+                <EditText
+                    android:id="@+id/editName"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Rebecca Caesar Salad"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorForeground"
+                android:layout_below="@+id/nameLayout"
+                android:id="@+id/emailLayout"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="14dp">
+
+                <TextView
+                    android:layout_marginLeft="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Email"/>
+
+                <EditText
+                    android:id="@+id/editEmail"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="Rebecca@email.com"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorForeground"
+                android:layout_below="@+id/emailLayout"
+                android:id="@+id/passwordLayout"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="14dp">
+
+                <TextView
+                    android:layout_marginLeft="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Password"/>
+
+                <EditText
+                    android:id="@+id/editPassword"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="********"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBackground"
+                android:layout_below="@+id/passwordLayout"
+                android:id="@+id/signOutLayout"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/signOutButton"
+                    android:background="@color/colorForeground"
+                    android:textColor="@color/colorRed"
+                    android:layout_marginVertical="10dp"
+                    android:text="Sign Out"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:paddingHorizontal="20dp"
-            android:layout_marginVertical="20dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical">
 
-            <EditText
-                android:id="@+id/editName"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:inputType="text" />
 
-            <EditText
-                android:id="@+id/editEmail"
-                android:layout_marginVertical="25dp"
-                android:layout_below="@+id/editName"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:inputType="none" />
-
-        </RelativeLayout>
-    </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>
 
 
