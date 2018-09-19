@@ -20,20 +20,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
+
         <activity android:name=".FrontPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserSignUp" />
-        <activity android:name=".UserLogin" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".NewContactSearch" />
+
+        <activity
+            android:name=".UserSignUp">
+        </activity>
+
+        <activity android:name=".UserLogin">
+        </activity>
+
+        <activity android:name=".ChatActivity">
+        </activity>
+
+        <activity android:name=".NewContactSearch">
+        </activity>
+
         <activity
             android:name=".EditProfile"
             android:label="@string/title_edit_profile"
@@ -50,12 +62,16 @@
             android:name=".ezdirection"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
+
         <activity
             android:name=".error"
             android:label="@string/title_activity_error"
             android:theme="@style/AppTheme" />
+
         <activity android:name=".ImageUpload" />
+
         <activity android:name=".CameraUpload" />
+
         <activity android:name=".PopUpActivity"
             android:theme="@style/AppTheme.PopMe">
         </activity>
