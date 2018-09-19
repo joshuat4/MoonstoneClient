@@ -167,8 +167,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("EDITPROFILE", "HERE");
-        loadProfileInfo();
     }
 
     @Override
