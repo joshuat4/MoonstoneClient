@@ -74,6 +74,13 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle("Edit Profile");
 
+        _toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         _editImage.setOnClickListener(this);
 
         name = Tab1Fragment.getName();
@@ -126,11 +133,8 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     public boolean onPrepareOptionsMenu(Menu menu) {
         if(textChanged) {
             Log.d("EDITPROFILE", "TEXT IS CHANGED!!!");
-            menu.getItem(0).setVisible(false);
-            menu.getItem(1).setVisible(true);
-        } else {
             menu.getItem(0).setVisible(true);
-            menu.getItem(1).setVisible(false);
+            menu.getItem(1).setVisible(true);
         }
 
         return true;
@@ -171,14 +175,14 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         // as you specify a parent activity in AndroidManifest.xml
         int id = item.getItemId();
 
-        if(id == R.id.exit){
-            finish();
+        if(id == R.id.cancel){
+            this.recreate();
             return true;
         }
 
         if(id == R.id.done){
             editProfile();
-            finish();
+            this.recreate();
             return true;
         }
 
