@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 
 import android.view.LayoutInflater;
 import android.app.Activity;
+import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -164,6 +165,13 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("EDITPROFILE", "HERE");
+        loadProfileInfo();
+    }
+
+    @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editImage:
@@ -224,7 +232,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                 editEmail();
             }
 
-            loadProfileInfo();
 
             nameChanged = false;
             emailChanged = false;
@@ -276,28 +283,26 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d("EDITPROFILE", "User profile updated.");
+
+                            // This goes to Cloud Firestore
+                            DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+
+                            docRef
+                                    .update("name", editName)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("EDITPROFILE", "Error updating document", e);
+                                        }
+                                    });
+
                         }
-                    }
-                });
-
-
-
-        // This goes to Cloud Firestore
-        final String Uid = mAuth.getUid();
-        DocumentReference docRef = db.collection("users").document(Uid);
-
-        docRef
-                .update("name", editName)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("EDITPROFILE", "Error updating document", e);
                     }
                 });
 
@@ -305,9 +310,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
     public void editEmail(){
         final String editEmail = _editEmailField.getText().toString().trim();
-
-        // This goest o
-
         if (user != null) {
 
             user.updateEmail(editEmail)
@@ -316,6 +318,28 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d("EDITPROFILE", "User email address updated.");
+
+                                // This goes to Cloud Firestore
+                                DocumentReference docRef = db.collection("users").document(mAuth.getUid());
+                                docRef
+                                        .update("email", editEmail)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("EDITPROFILE", "Error updating document", e);
+                                            }
+                                        });
+
+                            }else{
+                                Log.d("EDITPROFILE", "Can't change email");
+                                Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+
                             }
                         }
                     });
@@ -324,23 +348,7 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
             Log.d("EDITPROFILE", "User Not Signed In");
         }
 
-        // This goes to Cloud Firestore
-        final String Uid = mAuth.getUid();
-        DocumentReference docRef = db.collection("users").document(Uid);
-        docRef
-                .update("email", editEmail)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("EDITPROFILE", "Error updating document", e);
-                    }
-                });
+
     }
 
     // HIDE KEYBOARD FOR ACTIVITY

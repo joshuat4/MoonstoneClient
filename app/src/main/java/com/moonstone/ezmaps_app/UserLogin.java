@@ -67,6 +67,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
 
 
             } else {
+
+                _progressBar.setVisibility(View.GONE);
                 if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(getApplicationContext(), "Invalid login. Please try again.",
                             Toast.LENGTH_SHORT).show();

@@ -43,10 +43,6 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     private TextView _emailField;
     private CircleImageView _profilePic;
 
-
-
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
     public static Tab1Fragment newInstance() {
         Tab1Fragment fragment = new Tab1Fragment();
         return fragment;
@@ -83,9 +79,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
         return view;
     }
 
-
     private void setProfileData() {
-
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             // Name, email address, and profile photo Url
@@ -98,9 +92,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
             Picasso.get().load(photoUrl).into(_profilePic);
 
         }
-
     }
-
 
     @Override
     public void onClick(View v){
@@ -121,6 +113,12 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
         //hide keyboard when any /fragment of this class has been detached
         // showSoftwareKeyboard(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setProfileData();
     }
 
     protected void showSoftwareKeyboard(boolean showKeyboard){

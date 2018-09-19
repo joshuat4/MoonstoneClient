@@ -128,23 +128,6 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                    userMap.put("profilePic", "https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&h=350");
                    userMap.put("name", name);
 
-                   // This goes to mAuth
-                   FirebaseUser user = mAuth.getCurrentUser();
-                   UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                           .setDisplayName(name)
-                           .setPhotoUri(Uri.parse("https://source.unsplash.com/hchKfNuAblU/1600x900"))
-                           .build();
-
-                   user.updateProfile(profileUpdates)
-                           .addOnCompleteListener(new OnCompleteListener<Void>() {
-                               @Override
-                               public void onComplete(@NonNull Task<Void> task) {
-                                   if (task.isSuccessful()) {
-                                       Log.d("SIGNUP", "User profile updated.");
-                                   }
-                               }
-                           });
-
                    //This goes to Cloud Firestore
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                        @Override
@@ -161,7 +144,26 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                        }
                    });
 
+                   // This goes to mAuth
+                   FirebaseUser user = mAuth.getCurrentUser();
+                   UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                           .setDisplayName(name)
+                           .setPhotoUri(Uri.parse("https://source.unsplash.com/hchKfNuAblU/500x500"))
+                           .build();
+
+                   user.updateProfile(profileUpdates)
+                           .addOnCompleteListener(new OnCompleteListener<Void>() {
+                               @Override
+                               public void onComplete(@NonNull Task<Void> task) {
+                                   if (task.isSuccessful()) {
+                                       Log.d("SIGNUP", "User profile updated.");
+                                   }
+                               }
+                           });
+
                } else {
+
+                   _progressBar.setVisibility(View.GONE);
                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                        Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
                    } else {
@@ -173,8 +175,6 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         });
 
     }
-
-
 
     @Override
     public void onClick(View view){
