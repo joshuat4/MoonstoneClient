@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,8 +54,10 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     private Toolbar _toolbar;
 
     private EditText _editNameField;
-    private EditText _editEmailField;
+    private TextInputEditText _editEmailField;
+    private TextInputLayout _editEmailLayout;
     private EditText _editPasswordField;
+    private ProgressBar _progressBar;
 
     private boolean emailChanged = false;
     private boolean nameChanged = false;
@@ -74,10 +79,14 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
 
         setContentView(R.layout.activity_edit_profile);
         _editNameField = (EditText) findViewById(R.id.editName);
-        _editEmailField = (EditText) findViewById(R.id.editEmail);
+
+        _editEmailField = (TextInputEditText) findViewById(R.id.editEmail);
+        _editEmailLayout = (TextInputLayout) findViewById(R.id.editEmailLayout);
         _editPasswordField = (EditText) findViewById(R.id.editPassword);
         _editProfilePic = (CircleImageView) findViewById(R.id.editProfilePic);
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        _progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         _editImage = (TextView) findViewById(R.id.editImage);
         _signOutButton = (Button) findViewById(R.id.signOutButton);
@@ -227,6 +236,7 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
             }
 
             if(emailChanged){
+                _progressBar.setVisibility(View.VISIBLE);
                 editEmail();
             }
 
@@ -337,6 +347,11 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                             }else{
                                 Log.d("EDITPROFILE", "Can't change email");
                                 Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+
+                                _progressBar.setVisibility(View.GONE);
+                                _editEmailLayout.setError("Email already registered");
+                                loadProfileInfo();
+
 
                             }
                         }
