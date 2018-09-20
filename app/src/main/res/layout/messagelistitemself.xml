@@ -2,10 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/messageParentLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:paddingStart="10dp"
-    android:paddingTop="10dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,8 +12,8 @@
             android:id="@+id/message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="100dp"
-            android:layout_marginEnd="8dp">
+            android:paddingStart="100dp"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:padding="10dp"
