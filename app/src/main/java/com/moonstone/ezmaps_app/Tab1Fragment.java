@@ -169,9 +169,6 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     }
 
 
-
-
-
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -189,16 +186,23 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     public void onDetach() {
         super.onDetach();
 
-        //hide keyboard when any fragment of this class has been detached
-        showSoftwareKeyboard(false);
+        //hide keyboard when any /fragment of this class has been detached
+        // showSoftwareKeyboard(false);
     }
 
     protected void showSoftwareKeyboard(boolean showKeyboard){
         final Activity activity = getActivity();
         final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
+        try {
+            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
+
+        }catch (NullPointerException e){
+            Log.d("TAB1", "Keybaord " + e.getMessage());
+        }
+
     }
+
 
 
 }
