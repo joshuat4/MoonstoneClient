@@ -1,11 +1,13 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -65,6 +67,8 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
 
 
             } else {
+
+                _progressBar.setVisibility(View.GONE);
                 if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(getApplicationContext(), "Invalid login. Please try again.",
                             Toast.LENGTH_SHORT).show();
@@ -87,6 +91,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 break;
 
             case R.id.loginButton:
+                hideKeyboard(this);
                 _progressBar.setVisibility(View.VISIBLE);
                 userLogin();
                 break;
@@ -99,5 +104,17 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    // HIDE KEYBOARD FOR ACTIVITY
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

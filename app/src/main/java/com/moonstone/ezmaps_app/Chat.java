@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +56,7 @@ public class Chat extends AppCompatActivity {
     private boolean notFirstTime = false;
 
     private EditText textField;
-    private Button sendButton;
+    private ImageButton sendButton;
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
@@ -103,8 +104,8 @@ public class Chat extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        textField = findViewById(R.id.textField);
-        sendButton = findViewById(R.id.sendButton);
+        textField = (EditText) findViewById(R.id.textField);
+        sendButton = (ImageButton) findViewById(R.id.sendButton);
         messagesLoading = findViewById(R.id.messagesLoading);
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);

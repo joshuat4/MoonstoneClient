@@ -19,9 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -91,9 +95,27 @@ public class Upload extends AppCompatActivity {
 
     // Edit profilePic (field) in Cloud Firestore
     public void editProfilePic(String downloadUrl){
+
+        //This goes to mAuth
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(downloadUrl))
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("UPLOAD", "User profile updated.");
+                        }
+                    }
+                });
+
+
+        // This goes to Cloud Firestore
         final String Uid = mAuth.getUid();
         DocumentReference docRef = db.collection("users").document(Uid);
-
         docRef
                 .update("profilePic", downloadUrl)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

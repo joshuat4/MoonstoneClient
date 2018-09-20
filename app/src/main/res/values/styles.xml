@@ -7,7 +7,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:statusBarColor">@color/colorBlack</item>
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
     </style>
 
     <style name="MyButton" parent="Theme.AppCompat.Light">
@@ -38,7 +39,7 @@
         <item name="colorButtonNormal">@color/colorForeground</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">15dp</item>
-        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColor">@color/colorRed</item>
     </style>
 
     <style name="FrontButton">
@@ -75,6 +76,11 @@
     </style>
 
 
+    <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/textBlue</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
 
 </resources>

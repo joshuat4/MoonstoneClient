@@ -1,35 +1,36 @@
 package com.moonstone.ezmaps_app;
 
-        import android.app.NotificationChannel;
-        import android.app.NotificationManager;
-        import android.graphics.Color;
-        import android.os.Bundle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.LinearLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.view.LayoutInflater;
-        import android.view.View;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 
-        import android.support.design.widget.TabLayout;
-        import android.support.v4.view.ViewPager;
-        import android.view.ViewGroup;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.TextView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-        import com.firebase.ui.database.SnapshotParser;
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.firebase.ui.database.FirebaseRecyclerAdapter;
-        import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 
 public class ChatActivity extends AppCompatActivity {
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
-        //        ImageView messageImageView;
+        //ImageView messageImageView;
         TextView senderTextView;
 
         public MessageViewHolder(View v) {
@@ -45,12 +46,9 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView mMessageRecyclerView;
     private FirebaseRecyclerAdapter<EzMessage, MessageViewHolder> mFirebaseAdapter;
 
-
-    private Button mSendButton;
+    private ImageButton mSendButton;
     private EditText mMessageEditText;
     private LinearLayoutManager mLinearLayoutManager;
-
-
 
     private static String toUserID;
     private static String fromUserID;
@@ -62,8 +60,6 @@ public class ChatActivity extends AppCompatActivity {
     public static void setFromUserID(String s) {
         fromUserID = s;
     }
-
-
 
     public String getToUserID() {
         return toUserID;
@@ -188,7 +184,7 @@ public class ChatActivity extends AppCompatActivity {
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
         mMessageEditText = (EditText) findViewById(R.id.textField);
-        mSendButton = (Button) findViewById(R.id.sendButton);
+        mSendButton = (ImageButton) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -196,7 +192,6 @@ public class ChatActivity extends AppCompatActivity {
                 mMessageEditText.setText("");
             }
         });
-
 
 
 //        adapter = new TabAdapter(getSupportFragmentManager());

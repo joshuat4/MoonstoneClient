@@ -52,7 +52,7 @@ public class Tab2Fragment extends Fragment {
         super.onDetach();
 
         //hide keyboard when any fragment of this class has been detached
-        showSoftwareKeyboard(false);
+        // showSoftwareKeyboard(false);
     }
 
     protected void showSoftwareKeyboard(boolean showKeyboard){
