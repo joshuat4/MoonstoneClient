@@ -52,8 +52,6 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private boolean contactsAvailable = false;
 
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
     private EditText contactFiler;
     private Button newContactButton;
     public static ProgressBar contactsLoading;
@@ -101,17 +99,6 @@ public class Tab3Fragment extends Fragment {
                     filter(s.toString());
                 }
 
-            }
-        });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) fragmentLayout.findViewById(R.id.swipeToRefresh);
-        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(), R.color.colorAccent));
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshFragment();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
