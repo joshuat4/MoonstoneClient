@@ -13,6 +13,7 @@
             android:id="@+id/message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:paddingStart="100dp"
             android:paddingEnd="8dp">
 
@@ -22,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/message_item_self"
-                android:text="Hey man what's up, this is a test of what messages look like, let's see if this works if i type a really really long message"
+                android:text="Hello"
                 android:textColor="@color/colorBlack" />
         </LinearLayout>
 
