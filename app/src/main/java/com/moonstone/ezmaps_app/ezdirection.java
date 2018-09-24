@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +37,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private int counter = 0;
     private int numView;
-    private boolean counterChanged = false;
     private boolean favourite = false;
 
     private boolean flag;
@@ -79,8 +79,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         //execute async task
         new RetrieveFeed(this).execute(url);
 
-
-
     }
 
 
@@ -104,6 +102,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
 
             initRecyclerView();
+            invalidateOptionsMenu();
         }
         else{
             Intent intent = new Intent(this , error.class);
@@ -114,13 +113,13 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_ezmap, menu);
-        menu.findItem(R.id.title).setTitle("(" + (counter + 1) + "/" + numView + ")");
         return true;
     }
 
     private void updateCounter(int newState){
-        this.counter = newState;
-        counterChanged = true;
+        if(newState != -1){
+            counter = newState;
+        }
         invalidateOptionsMenu();
     }
 
@@ -130,19 +129,16 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         menu.getItem(0).setVisible(true);
         menu.getItem(3).setVisible(true);
 
-        if(counterChanged && counter != -1) {
-            Log.d("EZDIRECTION", "COUNTER CHANGED!!!");
-            menu.findItem(R.id.title).setTitle("(" + (counter + 1) + "/" + numView + ")");
-            counterChanged = false;
-
-        }
+        menu.findItem(R.id.title).setTitle("(" + (counter + 1) + "/" + numView + ")");
 
         if(favourite){
             menu.getItem(1).setVisible(false);
             menu.getItem(2).setVisible(true);
+            Log.d("EZDIRECTION", "FAVOURITE TRUE");
         }else{
-            menu.getItem(1).setVisible(false);
-            menu.getItem(2).setVisible(true);
+            menu.getItem(1).setVisible(true);
+            menu.getItem(2).setVisible(false);
+            Log.d("EZDIRECTION", "FAVOURITE FALSE");
         }
 
         return true;
@@ -163,6 +159,11 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             return true;
         }
 
+        if(id == R.id.options){
+            //Something options for sharing
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -178,11 +179,9 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         adapter = new RecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
         numView = adapter.getItemCount();
+
         recyclerView.setAdapter(adapter);
-
         layoutManager.setSmoothScrollbarEnabled(false);
-
-
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int ydy = 0;
@@ -203,9 +202,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
             }
         });
-
-
-
 
 
     }
