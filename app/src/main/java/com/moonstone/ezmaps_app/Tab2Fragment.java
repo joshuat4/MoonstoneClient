@@ -63,7 +63,6 @@ public class Tab2Fragment extends Fragment {
 
 
     public void startEZMap(){
-        cleanUp();
         Intent intent = new Intent(Tab2Fragment.this.getActivity(), ezdirection.class);
         String destination = source.getText().toString().trim();
         intent.putExtra("destination", destination);
@@ -71,15 +70,5 @@ public class Tab2Fragment extends Fragment {
 
     }
 
-
-    public void cleanUp(){
-        hideKeyboardFrom(getActivity(), getView());
-        getView().clearFocus();
-    }
-
-    public static void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 
 }

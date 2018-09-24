@@ -228,9 +228,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         int id = item.getItemId();
 
         if(id == R.id.cancel){
-            hideKeyboard(this);
-            this.getCurrentFocus().clearFocus();
-
             loadProfileInfo();
 
             nameChanged = false;
@@ -241,9 +238,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         }
 
         if(id == R.id.done){
-            hideKeyboard(this);
-            this.getCurrentFocus().clearFocus();
-
             if(nameChanged){
                 editName();
             }
