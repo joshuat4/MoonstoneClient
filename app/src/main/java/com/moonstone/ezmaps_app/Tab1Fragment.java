@@ -5,30 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.squareup.picasso.Picasso;
-
-import android.support.v4.widget.SwipeRefreshLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -102,7 +93,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
                 break;
 
             case R.id.QRButton:
-                startActivity(new Intent(getActivity(), PopUpActivity.class));
+                startActivity(new Intent(getActivity(), QRCode.class));
                 break;
         }
     }

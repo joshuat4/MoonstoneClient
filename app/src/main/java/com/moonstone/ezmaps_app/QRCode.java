@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.WindowManager;
 
-public class PopUpActivity extends AppCompatActivity {
+public class QRCode extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

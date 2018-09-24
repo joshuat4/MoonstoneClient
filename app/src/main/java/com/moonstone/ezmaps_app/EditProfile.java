@@ -3,7 +3,6 @@ package com.moonstone.ezmaps_app;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -27,12 +26,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.storage.StorageReference;
 
 import android.text.TextWatcher;
 import android.text.Editable;
@@ -40,10 +35,8 @@ import android.support.v7.app.ActionBar;
 
 import android.support.annotation.NonNull;
 
-import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.squareup.picasso.Picasso;
 
-import android.view.LayoutInflater;
 import android.app.Activity;
 import android.widget.Toast;
 
@@ -182,8 +175,8 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editImage:
-                BottomSheetDialog bottomSheet = new BottomSheetDialog();
-                bottomSheet.show(getSupportFragmentManager(), "BottomSheetDialog");
+                UploadDialog bottomSheet = new UploadDialog();
+                bottomSheet.show(getSupportFragmentManager(), "UploadDialog");
                 break;
             case R.id.signOutButton:
                 FirebaseAuth.getInstance().signOut();

@@ -11,18 +11,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONObject;
-
-import butterknife.BindView;
 
 public class Tab2Fragment extends Fragment {
     private ImageButton button;

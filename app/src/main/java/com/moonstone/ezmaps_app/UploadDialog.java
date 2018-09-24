@@ -1,7 +1,5 @@
 package com.moonstone.ezmaps_app;
 
-import android.content.ContentResolver;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,26 +7,12 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.net.Uri;
 import android.content.Intent;
-import android.app.Activity;
 import android.view.View.OnClickListener;
 
-import com.google.android.gms.tasks.OnFailureListener;
 
-import android.content.Context;
-import android.widget.Toast;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-
-public class BottomSheetDialog  extends BottomSheetDialogFragment implements OnClickListener {
+public class UploadDialog extends BottomSheetDialogFragment implements OnClickListener {
 
     private Button _choosePhote;
     private Button _takePhoto;
