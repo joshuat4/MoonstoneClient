@@ -14,7 +14,9 @@ import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +42,8 @@ public class NewContactSearch extends AppCompatActivity{
     private Toolbar toolbar;
     private ActionBar actionbar;
 
+    private ImageButton clearButton;
+
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
     private ArrayList<String> ids;
@@ -58,6 +62,16 @@ public class NewContactSearch extends AppCompatActivity{
 
         filterSearch = findViewById(R.id.filterAllContacts);
         findContactsLoading = findViewById(R.id.findContactsLoading);
+
+        clearButton = findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                filterSearch.getText().clear();
+                clearButton.setVisibility(View.GONE);
+            }
+        });
+
 
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -117,6 +131,7 @@ public class NewContactSearch extends AppCompatActivity{
 
             @Override
             public void afterTextChanged(Editable s) {
+                clearButton.setVisibility(View.VISIBLE);
                 filter(s.toString());
             }
         });

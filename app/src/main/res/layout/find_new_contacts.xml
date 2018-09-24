@@ -33,18 +33,20 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:id="@+id/left"
             android:background="@drawable/tab3_search"
+            android:weightSum="1"
             android:layout_weight="2">
 
             <EditText
                 android:id="@+id/filterAllContacts"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:hint="Search contacts"
                 android:layout_marginTop="6dp"
@@ -52,6 +54,19 @@
                 android:paddingStart="8dp"
                 android:background="@android:color/transparent"
                 android:inputType="textPersonName" />
+
+            <ImageButton
+                android:id="@+id/clearButton"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
+                android:layout_marginEnd="6dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/clear"
+                android:background="@drawable/circle_shape">
+            </ImageButton>
+
 
         </LinearLayout>
 
