@@ -92,7 +92,6 @@ public class Tab3Fragment extends Fragment {
         newContactButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                cleanUp();
                 newContact();
             }
         });
@@ -214,15 +213,6 @@ public class Tab3Fragment extends Fragment {
 
     }
 
-    public void cleanUp(){
-        hideKeyboardFrom(getActivity(), getView());
-        getView().clearFocus();
-    }
-
-    public static void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 
 
 
