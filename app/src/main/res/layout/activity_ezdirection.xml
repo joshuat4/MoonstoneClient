@@ -41,4 +41,24 @@
         android:theme="@style/FrontButton"
         android:text="Current Location"/>
 
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:includeFontPadding="false"
+        android:minWidth="0dp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/left_arrow"
+        android:layout_alignParentStart="true"
+        android:theme="@style/CardButton"
+        android:id="@+id/leftButton"/>
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/right_arrow"
+        android:background="?android:selectableItemBackground"
+        android:layout_alignParentEnd="true"
+        android:theme="@style/CardButton"
+        android:id="@+id/rightButton"/>
+
 </RelativeLayout>
