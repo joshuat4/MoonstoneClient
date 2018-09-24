@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
-public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse{
+public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener{
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
 
@@ -38,11 +39,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private int counter = 0;
     private int numView;
     private boolean favourite = false;
-
-    private boolean flag;
-
     private RecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
+
+    private ImageButton leftButton;
+    private ImageButton rightButton;
+
 
     /* THE ONE USING RIGHTNOW */
 
@@ -65,6 +67,13 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
         });
 
+        leftButton = findViewById(R.id.leftButton);
+        rightButton = findViewById(R.id.rightButton);
+
+        leftButton.setOnClickListener(this);
+        rightButton.setOnClickListener(this);
+
+
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
@@ -76,10 +85,36 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + destination;
 
-
         //execute async task
         new RetrieveFeed(this).execute(url);
 
+    }
+
+    @Override
+    public void onClick(View view){
+        switch(view.getId()){
+            case R.id.rightButton:
+
+                if(counter < numView - 1){
+                    counter += 1;
+                }
+
+                layoutManager.scrollToPosition(counter);
+                invalidateOptionsMenu();
+                Log.d("EZDIRECTION", "SCROLL TO: " + counter + "/" + numView);
+
+                break;
+            case R.id.leftButton:
+
+                if(counter >= 1){
+                    counter -= 1;
+                }
+
+                layoutManager.scrollToPosition(counter);
+                invalidateOptionsMenu();
+                Log.d("EZDIRECTION", "SCROLL TO: " + counter + "/" + numView);
+                break;
+        }
     }
 
 
