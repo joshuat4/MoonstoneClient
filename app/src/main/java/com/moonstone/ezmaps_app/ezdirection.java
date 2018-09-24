@@ -32,6 +32,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
+
         //get search address from search bar
         Intent intent = getIntent();
         String destination = intent.getStringExtra("destination");
