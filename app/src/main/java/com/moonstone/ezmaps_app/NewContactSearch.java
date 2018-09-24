@@ -3,9 +3,11 @@ package com.moonstone.ezmaps_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -31,9 +33,10 @@ public class NewContactSearch extends AppCompatActivity{
     private FirebaseFirestore db;
     private FindRecyclerViewAdapter adapter;
 
-    private Button backButton;
     private EditText filterSearch;
     public static ProgressBar findContactsLoading;
+    private Toolbar toolbar;
+    private ActionBar actionbar;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -51,14 +54,18 @@ public class NewContactSearch extends AppCompatActivity{
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
-        backButton = findViewById(R.id.backButton);
         filterSearch = findViewById(R.id.filterAllContacts);
         findContactsLoading = findViewById(R.id.findContactsLoading);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
+
+        toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Add New Contacts");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                back();
+                finish();
             }
         });
 

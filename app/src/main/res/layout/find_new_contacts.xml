@@ -1,62 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:focusableInTouchMode="true">
 
-    <EditText
-        android:id="@+id/filterAllContacts"
-        android:layout_width="298dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Search for contacts"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/findRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="0dp"
-        android:layout_marginBottom="8dp"
-        android:clipToPadding="false"
-        android:paddingTop="20dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorForeground"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filterAllContacts"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="Search Contacts"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationContentDescription="Navigation button description"/>
 
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="B"
-        app:layout_constraintEnd_toStartOf="@+id/filterAllContacts"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/topBar"
+        android:layout_below="@id/my_toolbar"
+        android:background="@drawable/dynamic_border"
+        android:layout_marginBottom="1dp"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/left"
+            android:background="@drawable/tab3_search"
+            android:layout_weight="2">
+
+            <EditText
+                android:id="@+id/filterAllContacts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Search contacts"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:paddingStart="8dp"
+                android:background="@android:color/transparent"
+                android:inputType="textPersonName" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/contactAddButton"
+            android:theme="@style/AcceptButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Search"
+            android:layout_toEndOf="@+id/left"
+            app:layout_constraintBottom_toTopOf="@id/contactRecyclerView"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topBar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/findRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:visibility="visible" />
+
+    </ScrollView>
+
     <ProgressBar
         android:id="@+id/findContactsLoading"
-        style="?android:progressBarStyle"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/findRecyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/findRecyclerView"
-        app:layout_constraintStart_toStartOf="@+id/findRecyclerView"
-        app:layout_constraintTop_toTopOf="@+id/findRecyclerView" />
+        android:layout_centerInParent="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="218dp" />
 
-</android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

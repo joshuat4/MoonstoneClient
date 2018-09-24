@@ -18,11 +18,12 @@
         android:weightSum="2">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginVertical="10dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/left"
             android:background="@drawable/tab3_search"
             android:layout_weight="2">
@@ -44,9 +45,8 @@
             android:theme="@style/AcceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:text="Add"
-            android:layout_toRightOf="@+id/left"
             app:layout_constraintBottom_toTopOf="@id/contactRecyclerView"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -59,8 +59,6 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/fields"
-        android:layout_above="@+id/buttons"
         app:layout_constraintEnd_toEndOf="parent"
         tools:layout_editor_absoluteY="218dp" />
 
@@ -70,7 +68,6 @@
         android:layout_below="@+id/topBar">
 
         <android.support.v7.widget.RecyclerView
-            android:layout_below="@+id/topBar"
             android:id="@+id/contactRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="150dp"
