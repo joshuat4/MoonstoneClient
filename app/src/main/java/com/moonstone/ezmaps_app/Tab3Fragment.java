@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.moonstone.ezmaps_app.ContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -87,11 +88,11 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-
         //Set up add new contacts button
         newContactButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
+                cleanUp();
                 newContact();
             }
         });
@@ -211,26 +212,18 @@ public class Tab3Fragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
-        //hide keyboard when any fragment of this class has been detached
-        showSoftwareKeyboard(false);
     }
 
-    protected void showSoftwareKeyboard(boolean showKeyboard){
-        final Activity activity = getActivity();
-        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        try {
-            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
-
-        }catch (NullPointerException e){
-            Log.d("TAB3", "Keybaord " + e.getMessage());
-        }
-
+    public void cleanUp(){
+        hideKeyboardFrom(getActivity(), getView());
+        getView().clearFocus();
     }
 
-    public void refreshFragment(){
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
 
 
     /*

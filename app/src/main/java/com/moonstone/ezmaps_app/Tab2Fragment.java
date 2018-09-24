@@ -39,6 +39,7 @@ public class Tab2Fragment extends Fragment {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+
                         startEZMap();
 
                         return true;
@@ -59,7 +60,10 @@ public class Tab2Fragment extends Fragment {
         return view;
     }
 
+
+
     public void startEZMap(){
+        cleanUp();
         Intent intent = new Intent(Tab2Fragment.this.getActivity(), ezdirection.class);
         String destination = source.getText().toString().trim();
         intent.putExtra("destination", destination);
@@ -67,19 +71,15 @@ public class Tab2Fragment extends Fragment {
 
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
 
-        //hide keyboard when any fragment of this class has been detached
-        // showSoftwareKeyboard(false);
+    public void cleanUp(){
+        hideKeyboardFrom(getActivity(), getView());
+        getView().clearFocus();
     }
 
-    protected void showSoftwareKeyboard(boolean showKeyboard){
-        final Activity activity = getActivity();
-        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }
