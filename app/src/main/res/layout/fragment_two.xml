@@ -32,9 +32,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="24dp"
                 android:fontFamily="@font/sf_movie_poster_bold"
-                android:text="Search for a Place"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:text="Search Me"
                 android:textSize="100sp"
                 android:textColor="@color/colorForeground"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4" />
@@ -45,7 +47,6 @@
                 android:orientation="horizontal"
                 android:id="@+id/searchBarLayout"
                 android:weightSum="2"
-
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
                 android:background="@drawable/search_shape">
@@ -56,9 +57,20 @@
                     android:layout_height="match_parent"
                     android:hint="Search Address"
                     android:inputType="text"
-                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
                     android:layout_weight="2"
                     android:background="@android:color/transparent"/>
+
+                <ImageButton
+                    android:id="@+id/clearButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/circle_shape"
+                    android:src="@drawable/clear"/>
 
                 <LinearLayout
                     android:layout_width="50dp"

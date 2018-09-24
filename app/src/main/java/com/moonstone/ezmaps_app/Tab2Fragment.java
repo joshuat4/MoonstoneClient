@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +27,7 @@ public class Tab2Fragment extends Fragment {
     private ImageButton button;
     private EditText source;
     private ImageView image;
+    private ImageButton clearButton;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +39,37 @@ public class Tab2Fragment extends Fragment {
                     .into(image);
             image.setColorFilter(ContextCompat.getColor(getContext(), R.color.tblack));
 
+            clearButton = (ImageButton) view.findViewById(R.id.clearButton);
+            clearButton.setOnClickListener(new Button.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    source.getText().clear();
+                    clearButton.setVisibility(View.GONE);
+                }
+            });
+
             source = (EditText) view.findViewById(R.id.searchBar);
+            source.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    Log.d("TAB2", "SEARCH TYPED IN");
+                    clearButton.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+            });
+
+
+
             source.setOnEditorActionListener(new EditText.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

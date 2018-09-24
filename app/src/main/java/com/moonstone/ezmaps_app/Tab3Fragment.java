@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,9 +39,10 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private boolean contactsAvailable = false;
 
-    private EditText contactFiler;
+    private EditText contactFilter;
     private Button newContactButton;
     public static ProgressBar contactsLoading;
+    private ImageButton clearButton;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -54,7 +56,7 @@ public class Tab3Fragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        contactFiler = fragmentLayout.findViewById(R.id.contactFilter);
+        contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
 
@@ -65,8 +67,17 @@ public class Tab3Fragment extends Fragment {
 
         loadContactsFromDB();
 
+        clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                contactFilter.getText().clear();
+                clearButton.setVisibility(View.GONE);
+            }
+        });
+
         //Filter code
-        contactFiler.addTextChangedListener(new TextWatcher() {
+        contactFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -87,6 +98,7 @@ public class Tab3Fragment extends Fragment {
 
             }
         });
+
 
         //Set up add new contacts button
         newContactButton.setOnClickListener(new Button.OnClickListener(){
