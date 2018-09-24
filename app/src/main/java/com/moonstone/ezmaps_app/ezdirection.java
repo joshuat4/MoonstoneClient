@@ -76,6 +76,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + destination;
 
+
         //execute async task
         new RetrieveFeed(this).execute(url);
 

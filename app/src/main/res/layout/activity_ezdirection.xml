@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorForeground"
     tools:context=".ezdirection">
 
     <android.support.v7.widget.Toolbar
@@ -26,7 +27,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
+        android:layout_above="@+id/currentLocationButton"
         android:orientation= "horizontal"
         android:id = "@+id/recyclerView"/>
+
+    <Button
+        android:id="@+id/currentLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:theme="@style/FrontButton"
+        android:text="Current Location"/>
 
 </RelativeLayout>
