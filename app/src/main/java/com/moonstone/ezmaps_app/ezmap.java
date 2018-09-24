@@ -18,6 +18,7 @@ public class ezmap extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionBar actionbar;
 
+    /* FAKE */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +27,7 @@ public class ezmap extends AppCompatActivity {
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
-        actionbar.setTitle("Add New Contacts");
+        actionbar.setTitle("EZMap");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,9 +40,9 @@ public class ezmap extends AppCompatActivity {
 
 
         final String TAG = "xd";
-
-      SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment)
-                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        SupportPlaceAutocompleteFragment autocompleteFragment =
+                (SupportPlaceAutocompleteFragment)getSupportFragmentManager()
+                        .findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

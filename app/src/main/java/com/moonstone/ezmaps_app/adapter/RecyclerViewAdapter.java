@@ -23,7 +23,6 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewH
     private Context mContext;
 
 
-
     public RecyclerViewAdapter(ArrayList<String> textDirections, ArrayList<String> imageUrls, Context mContext) {
         this.textDirections = textDirections;
         this.imageUrls = imageUrls;

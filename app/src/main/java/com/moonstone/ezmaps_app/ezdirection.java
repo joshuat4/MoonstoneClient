@@ -2,11 +2,13 @@ package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
@@ -23,6 +25,11 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ArrayList<String> textDirectionsList;
     private View recyclerView;
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
+    /* THE ONE USING RIGHTNOW */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String url = new String();
@@ -30,6 +37,17 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         setContentView(R.layout.activity_ezdirection);
 
         recyclerView = findViewById(R.id.recyclerView);
+
+        toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("EZMap");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
@@ -72,8 +90,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             startActivity(intent);
         }
     }
-
-
 
 
 

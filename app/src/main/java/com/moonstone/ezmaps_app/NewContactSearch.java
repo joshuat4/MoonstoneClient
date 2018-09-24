@@ -55,7 +55,6 @@ public class NewContactSearch extends AppCompatActivity{
         filterSearch = findViewById(R.id.filterAllContacts);
         findContactsLoading = findViewById(R.id.findContactsLoading);
 
-
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
