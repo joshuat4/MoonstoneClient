@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
 public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse{
