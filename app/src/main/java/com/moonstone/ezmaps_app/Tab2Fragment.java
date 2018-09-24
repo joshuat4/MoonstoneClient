@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,24 +14,34 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.android.gms.vision.text.Text;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import butterknife.BindView;
 
 public class Tab2Fragment extends Fragment {
-    @BindView(R.id.searchButton) Button searchButton;
+    private ImageButton button;
+    private EditText source;
+    private ImageView image;
 
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
             View view = inflater.inflate(R.layout.fragment_two, container, false);
 
-            Button button = (Button) view.findViewById(R.id.searchButton);
-            final EditText source = (EditText) view.findViewById(R.id.searchBar);
+            image = (ImageView) view.findViewById(R.id.image);
+            Picasso.get()
+                    .load("https://source.unsplash.com/WLUHO9A_xik/1600x900")
+                    .into(image);
+            image.setColorFilter(ContextCompat.getColor(getContext(), R.color.tblack));
+
+            source = (EditText) view.findViewById(R.id.searchBar);
+            button = (ImageButton) view.findViewById(R.id.searchButton);
             button.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -42,6 +53,10 @@ public class Tab2Fragment extends Fragment {
 
                 }
             });
+
+
+
+
         return view;
 
 

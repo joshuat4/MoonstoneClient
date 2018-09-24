@@ -32,7 +32,10 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">15dp</item>
         <item name="android:textColor">@color/colorForeground</item>
-    </style>
+    </style>tton
+
+
+
 
     <style name="CancelButton">
         <item name="colorControlHighlight">@color/grey</item>
