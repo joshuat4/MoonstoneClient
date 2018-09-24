@@ -91,6 +91,8 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+                clearButton.setVisibility(View.VISIBLE);
+
                 // Check if there is contacts available before filtering
                 if(contactsAvailable){
                     filter(s.toString());
