@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/title"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="Title" />
+
+
+    <item
+        android:id="@+id/favouriteEmpty"
+        android:icon="@drawable/favourite_empty"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:title="Favourite Empty" />
+
+    <item
+        android:id="@+id/favouriteFull"
+        android:icon="@drawable/favourite_full"
+        android:orderInCategory="200"
+        app:showAsAction="always"
+        android:title="Favourite Full" />
+
+    <item
+        android:id="@+id/options"
+        android:icon="@drawable/more"
+        android:orderInCategory="300"
+        app:showAsAction="always"
+        android:title="More Options" />
+
+</menu>
