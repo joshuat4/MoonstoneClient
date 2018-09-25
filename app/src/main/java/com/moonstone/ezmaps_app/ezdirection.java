@@ -62,8 +62,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
-
-
     private static String currentDestination;
 
     /* THE ONE USING RIGHTNOW */
@@ -73,9 +71,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         String url = new String();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezdirection);
-
-
-
 
         recyclerView = findViewById(R.id.recyclerView);
 
@@ -99,7 +94,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
@@ -109,8 +103,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         // Check if Current Destination is in Favourite Places
         isCurrentDestinationFavourited(getCurrentDestination());
+        Log.d("EZDIRECTION", getCurrentDestination());
 
-        System.out.println("XX" + currentDestination);
         url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + getCurrentDestination();
 
         //execute async task
@@ -142,7 +136,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                             }
                         }
 
-                        ezdirection.setIsCurrentDestinationFavourited(false);
 
                         Log.d("EZDIRECTION", "DocumentSnapshot data: " + document.getData());
                     } else {
@@ -165,35 +158,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private static void setCurrentDestination(String d){
         currentDestination = d;
     }
-
-    private void addCurrentFavouritePlace(){
-        final String Uid = mAuth.getUid();
-
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(ezdirection.getCurrentDestination()));
-                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + ezdirection.getCurrentDestination());
-            }
-        });
-
-    }
-
-    private void removeCurrentFavouritePlace(){
-        final String Uid = mAuth.getUid();
-
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(ezdirection.getCurrentDestination()));
-                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: " + ezdirection.getCurrentDestination());
-
-
-            }
-        });
-
-    }
-
 
     @Override
     public void onClick(View view){
@@ -220,6 +184,15 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 Log.d("EZDIRECTION", "SCROLL TO: " + counter + "/" + numView);
                 break;
         }
+    }
+
+    @Override
+    public void finish() {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("passed_item", isCurrentDestinationFavourited);
+        // setResult(RESULT_OK);
+        setResult(RESULT_OK, returnIntent); //By not passing the intent in the result, the calling activity will get null data.
+        super.finish();
     }
 
 
@@ -290,14 +263,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         if(id == R.id.favouriteFull){
             setIsCurrentDestinationFavourited(false);
-            removeCurrentFavouritePlace();
+            // removeCurrentFavouritePlace();
             invalidateOptionsMenu();
             return true;
         }
 
         if(id == R.id.favouriteEmpty){
-            addCurrentFavouritePlace();
             setIsCurrentDestinationFavourited(true);
+            // addCurrentFavouritePlace();
             invalidateOptionsMenu();
             return true;
         }

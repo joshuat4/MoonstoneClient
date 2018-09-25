@@ -27,10 +27,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moonstone.ezmaps_app.FavRecyclerViewAdapter;
@@ -40,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class Tab2Fragment extends Fragment {
+    private static final int RESULT_OK = 1;
     private ImageButton button;
     private EditText source;
     private ImageView image;
@@ -50,6 +53,7 @@ public class Tab2Fragment extends Fragment {
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+    private int REQUEST_CODE = 1;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -197,14 +201,66 @@ public class Tab2Fragment extends Fragment {
 
     }
 
+    private static String destination;
+
+    public static String getCurrentDestination(){
+        return destination;
+    }
 
     public void startEZMap(){
         Intent intent = new Intent(Tab2Fragment.this.getActivity(), ezdirection.class);
-        String destination = source.getText().toString().trim();
+        destination = source.getText().toString().trim();
         intent.putExtra("destination", destination);
-        startActivity(intent);
+        //startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            boolean passedItem = (boolean) data.getExtras().get("passed_item");
+
+            // Do the favourite here
+            if(passedItem){
+                addCurrentFavouritePlace();
+            }else{
+                removeCurrentFavouritePlace();
+            }
+
+        }
+    }
+
+    private void addCurrentFavouritePlace(){
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(Tab2Fragment.getCurrentDestination()));
+                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + Tab2Fragment.getCurrentDestination());
+            }
+        });
+
+    }
+
+    private void removeCurrentFavouritePlace(){
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(Tab2Fragment.getCurrentDestination()));
+                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ Tab2Fragment.getCurrentDestination());
+
+
+            }
+        });
+
+    }
+
 
 
 }
