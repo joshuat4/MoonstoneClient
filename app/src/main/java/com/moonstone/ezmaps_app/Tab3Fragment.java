@@ -5,11 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,29 +18,19 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
+import com.moonstone.ezmaps_app.ContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
@@ -52,11 +39,10 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private boolean contactsAvailable = false;
 
-    SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private EditText contactFiler;
+    private EditText contactFilter;
     private Button newContactButton;
     public static ProgressBar contactsLoading;
+    private ImageButton clearButton;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -70,7 +56,7 @@ public class Tab3Fragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        contactFiler = fragmentLayout.findViewById(R.id.contactFilter);
+        contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
 
@@ -81,8 +67,17 @@ public class Tab3Fragment extends Fragment {
 
         loadContactsFromDB();
 
+        clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                contactFilter.getText().clear();
+                clearButton.setVisibility(View.GONE);
+            }
+        });
+
         //Filter code
-        contactFiler.addTextChangedListener(new TextWatcher() {
+        contactFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -96,22 +91,13 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+                clearButton.setVisibility(View.VISIBLE);
+
                 // Check if there is contacts available before filtering
                 if(contactsAvailable){
                     filter(s.toString());
                 }
 
-            }
-        });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) fragmentLayout.findViewById(R.id.swipeToRefresh);
-        mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(), R.color.colorAccent));
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshFragment();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -239,26 +225,9 @@ public class Tab3Fragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
-        //hide keyboard when any fragment of this class has been detached
-        showSoftwareKeyboard(false);
     }
 
-    protected void showSoftwareKeyboard(boolean showKeyboard){
-        final Activity activity = getActivity();
-        final InputMethodManager inputManager = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        try {
-            inputManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), showKeyboard ? InputMethodManager.SHOW_FORCED : InputMethodManager.HIDE_NOT_ALWAYS);
-
-        }catch (NullPointerException e){
-            Log.d("TAB3", "Keybaord " + e.getMessage());
-        }
-
-    }
-
-    public void refreshFragment(){
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-    }
 
 
     /*

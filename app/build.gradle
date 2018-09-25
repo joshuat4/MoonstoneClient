@@ -16,11 +16,19 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+        }
     }
     allprojects {
         repositories {
             google()
             jcenter()
+        }
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/java/startup', 'src/main/java/com.moonstone.ezmaps_app/startup', 'src/main/java/com/moonstone/ezmaps_app/startup', 'src/main/java/com/moonstone/ezmaps_app/contacts', 'src/main/java/com/moonstone/ezmaps_app/profile', 'src/main/java/com/moonstone/ezmaps_app/ezmap', 'src/main/java/com/moonstone/ezmaps_app/add_contacts', 'src/main/java/com/moonstone/ezmaps_app/chat']
         }
     }
 }
@@ -74,6 +82,11 @@ dependencies {
 
     // Crop image
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
+
+    // Required -- JUnit 4 framework
+    testImplementation 'junit:junit:4.12'
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:1.10.19'
 
 }
 

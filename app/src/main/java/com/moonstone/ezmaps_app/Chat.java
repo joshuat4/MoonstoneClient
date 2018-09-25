@@ -1,7 +1,6 @@
 package com.moonstone.ezmaps_app;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -9,39 +8,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+<<<<<<< HEAD
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+=======
+>>>>>>> master
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.ServerTimestamp;
 
-import org.w3c.dom.Document;
+import com.moonstone.ezmaps_app.MessageRecyclerViewAdapter;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
@@ -50,11 +45,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-import butterknife.ButterKnife;
 
 public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -64,7 +55,7 @@ public class Chat extends AppCompatActivity {
     private boolean notFirstTime = false;
 
     private EditText textField;
-    private Button sendButton;
+    private ImageButton sendButton;
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
@@ -117,8 +108,8 @@ public class Chat extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        textField = findViewById(R.id.textField);
-        sendButton = findViewById(R.id.sendButton);
+        textField = (EditText) findViewById(R.id.textField);
+        sendButton = (ImageButton) findViewById(R.id.sendButton);
         messagesLoading = findViewById(R.id.messagesLoading);
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);

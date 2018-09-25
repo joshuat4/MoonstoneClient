@@ -1,13 +1,11 @@
 package com.moonstone.ezmaps_app;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-
-import java.util.ConcurrentModificationException;
+import com.moonstone.ezmaps_app.Constants;
 
 public class MyNotificationManager {
     private Context mCtx;

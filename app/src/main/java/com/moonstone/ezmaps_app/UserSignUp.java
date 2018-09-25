@@ -1,11 +1,16 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -45,6 +52,8 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
@@ -114,14 +123,15 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                    //Clears all activities currently active on the stack as the login stage is done now
                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                   //Set up basic parameters
+
                    final Map<String, Object> userMap = new HashMap<>();
                    final ArrayList<String> contacts = new ArrayList<>();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
                    userMap.put("profilePic", "https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&h=350");
-                   userMap.put("name", _nameField.getText().toString().trim());
+                   userMap.put("name", name);
 
+                   //This goes to Cloud Firestore
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                        @Override
                        public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -136,7 +146,27 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                            }
                        }
                    });
+
+                   // This goes to mAuth
+                   FirebaseUser user = mAuth.getCurrentUser();
+                   UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                           .setDisplayName(name)
+                           .setPhotoUri(Uri.parse("https://source.unsplash.com/hchKfNuAblU/500x500"))
+                           .build();
+
+                   user.updateProfile(profileUpdates)
+                           .addOnCompleteListener(new OnCompleteListener<Void>() {
+                               @Override
+                               public void onComplete(@NonNull Task<Void> task) {
+                                   if (task.isSuccessful()) {
+                                       Log.d("SIGNUP", "User profile updated.");
+                                   }
+                               }
+                           });
+
                } else {
+
+                   _progressBar.setVisibility(View.GONE);
                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                        Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
                    } else {
@@ -153,11 +183,24 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.signUpButton:
+                hideKeyboard(this);
                 registerUser();
                 break;
             case R.id.textViewLogin:
                 startActivity(new Intent(this, UserLogin.class));
                 break;
         }
+    }
+
+    // HIDE KEYBOARD FOR ACTIVITY
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

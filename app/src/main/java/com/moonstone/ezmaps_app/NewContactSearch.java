@@ -1,18 +1,23 @@
 package com.moonstone.ezmaps_app;
 
-import android.content.Intent;
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.moonstone.ezmaps_app.FindRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +37,12 @@ public class NewContactSearch extends AppCompatActivity{
     private FirebaseFirestore db;
     private FindRecyclerViewAdapter adapter;
 
-    private Button backButton;
     private EditText filterSearch;
     public static ProgressBar findContactsLoading;
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
+    private ImageButton clearButton;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -51,14 +60,27 @@ public class NewContactSearch extends AppCompatActivity{
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
-        backButton = findViewById(R.id.backButton);
         filterSearch = findViewById(R.id.filterAllContacts);
         findContactsLoading = findViewById(R.id.findContactsLoading);
 
-        backButton.setOnClickListener(new View.OnClickListener() {
+        clearButton = findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                filterSearch.getText().clear();
+                clearButton.setVisibility(View.GONE);
+            }
+        });
+
+
+        toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Add New Contacts");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                back();
+                finish();
             }
         });
 
@@ -109,6 +131,7 @@ public class NewContactSearch extends AppCompatActivity{
 
             @Override
             public void afterTextChanged(Editable s) {
+                clearButton.setVisibility(View.VISIBLE);
                 filter(s.toString());
             }
         });
@@ -146,6 +169,23 @@ public class NewContactSearch extends AppCompatActivity{
             counter += 1;
         }
         adapter.filterList(fnames, fprofilePics, fids, femails);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
     }
 
 }

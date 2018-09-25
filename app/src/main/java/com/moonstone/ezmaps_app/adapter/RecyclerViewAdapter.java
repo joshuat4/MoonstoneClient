@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +24,11 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewH
     private Context mContext;
 
 
-
     public RecyclerViewAdapter(ArrayList<String> textDirections, ArrayList<String> imageUrls, Context mContext) {
         this.textDirections = textDirections;
         this.imageUrls = imageUrls;
         this.mContext = mContext;
     }
-
 
      @NonNull
      @Override
