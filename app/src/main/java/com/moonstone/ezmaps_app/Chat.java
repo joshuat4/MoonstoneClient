@@ -24,28 +24,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-<<<<<<< HEAD
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-=======
->>>>>>> master
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import com.moonstone.ezmaps_app.MessageRecyclerViewAdapter;
-
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
 
 public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -165,27 +152,6 @@ public class Chat extends AppCompatActivity {
         final String Uid = mAuth.getUid();
         adapter.clear();
         loadDataFromFirebase();
-//        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
-//            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//               @Override
-//               public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                   for (DocumentChange dc : task.getResult().getDocumentChanges()) {
-//                       switch (dc.getType()) {
-//                           case ADDED:
-//                               System.out.println("New city: " + dc.getDocument().getData());
-//                               break;
-//                           case MODIFIED:
-//                               System.out.println("Modified city: " + dc.getDocument().getData());
-//                               break;
-//                           case REMOVED:
-//                               System.out.println("Removed city: " + dc.getDocument().getData());
-//                               break;
-//                           default:
-//                               break;
-//                       }
-//                   }
-//               }
-//           });
         adapter.refreshData();
     }
 

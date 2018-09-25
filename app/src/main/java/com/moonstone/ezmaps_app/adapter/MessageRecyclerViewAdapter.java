@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapter;
 
 
 import android.content.Context;
@@ -11,18 +11,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-<<<<<<< HEAD:app/src/main/java/com/moonstone/ezmaps_app/MessageRecyclerViewAdapter.java
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessagingService;
+import com.moonstone.ezmaps_app.EzMessage;
+import com.moonstone.ezmaps_app.R;
 
-=======
->>>>>>> master:app/src/main/java/com/moonstone/ezmaps_app/adapter/MessageRecyclerViewAdapter.java
 import java.util.ArrayList;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {

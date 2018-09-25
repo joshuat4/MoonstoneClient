@@ -96,7 +96,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                        ArrayList<String > recieved = (ArrayList<String>)documentSnapshot.get("contacts");
+                        ArrayList<String > recieved = (ArrayList<String>) documentSnapshot.get("contacts");
                         HashMap<String,String> newContact = new HashMap<>();
                         String check = butt.getText().toString();
                         switch (check.toUpperCase()){
