@@ -24,7 +24,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="15dp"
         android:layout_toEndOf="@+id/profilePic"
-        android:text="First Name Last"
+        android:text="First Name"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
         android:layout_gravity="center"/>

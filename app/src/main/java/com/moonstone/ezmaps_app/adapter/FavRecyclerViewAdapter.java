@@ -32,16 +32,24 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
         return new ViewHolder(view);
     }
 
+
+    public String cleanUpName(String name) {
+
+        return name.replace("%20"," ");
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-/*
+
+        String url = "https://source.unsplash.com/1600x900/?" + favouriteList.get(i);
+
         Glide.with(mContext)
                 .asBitmap()
-                .load(imageUrls.get(i))
-                .into(viewHolder.image);*/
+                .load(url)
+                .into(viewHolder.image);
 
-        viewHolder.title.setText(favouriteList.get(i));
 
+        viewHolder.title.setText(cleanUpName(favouriteList.get(i)));
         viewHolder.image.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){

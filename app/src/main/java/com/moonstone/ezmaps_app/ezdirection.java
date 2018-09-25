@@ -3,6 +3,7 @@ package com.moonstone.ezmaps_app;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,12 +27,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
@@ -46,7 +52,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private int counter = 0;
     private int numView;
-    private boolean favourite = false;
+    private static boolean isCurrentDestinationFavourited;
     private RecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
 
@@ -55,6 +61,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
+
+
 
     private static String currentDestination;
 
@@ -65,6 +73,9 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         String url = new String();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezdirection);
+
+
+
 
         recyclerView = findViewById(R.id.recyclerView);
 
@@ -92,9 +103,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
-        //get search address from search bar
+        //Get Current Destination
         Intent intent = getIntent();
         setCurrentDestination(intent.getStringExtra("destination").replaceAll(" ", "%20"));
+
+        // Check if Current Destination is in Favourite Places
+        isCurrentDestinationFavourited(getCurrentDestination());
 
         System.out.println("XX" + currentDestination);
         url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + getCurrentDestination();
@@ -102,6 +116,45 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         //execute async task
         new RetrieveFeed(this).execute(url);
 
+    }
+
+    private static void setIsCurrentDestinationFavourited(boolean b){
+        isCurrentDestinationFavourited = b;
+    }
+
+    private void isCurrentDestinationFavourited(String destination){
+        final String Uid = mAuth.getUid();
+
+        DocumentReference docRef = db.collection("users").document(Uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        ArrayList<String> favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
+
+                        for (String place: favouritePlaces){
+                            if(place.equals(ezdirection.getCurrentDestination())){
+                                Log.d("EZDIRECTION", "CURRENT DESTINATION WAS FAVED");
+                                ezdirection.setIsCurrentDestinationFavourited(true);
+                            }
+                        }
+
+                        ezdirection.setIsCurrentDestinationFavourited(false);
+
+                        Log.d("EZDIRECTION", "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d("EZDIRECTION", "No such document");
+                    }
+                } else {
+                    Log.d("EZDIRECTION", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        return;
     }
 
 
@@ -219,7 +272,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         menu.findItem(R.id.title).setTitle("(" + (counter + 1) + "/" + numView + ")");
 
-        if(favourite){
+        if(isCurrentDestinationFavourited){
             menu.getItem(1).setVisible(false);
             menu.getItem(2).setVisible(true);
             Log.d("EZDIRECTION", "FAVOURITE TRUE");
@@ -236,7 +289,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         int id = item.getItemId();
 
         if(id == R.id.favouriteFull){
-            favourite = false;
+            setIsCurrentDestinationFavourited(false);
             removeCurrentFavouritePlace();
             invalidateOptionsMenu();
             return true;
@@ -244,7 +297,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         if(id == R.id.favouriteEmpty){
             addCurrentFavouritePlace();
-            favourite = true;
+            setIsCurrentDestinationFavourited(true);
             invalidateOptionsMenu();
             return true;
         }
@@ -275,7 +328,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         layoutManager.setSmoothScrollbarEnabled(false);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int ydy = 0;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
