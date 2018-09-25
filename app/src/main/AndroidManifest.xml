@@ -24,7 +24,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity android:name=".FrontPage">
             <intent-filter>
@@ -72,7 +73,7 @@
 
         <activity android:name=".CameraUpload" />
 
-        <activity android:name=".PopUpActivity"
+        <activity android:name=".QRCode"
             android:theme="@style/AppTheme.PopMe">
         </activity>
     </application>

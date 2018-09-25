@@ -1,8 +1,11 @@
 package com.moonstone.ezmaps_app;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -12,15 +15,34 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 public class ezmap extends AppCompatActivity {
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
+    /* FAKE */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezmap);
 
-        final String TAG = "xd";
+        toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("EZMap");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-      SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment)
-                getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+
+
+
+        final String TAG = "xd";
+        SupportPlaceAutocompleteFragment autocompleteFragment =
+                (SupportPlaceAutocompleteFragment)getSupportFragmentManager()
+                        .findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override

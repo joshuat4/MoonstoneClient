@@ -1,14 +1,16 @@
 package com.moonstone.ezmaps_app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.MenuItem;
@@ -27,12 +29,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.storage.StorageReference;
 
 import android.text.TextWatcher;
 import android.text.Editable;
@@ -40,10 +38,8 @@ import android.support.v7.app.ActionBar;
 
 import android.support.annotation.NonNull;
 
-import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.squareup.picasso.Picasso;
 
-import android.view.LayoutInflater;
 import android.app.Activity;
 import android.widget.Toast;
 
@@ -182,8 +178,8 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editImage:
-                BottomSheetDialog bottomSheet = new BottomSheetDialog();
-                bottomSheet.show(getSupportFragmentManager(), "BottomSheetDialog");
+                UploadDialog bottomSheet = new UploadDialog();
+                bottomSheet.show(getSupportFragmentManager(), "UploadDialog");
                 break;
             case R.id.signOutButton:
                 FirebaseAuth.getInstance().signOut();
@@ -195,6 +191,23 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
     }
 
     public void loadProfileInfo(){
@@ -215,9 +228,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         int id = item.getItemId();
 
         if(id == R.id.cancel){
-            hideKeyboard(this);
-            this.getCurrentFocus().clearFocus();
-
             loadProfileInfo();
 
             nameChanged = false;
@@ -228,9 +238,6 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
         }
 
         if(id == R.id.done){
-            hideKeyboard(this);
-            this.getCurrentFocus().clearFocus();
-
             if(nameChanged){
                 editName();
             }

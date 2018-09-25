@@ -125,7 +125,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         });
 
         if(i == contactNames.size() - 1){
-            NewContactSearch.findContactsLoading.setVisibility(View.GONE);
+            com.moonstone.ezmaps_app.NewContactSearch.findContactsLoading.setVisibility(View.GONE);
         }
     }
 

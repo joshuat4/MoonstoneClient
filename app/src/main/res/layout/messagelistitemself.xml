@@ -13,12 +13,17 @@
             android:id="@+id/message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:paddingStart="100dp"
-            android:paddingEnd="8dp">
+            android:paddingEnd="16dp">
 
             <TextView
-                android:padding="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:id="@+id/messageText"
+                android:textSize="14dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/message_item_self"
