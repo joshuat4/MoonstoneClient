@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
@@ -32,6 +33,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
     private ArrayList<EzMessage> textMessages = new ArrayList<>();
     private Context mContext;
+    private FirebaseAuth mAuth;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
@@ -50,20 +52,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if(testing % 2 == 0){
+        mAuth = FirebaseAuth.getInstance();
+        final String Uid = mAuth.getUid();
+        if(textMessages.get(i).getFromUserId().equals(Uid)){
             Log.d("messages", "view holder 1 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
-            testing +=1;
             return holder;
         }
         else{
             Log.d("messages", "view holder 2 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
-            testing +=1;
             return holder;
         }
     }

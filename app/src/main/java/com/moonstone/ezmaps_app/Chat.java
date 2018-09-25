@@ -172,40 +172,43 @@ public class Chat extends AppCompatActivity {
     private void refresh(){
         Log.d("messages", "refresh");
         final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-               @Override
-               public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                   for (DocumentChange dc : task.getResult().getDocumentChanges()) {
-                       switch (dc.getType()) {
-                           case ADDED:
-                               System.out.println("New city: " + dc.getDocument().getData());
-                               break;
-                           case MODIFIED:
-                               System.out.println("Modified city: " + dc.getDocument().getData());
-                               break;
-                           case REMOVED:
-                               System.out.println("Removed city: " + dc.getDocument().getData());
-                               break;
-                           default:
-                               break;
-                       }
-                   }
-               }
-           });
-        adapter.refreshData();
+        adapter.clear();
         loadDataFromFirebase();
+//        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
+//            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//               @Override
+//               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                   for (DocumentChange dc : task.getResult().getDocumentChanges()) {
+//                       switch (dc.getType()) {
+//                           case ADDED:
+//                               System.out.println("New city: " + dc.getDocument().getData());
+//                               break;
+//                           case MODIFIED:
+//                               System.out.println("Modified city: " + dc.getDocument().getData());
+//                               break;
+//                           case REMOVED:
+//                               System.out.println("Removed city: " + dc.getDocument().getData());
+//                               break;
+//                           default:
+//                               break;
+//                       }
+//                   }
+//               }
+//           });
+        adapter.refreshData();
     }
 
 
     @Override
     public void onResume(){
-//        refresh();
+    loadDataFromFirebase();
         super.onResume();
         //other stuff
     }
 
     private void loadDataFromFirebase() {
+
+        Log.d("HERE", "just in ldff");
         messagesLoading.setVisibility(View.VISIBLE);
         if (text.size() > 0) {
             text.clear();
@@ -214,32 +217,53 @@ public class Chat extends AppCompatActivity {
         }
         final String Uid = mAuth.getUid();
         Log.d("HERE", "please don't run");
-        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
+        if(notFirstTime){
+            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                   @Override
+                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                       for (DocumentChange dc : task.getResult().getDocumentChanges()) {
+                           switch (dc.getType()) {
+                               case ADDED:
+                                   System.out.println("New city: " + dc.getDocument().getData());
+                                   break;
+                               case MODIFIED:
+                                   System.out.println("Modified city: " + dc.getDocument().getData());
+                                   break;
+                               case REMOVED:
+                                   System.out.println("Removed city: " + dc.getDocument().getData());
+                                   break;
+                               default:
+                                   break;
+                           }
+                       }
+                   }
+               });
+            Log.d("messages", "3");
+            adapter.clear();
+            adapter.refreshData();
+        } else {
+            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (DocumentSnapshot querySnapshot : task.getResult()) {
-//
+
                             Date date = new Date(querySnapshot.getString("time"));
                             ezMessagesArray.add(new EzMessage(querySnapshot.getString("text"),
-                                                        querySnapshot.getString("toUserId"),
-                                                        querySnapshot.getString("fromUserId"),
-                                                        date));
+                                    querySnapshot.getString("toUserId"),
+                                    querySnapshot.getString("fromUserId"),
+                                    date));
 
                         }
                         ezMessagesArray.sort(new EzMessagesComparator());
                         messagesLoading.setVisibility(View.GONE);
                         Log.d("messages", "1");
-                        if(ezMessagesArray.size() > 0) {
-                            if (!notFirstTime) {
-                                initRecyclerView();
-                                Log.d("messages", "2");
-                                notFirstTime = true;
-                            } else {
-                                Log.d("messages", "3");
-                                adapter.clear();
-                                adapter.refreshData();
-                            }
+                        Log.d("messages", "size of messages array: " + ezMessagesArray.size());
+                        if (ezMessagesArray.size() > 0) {
+                            initRecyclerView();
+                            Log.d("messages", "2");
+                            notFirstTime = true;
                         }
                     }
                 })
@@ -251,6 +275,8 @@ public class Chat extends AppCompatActivity {
                                 "FAILURE IN CHAT", e.getMessage());
                     }
                 });
+
+        }
     }
 
     //Toolbar stuff
