@@ -2,7 +2,9 @@ package com.moonstone.ezmaps_app;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +28,9 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +71,7 @@ public class Chat extends AppCompatActivity {
         fromUserID = s;
     }
 
-
+    Handler handler = new Handler();
 
     public String getToUserID() {
         return toUserID;
@@ -110,7 +114,7 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-//        loadDataFromFirebase();
+        handler.post(updateView);
 
 
         //SEND MESSAGE
@@ -144,7 +148,9 @@ public class Chat extends AppCompatActivity {
         Log.d("HERE", text.toString());
         adapter = new MessageRecyclerViewAdapter(this, ezMessagesArray);
         recyclerView.setAdapter(adapter) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setStackFromEnd(true);
+        recyclerView.setLayoutManager(llm);
     }
 
     private void refresh(){
@@ -158,82 +164,74 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onResume(){
-    loadDataFromFirebase();
         super.onResume();
         //other stuff
     }
 
-    private void loadDataFromFirebase() {
+    private final Runnable updateView = new Runnable(){
+        public void run(){
+            try {
+                loadDataFromFirebase();
+//                handler.postDelayed(this, 5000);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
+    private void loadDataFromFirebase() {
         Log.d("HERE", "just in ldff");
         messagesLoading.setVisibility(View.VISIBLE);
-        if (text.size() > 0) {
-            text.clear();
-            from.clear();
-            to.clear();
-        }
         final String Uid = mAuth.getUid();
-        Log.d("HERE", "please don't run");
-        if(notFirstTime){
-            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                   @Override
-                   public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                       for (DocumentChange dc : task.getResult().getDocumentChanges()) {
-                           switch (dc.getType()) {
-                               case ADDED:
-                                   System.out.println("New city: " + dc.getDocument().getData());
-                                   break;
-                               case MODIFIED:
-                                   System.out.println("Modified city: " + dc.getDocument().getData());
-                                   break;
-                               case REMOVED:
-                                   System.out.println("Removed city: " + dc.getDocument().getData());
-                                   break;
-                               default:
-                                   break;
+
+        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("TAG", "listen:error", e);
+                            return;
+                        }
+
+                        int newDocs = 0;
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
+                                           dc.getDocument().getString("toUserId"),
+                                           dc.getDocument().getString("fromUserId"),
+                                           new Date(dc.getDocument().getString("time"))));
+                                   Log.d("messages", "new doc: " + dc.getDocument().getString("text"));
+                                   newDocs++;
+                                    break;
+                                case MODIFIED:
+                                    break;
+                                case REMOVED:
+                                    break;
+                            }
+                        }
+                        if(newDocs>0){
+                           ezMessagesArray.sort(new EzMessagesComparator());
+                           if(notFirstTime){
+                               adapter.notifyDataSetChanged();
+                              RecyclerView rv = findViewById(R.id.messageRecyclerView);
+                              rv.scrollToPosition(ezMessagesArray.size() - 1);
+                           } else if(ezMessagesArray.size() > 0) {
+                               ezMessagesArray.sort(new EzMessagesComparator());
+                               initRecyclerView();
+                               Log.d("messages", "2");
+                               notFirstTime = true;
+                               adapter.notifyDataSetChanged();
                            }
                        }
-                   }
-               });
-            Log.d("messages", "3");
-            adapter.clear();
-            adapter.refreshData();
-        } else {
-            db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (DocumentSnapshot querySnapshot : task.getResult()) {
 
-                            Date date = new Date(querySnapshot.getString("time"));
-                            ezMessagesArray.add(new EzMessage(querySnapshot.getString("text"),
-                                    querySnapshot.getString("toUserId"),
-                                    querySnapshot.getString("fromUserId"),
-                                    date));
 
-                        }
-                        ezMessagesArray.sort(new EzMessagesComparator());
-                        messagesLoading.setVisibility(View.GONE);
-                        Log.d("messages", "1");
-                        Log.d("messages", "size of messages array: " + ezMessagesArray.size());
-                        if (ezMessagesArray.size() > 0) {
-                            initRecyclerView();
-                            Log.d("messages", "2");
-                            notFirstTime = true;
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Chat.this, "FAIL", Toast.LENGTH_SHORT).show();
-                        Log.d(
-                                "FAILURE IN CHAT", e.getMessage());
                     }
                 });
 
-        }
+        messagesLoading.setVisibility(View.GONE);
     }
 
     //Toolbar stuff
@@ -259,6 +257,12 @@ public class Chat extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updateView);
     }
 
 
