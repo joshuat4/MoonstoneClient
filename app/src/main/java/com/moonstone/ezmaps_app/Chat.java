@@ -200,7 +200,7 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        refresh();
+//        refresh();
         super.onResume();
         //other stuff
     }
