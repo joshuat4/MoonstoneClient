@@ -65,8 +65,6 @@ public class Tab3Fragment extends Fragment {
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
-        loadContactsFromDB();
-
         clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -109,6 +107,8 @@ public class Tab3Fragment extends Fragment {
                 newContact();
             }
         });
+
+        loadContactsFromDB();
 
         return fragmentLayout;
     }

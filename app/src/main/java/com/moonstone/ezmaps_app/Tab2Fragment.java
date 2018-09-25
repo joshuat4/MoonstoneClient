@@ -34,12 +34,17 @@ public class Tab2Fragment extends Fragment {
             View view = inflater.inflate(R.layout.fragment_two, container, false);
 
             image = (ImageView) view.findViewById(R.id.image);
+            clearButton = (ImageButton) view.findViewById(R.id.clearButton);
+            source = (EditText) view.findViewById(R.id.searchBar);
+            button = (ImageButton) view.findViewById(R.id.searchButton);
+
             Picasso.get()
-                    .load("https://source.unsplash.com/WLUHO9A_xik/1600x900")
+                    .load("https://source.unsplash.com/collection/1980117/1600x900")
                     .into(image);
+
             image.setColorFilter(ContextCompat.getColor(getContext(), R.color.tblack));
 
-            clearButton = (ImageButton) view.findViewById(R.id.clearButton);
+
             clearButton.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v){
@@ -48,7 +53,7 @@ public class Tab2Fragment extends Fragment {
                 }
             });
 
-            source = (EditText) view.findViewById(R.id.searchBar);
+
             source.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -68,13 +73,10 @@ public class Tab2Fragment extends Fragment {
 
             });
 
-
-
             source.setOnEditorActionListener(new EditText.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-
                         startEZMap();
 
                         return true;
@@ -83,7 +85,7 @@ public class Tab2Fragment extends Fragment {
                 }
             });
 
-            button = (ImageButton) view.findViewById(R.id.searchButton);
+
             button.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -91,6 +93,8 @@ public class Tab2Fragment extends Fragment {
                     startEZMap();
                 }
             });
+
+
 
         return view;
     }
