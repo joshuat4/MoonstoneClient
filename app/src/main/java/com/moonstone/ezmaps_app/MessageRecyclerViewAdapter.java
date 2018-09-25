@@ -30,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> textMessages = new ArrayList<>();
+    private ArrayList<EzMessage> textMessages = new ArrayList<>();
     private Context mContext;
 
     //Never rendered but information is held here
@@ -39,7 +39,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
     private int testing = 0;
 
-    public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
+    public MessageRecyclerViewAdapter(Context context, ArrayList<EzMessage> textMessages){
         Log.d("messages", textMessages.toString());
         this.textMessages = textMessages;
         this.mContext = context;
@@ -75,13 +75,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
         //Gets the image and puts it into the referenced imageView
 
-        viewHolder.messageText.setText(textMessages.get(i));
+        viewHolder.messageText.setText(textMessages.get(i).getText());
 
         //Add onclicklistener to each list entry
         viewHolder.MessageParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Toast.makeText(mContext,textMessages.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,textMessages.get(i).getText(), Toast.LENGTH_SHORT).show();
 
             }
         });

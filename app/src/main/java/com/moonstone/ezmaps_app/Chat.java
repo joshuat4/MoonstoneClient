@@ -23,23 +23,32 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import org.w3c.dom.Document;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +73,13 @@ public class Chat extends AppCompatActivity {
     private static String toUserID;
     private static String fromUserID;
     private String userName;
+    private Timestamp currentTime;
 
     private ArrayList<String> text = new ArrayList<>();
     private ArrayList<String> from = new ArrayList<>();
     private ArrayList<String> to = new ArrayList<>();
+    private ArrayList<String> time = new ArrayList<>();
+    private ArrayList<EzMessage> ezMessagesArray = new ArrayList<>();
 
     public String getFromUserID() {
         return fromUserID;
@@ -90,6 +102,8 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        currentTime = Timestamp.now();
+        Log.d("time", "time: " + currentTime.toDate().toString());
 
         //Get data passed through from ContactRecyclerViewAdapter
         Bundle extras = getIntent().getExtras();
@@ -125,6 +139,7 @@ public class Chat extends AppCompatActivity {
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
+                currentTime = Timestamp.now();
                 final String Uid = mAuth.getUid();
                 // Add a new document with a generated id.
                 final Map<String, Object> message = new HashMap<>();
@@ -133,6 +148,7 @@ public class Chat extends AppCompatActivity {
                 message.put("toUserId", toUserID);
                 message.put("text", textField.getText().toString());
                 message.put("fromUserId", Uid);
+                message.put("time", currentTime.toDate().toString());
 
                 //Add to map for actual database
                 db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(message);
@@ -148,30 +164,35 @@ public class Chat extends AppCompatActivity {
     private void initRecyclerView(){
         RecyclerView recyclerView =  findViewById(R.id.messageRecyclerView);
         Log.d("HERE", text.toString());
-        adapter = new MessageRecyclerViewAdapter(this, text);
+        adapter = new MessageRecyclerViewAdapter(this, ezMessagesArray);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-//    private void filter(String text){
-//
-//        //Filtered arrays
-//        ArrayList<String> ftext = new ArrayList<>();
-//
-//        int counter = 0;
-//
-//        for(String message : text){
-//            if(message.toLowerCase().contains(text.toLowerCase())){
-//                ftext.add(text.get());
-//            }
-//            counter += 1;
-//        }
-//        adapter.filterList(fmessages);
-//    }
-
     private void refresh(){
         Log.d("messages", "refresh");
-        adapter.clear();
+        final String Uid = mAuth.getUid();
+        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                   for (DocumentChange dc : task.getResult().getDocumentChanges()) {
+                       switch (dc.getType()) {
+                           case ADDED:
+                               System.out.println("New city: " + dc.getDocument().getData());
+                               break;
+                           case MODIFIED:
+                               System.out.println("Modified city: " + dc.getDocument().getData());
+                               break;
+                           case REMOVED:
+                               System.out.println("Removed city: " + dc.getDocument().getData());
+                               break;
+                           default:
+                               break;
+                       }
+                   }
+               }
+           });
         adapter.refreshData();
         loadDataFromFirebase();
     }
@@ -179,7 +200,7 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        loadDataFromFirebase();
+        refresh();
         super.onResume();
         //other stuff
     }
@@ -198,30 +219,27 @@ public class Chat extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (DocumentSnapshot querySnapshot : task.getResult()) {
-//                            final String docId = querySnapshot.getId();
-//                            db.collection("messages").document(docId).get()
-//                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
-//                                            DocumentSnapshot doc = task2.getResult();
-//                                            Log.d("messages", "aaaaaaa");
-//                                            text.add(doc.getString("name"));
-//                                            from.add(doc.getString("profilePic"));
-//                                            to.add(doc.getString("profilePic"));
-//                                        }
-//                                    });
-                            text.add(querySnapshot.getString("text"));
+//
+                            Date date = new Date(querySnapshot.getString("time"));
+                            ezMessagesArray.add(new EzMessage(querySnapshot.getString("text"),
+                                                        querySnapshot.getString("toUserId"),
+                                                        querySnapshot.getString("fromUserId"),
+                                                        date));
+
                         }
+                        ezMessagesArray.sort(new EzMessagesComparator());
                         messagesLoading.setVisibility(View.GONE);
                         Log.d("messages", "1");
-                        if(!notFirstTime){
-                            initRecyclerView();
-                            Log.d("messages", "2");
-                            notFirstTime = true;
-                        } else {
-                            Log.d("messages", "3");
-                            adapter.clear();
-                            adapter.refreshData();
+                        if(ezMessagesArray.size() > 0) {
+                            if (!notFirstTime) {
+                                initRecyclerView();
+                                Log.d("messages", "2");
+                                notFirstTime = true;
+                            } else {
+                                Log.d("messages", "3");
+                                adapter.clear();
+                                adapter.refreshData();
+                            }
                         }
                     }
                 })
