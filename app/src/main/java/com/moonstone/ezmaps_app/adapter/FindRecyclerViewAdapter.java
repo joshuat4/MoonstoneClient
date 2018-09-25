@@ -3,6 +3,7 @@ package com.moonstone.ezmaps_app;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -81,52 +83,67 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         final Button butt = viewHolder.itemView.findViewById(R.id.addUser);
 
         //Add/remove contact handling code
-        final String Uid = mAuth.getUid();
-
         if(contacts.contains(viewHolder.id)){
             butt.setText("REMOVE");
         }
         else{
             //Not in contacts list
         }
+
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Log.d("FINDRECYCLER", "BUTTON CLICKED");
 
-                        ArrayList<String > recieved = (ArrayList<String>)documentSnapshot.get("contacts");
-                        HashMap<String,String> newContact = new HashMap<>();
-                        String check = butt.getText().toString();
-                        switch (check.toUpperCase()){
-                            case "ADD CONTACT":
-                                //Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
-                                recieved.add(viewHolder.id);
-                                contacts.add(viewHolder.id);
-                                db.collection("users").document(Uid).update("contacts", recieved);
-                                newContact.put("name", contactNames.get(i));
-                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).set(newContact);
-                                butt.setText("REMOVE");
-                                break;
-                            case "REMOVE":
-                                //Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
-                                recieved.remove(viewHolder.id);
-                                contacts.remove(viewHolder.id);
-                                db.collection("users").document(Uid).update("contacts", recieved);
-                                //Hmm
-                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).delete();
-                                butt.setText("ADD CONTACT");
-                                break;
-                        }
-                    }
-                });
+                String check = butt.getText().toString();
+
+                switch (check.toUpperCase()){
+                    case "ADD":
+                        Log.d("FINDRECYCLER", "ADD CONTACT: " + viewHolder.id);
+                        addContact(viewHolder);
+                        butt.setText("REMOVE");
+                        break;
+
+                    case "REMOVE":
+                        Log.d("FINDRECYCLER", "REMOVE CONTACT: " + viewHolder.id);
+                        removeContact(viewHolder);
+                        butt.setText("ADD");
+                        break;
+
+                }
+
             }
         });
 
         if(i == contactNames.size() - 1){
             com.moonstone.ezmaps_app.NewContactSearch.findContactsLoading.setVisibility(View.GONE);
         }
+    }
+
+
+    public void addContact(@NonNull final ViewHolder viewHolder){
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("contacts", FieldValue.arrayUnion(viewHolder.id));
+                Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + viewHolder.id);
+            }
+        });
+    }
+
+    public void removeContact(@NonNull final ViewHolder viewHolder) {
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("contacts", FieldValue.arrayRemove(viewHolder.id));
+                Log.d("FINDRECYCLER", "SUCCESSFULLY REMOVED: " + viewHolder.id);
+            }
+        });
+
     }
 
     @Override

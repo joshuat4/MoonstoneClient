@@ -94,9 +94,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         //get search address from search bar
         Intent intent = getIntent();
-        setCurrentDestination(intent.getStringExtra("destination"));
+        setCurrentDestination(intent.getStringExtra("destination").replaceAll(" ", "%20"));
 
-        currentDestination = currentDestination.replaceAll(" ", "%20");
         System.out.println("XX" + currentDestination);
         url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + getCurrentDestination();
 
@@ -121,6 +120,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(ezdirection.getCurrentDestination()));
+                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + ezdirection.getCurrentDestination());
             }
         });
 
@@ -133,6 +133,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(ezdirection.getCurrentDestination()));
+                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: " + ezdirection.getCurrentDestination());
+
 
             }
         });
