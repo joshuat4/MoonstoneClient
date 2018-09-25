@@ -24,6 +24,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
@@ -45,6 +53,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ImageButton leftButton;
     private ImageButton rightButton;
 
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
+    private static String currentDestination;
 
     /* THE ONE USING RIGHTNOW */
 
@@ -73,25 +85,60 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         leftButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
 
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
 
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
         //get search address from search bar
         Intent intent = getIntent();
-        String destination = intent.getStringExtra("destination");
-        destination = destination.replaceAll(" ", "%20");
-        System.out.println("XX" + destination);
+        setCurrentDestination(intent.getStringExtra("destination"));
 
-        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + destination;
-
-
-        https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---Melbourne%20City
+        currentDestination = currentDestination.replaceAll(" ", "%20");
+        System.out.println("XX" + currentDestination);
+        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + getCurrentDestination();
 
         //execute async task
         new RetrieveFeed(this).execute(url);
 
     }
+
+
+    private static String getCurrentDestination(){
+        return currentDestination;
+    }
+
+    private static void setCurrentDestination(String d){
+        currentDestination = d;
+    }
+
+    private void addCurrentFavouritePlace(){
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(ezdirection.getCurrentDestination()));
+            }
+        });
+
+    }
+
+    private void removeCurrentFavouritePlace(){
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(ezdirection.getCurrentDestination()));
+
+            }
+        });
+
+    }
+
 
     @Override
     public void onClick(View view){
@@ -188,11 +235,13 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         if(id == R.id.favouriteFull){
             favourite = false;
+            removeCurrentFavouritePlace();
             invalidateOptionsMenu();
             return true;
         }
 
         if(id == R.id.favouriteEmpty){
+            addCurrentFavouritePlace();
             favourite = true;
             invalidateOptionsMenu();
             return true;
@@ -205,6 +254,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
     private void initRecyclerView() {

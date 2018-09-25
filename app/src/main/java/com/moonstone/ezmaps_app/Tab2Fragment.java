@@ -44,7 +44,6 @@ public class Tab2Fragment extends Fragment {
 
             image.setColorFilter(ContextCompat.getColor(getContext(), R.color.tblack));
 
-
             clearButton.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v){
@@ -94,10 +93,11 @@ public class Tab2Fragment extends Fragment {
                 }
             });
 
-
+        source.clearFocus();
 
         return view;
     }
+
 
 
 

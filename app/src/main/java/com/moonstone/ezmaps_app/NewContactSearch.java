@@ -88,7 +88,6 @@ public class NewContactSearch extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
 
         Task<QuerySnapshot> d = db.collection("users").get();
-
         d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

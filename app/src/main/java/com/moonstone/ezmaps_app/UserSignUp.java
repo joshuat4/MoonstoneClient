@@ -129,7 +129,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
-                   userMap.put("profilePic", "https://source.unsplash.com/random/800x800");
+                   userMap.put("profilePic", "https://source.unsplash.com/hchKfNuAblU/500x500");
                    userMap.put("name", name);
                    userMap.put("favouritePlaces", favouritePlaces);
 
