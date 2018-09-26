@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -52,7 +53,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private int counter = 0;
     private int numView;
-    private static boolean isCurrentDestinationFavourited;
     private RecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
 
@@ -62,13 +62,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
-    private static String currentDestination;
-
     /* THE ONE USING RIGHTNOW */
+
+    private Map<String, Object> tab2_to_ezdirection;
+    private boolean isCurrentDestinationFavourited;
+    private String currentDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String url = new String();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ezdirection);
 
@@ -97,66 +98,37 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
-        //Get Current Destination
+        //Get tab2_to_ezdirection item and resolve
         Intent intent = getIntent();
-        setCurrentDestination(intent.getStringExtra("destination").replaceAll(" ", "%20"));
+        tab2_to_ezdirection = (HashMap<String, Object>) intent.getSerializableExtra("tab2_to_ezdirection");
+        isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
+        currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
 
-        // Check if Current Destination is in Favourite Places
-        isCurrentDestinationFavourited(getCurrentDestination());
-        Log.d("EZDIRECTION", getCurrentDestination());
+        Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
 
-        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + getCurrentDestination();
+        // Get URL
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---";
+        url += currentDestination.replaceAll(" ", "%20");
+
+        Log.d("EZDIRECTION", "URL: " + url);
 
         //execute async task
         new RetrieveFeed(this).execute(url);
 
     }
 
-    private static void setIsCurrentDestinationFavourited(boolean b){
-        isCurrentDestinationFavourited = b;
-    }
-
-    private void isCurrentDestinationFavourited(String destination){
-        final String Uid = mAuth.getUid();
-
-        DocumentReference docRef = db.collection("users").document(Uid);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        ArrayList<String> favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
-
-                        for (String place: favouritePlaces){
-                            if(place.equals(ezdirection.getCurrentDestination())){
-                                Log.d("EZDIRECTION", "CURRENT DESTINATION WAS FAVED");
-                                ezdirection.setIsCurrentDestinationFavourited(true);
-                            }
-                        }
 
 
-                        Log.d("EZDIRECTION", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("EZDIRECTION", "No such document");
-                    }
-                } else {
-                    Log.d("EZDIRECTION", "get failed with ", task.getException());
-                }
-            }
-        });
+    @Override
+    public void finish() {
+        Log.d("EZDIRECTION", "FINISH IS CALLED");
 
-        return;
-    }
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("ezdirection_to_tab2", isCurrentDestinationFavourited);
 
-
-    private static String getCurrentDestination(){
-        return currentDestination;
-    }
-
-    private static void setCurrentDestination(String d){
-        currentDestination = d;
+        Log.d("EZDIRECTION", "ITEM IS PASSED Back to Tab 2");
+        setResult(RESULT_OK, returnIntent);
+        super.finish();
     }
 
     @Override
@@ -186,14 +158,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }
 
-    @Override
-    public void finish() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("passed_item", isCurrentDestinationFavourited);
-        // setResult(RESULT_OK);
-        setResult(RESULT_OK, returnIntent); //By not passing the intent in the result, the calling activity will get null data.
-        super.finish();
-    }
 
 
     @Override
@@ -262,21 +226,18 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         int id = item.getItemId();
 
         if(id == R.id.favouriteFull){
-            setIsCurrentDestinationFavourited(false);
-            // removeCurrentFavouritePlace();
+            isCurrentDestinationFavourited = false;
             invalidateOptionsMenu();
             return true;
         }
 
         if(id == R.id.favouriteEmpty){
-            setIsCurrentDestinationFavourited(true);
-            // addCurrentFavouritePlace();
+            isCurrentDestinationFavourited = true;
             invalidateOptionsMenu();
             return true;
         }
 
         if(id == R.id.options){
-            //Something options for sharing
             return true;
         }
 

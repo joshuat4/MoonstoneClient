@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +28,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,9 +43,11 @@ import com.moonstone.ezmaps_app.FavRecyclerViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Tab2Fragment extends Fragment {
-    private static final int RESULT_OK = 1;
+
     private ImageButton button;
     private EditText source;
     private ImageView image;
@@ -53,7 +58,11 @@ public class Tab2Fragment extends Fragment {
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private int REQUEST_CODE = 1;
+
+    private String currentDestination;
+    private ArrayList<String> favouritePlaces;
+    RecyclerView favRecyclerView;
+    private boolean isCurrentDestinationFavourited;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +76,9 @@ public class Tab2Fragment extends Fragment {
             db = FirebaseFirestore.getInstance();
             mAuth = FirebaseAuth.getInstance();
 
+            // Get Favourite Places from Firestore
             loadFavouritePlaces(view);
+
 
             Picasso.get()
                     .load("https://source.unsplash.com/collection/1980117/1600x900")
@@ -130,45 +141,44 @@ public class Tab2Fragment extends Fragment {
     }
 
 
+
     public void loadFavouritePlaces(final View view){
-
         final String Uid = mAuth.getUid();
-
         final DocumentReference docRef = db.collection("users").document(Uid);
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("TAB2", "Listen failed.", e);
-                    return;
-                }
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
 
-                if (snapshot != null && snapshot.exists()) {
-                    ArrayList<String> favouritePlaces = (ArrayList<String>) snapshot.get("favouritePlaces");
+                        favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
 
-                    if(!favouritePlaces.isEmpty()){
-                        initFavRecyclerView(view, favouritePlaces);
+                        // If Fav Places is not Empty, open up a recycler list of fav places
+                        if(!favouritePlaces.isEmpty()){
+                            initFavRecyclerView(view, favouritePlaces);
+                        }
+
+
+                        Log.d("TAB2", "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d("TAB2", "No such document");
                     }
-
-                    Log.d("TAB2", "Current data: " + snapshot.getData());
                 } else {
-                    Log.d("TAB2", "Current data: null");
+                    Log.d("TAB2", "get failed with ", task.getException());
                 }
             }
         });
-
+        
 
     }
-
 
 
     public void initFavRecyclerView(View view, ArrayList<String> favouritePlaces){
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView favRecyclerView = view.findViewById(R.id.favRecyclerView);
+        favRecyclerView = view.findViewById(R.id.favRecyclerView);
 
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) favRecyclerView);
@@ -201,33 +211,78 @@ public class Tab2Fragment extends Fragment {
 
     }
 
-    private static String destination;
-
-    public static String getCurrentDestination(){
-        return destination;
-    }
+    private int REQUEST_CODE = 1;
+    private static final int RESULT_OK = -1;
 
     public void startEZMap(){
-        Intent intent = new Intent(Tab2Fragment.this.getActivity(), ezdirection.class);
-        destination = source.getText().toString().trim();
-        intent.putExtra("destination", destination);
-        //startActivity(intent);
+
+        HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
+
+        // Get the current destination typed into the search field
+        currentDestination = source.getText().toString().trim();
+        tab2_to_ezdirection.put("currentDestination", currentDestination);
+
+        // Check if the current destination is favourited
+        if(isCurrentDestinationFavourited(currentDestination)){
+
+            tab2_to_ezdirection.put("isCurrentDestinationFavourited", true);
+
+        }else{
+
+            tab2_to_ezdirection.put("isCurrentDestinationFavourited", false);
+
+        }
+
+        // Send the hashmap (tab2_to_ezdirection) to EZDirection
+        Intent intent = new Intent(this.getActivity(), ezdirection.class);
+        intent.putExtra("tab2_to_ezdirection", tab2_to_ezdirection);
         startActivityForResult(intent, REQUEST_CODE);
 
     }
 
+    private boolean isCurrentDestinationFavourited(String currentDestination) {
+
+        for(String places : favouritePlaces){
+            if(places.toUpperCase().equals(currentDestination.toUpperCase())){
+                isCurrentDestinationFavourited = true;
+                return true;
+            }
+        }
+
+        isCurrentDestinationFavourited = false;
+        return false;
+    }
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("TAB2", "Activity is returned");
+        Log.d("TAB2", "REQ CODE: " + requestCode);
+        Log.d("TAB2", "RES CODE: " + resultCode);
+        Log.d("TAB2", "DATA: " + (boolean) data.getExtras().get("passed_item"));
+
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            Log.d("TAB2", "REQUEST CODE RECEIVED");
 
-            boolean passedItem = (boolean) data.getExtras().get("passed_item");
+            boolean ezdirection_to_tab2 = (boolean) data.getExtras().get("ezdirection_to_tab2");
 
-            // Do the favourite here
-            if(passedItem){
-                addCurrentFavouritePlace();
-            }else{
-                removeCurrentFavouritePlace();
+            Log.d("TAB2", "PASSED ITEM RECEIVED: " + ezdirection_to_tab2);
+
+            // If it's favourited at Tab2 and favourited at EZdirection, there's no need to refresh favRecyclerView
+            if(ezdirection_to_tab2 != isCurrentDestinationFavourited){
+                // Depending on whether it's favourited or not
+                if(ezdirection_to_tab2){
+                    addCurrentFavouritePlace();
+
+                }else{
+                    removeCurrentFavouritePlace();
+                }
+
+                adapter.filterOut(currentDestination);
+
             }
 
         }
@@ -239,8 +294,8 @@ public class Tab2Fragment extends Fragment {
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(Tab2Fragment.getCurrentDestination()));
-                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + Tab2Fragment.getCurrentDestination());
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(currentDestination));
+                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + currentDestination);
             }
         });
 
@@ -252,8 +307,8 @@ public class Tab2Fragment extends Fragment {
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(Tab2Fragment.getCurrentDestination()));
-                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ Tab2Fragment.getCurrentDestination());
+                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(currentDestination));
+                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ currentDestination);
 
 
             }

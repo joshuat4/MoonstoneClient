@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter.ViewHolder> {
-    private ArrayList<String> favouriteList;
+
+    private List<String> favouriteList;
     private Context mContext;
 
     public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext) {
@@ -64,6 +66,17 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
     @Override
     public int getItemCount() {
         return favouriteList.size();
+    }
+
+
+    public void filterOut(String filter) {
+        final int size = favouriteList.size();
+        for(int i = size - 1; i>= 0; i--) {
+            if (!favouriteList.get(i).equals(filter)) {
+                favouriteList.remove(i);
+                notifyItemRemoved(i);
+            }
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
