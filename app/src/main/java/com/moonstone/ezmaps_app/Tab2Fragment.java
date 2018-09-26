@@ -146,6 +146,7 @@ public class Tab2Fragment extends Fragment {
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
 
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -170,7 +171,33 @@ public class Tab2Fragment extends Fragment {
                 }
             }
         });
-        
+
+
+
+        FirebaseDatabase.getInstance().getReference()
+                .child("message").push().setValue(newMessage, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                databaseReference.child("reachedServer").setValue("reached");
+            }
+        });
+
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            if (dataSnapshot.getValue() != null) {
+
+                if (newMessage != null) {
+                    for (int i = 0; i < myArrayList().size(); i++) {
+                        if (myArrayList().get(i).timestamp == newMessage.timestamp) {
+                            myArrayList().remove(i);
+                            myArrayList().add(i, newMessage);
+                            break;
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }
+
 
     }
 
@@ -254,7 +281,6 @@ public class Tab2Fragment extends Fragment {
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -262,7 +288,7 @@ public class Tab2Fragment extends Fragment {
         Log.d("TAB2", "Activity is returned");
         Log.d("TAB2", "REQ CODE: " + requestCode);
         Log.d("TAB2", "RES CODE: " + resultCode);
-        Log.d("TAB2", "DATA: " + (boolean) data.getExtras().get("passed_item"));
+        Log.d("TAB2", "DATA: " + (boolean) data.getExtras().get("ezdirection_to_tab2"));
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Log.d("TAB2", "REQUEST CODE RECEIVED");
