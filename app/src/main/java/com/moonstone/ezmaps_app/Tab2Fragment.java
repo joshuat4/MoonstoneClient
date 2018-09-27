@@ -64,6 +64,9 @@ public class Tab2Fragment extends Fragment {
     RecyclerView favRecyclerView;
     private boolean isCurrentDestinationFavourited;
 
+    private int REQUEST_CODE = 1;
+    private static final int RESULT_OK = -1;
+
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_two, container, false);
@@ -246,8 +249,7 @@ public class Tab2Fragment extends Fragment {
 
 
 
-    private int REQUEST_CODE = 1;
-    private static final int RESULT_OK = -1;
+
 
     public void startEZMap(){
 
@@ -315,8 +317,6 @@ public class Tab2Fragment extends Fragment {
                 removeCurrentFavouritePlace();
             }
 
-
-            //adapter.filterOut(currentDestination);
 
         }
     }
