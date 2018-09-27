@@ -44,6 +44,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Tab2Fragment extends Fragment {
@@ -155,9 +156,12 @@ public class Tab2Fragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // Get Favourite Places from DB
-                        favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
-                        Log.d("TAB2", "Favourite places received: " + favouritePlaces);
+
+                        ArrayList<String> list = (ArrayList<String>) document.get("favouritePlaces");
+                        favouritePlaces = new ArrayList<>();
+                        favouritePlaces.addAll(list);
+
+                        Log.d("TAB2/init", "Favourite places received: " + favouritePlaces);
 
                         // If Fav Places is not Empty, open up a recycler list of fav places
                         if(!favouritePlaces.isEmpty()){
@@ -211,46 +215,6 @@ public class Tab2Fragment extends Fragment {
 
     }
 
-    public void rebuildFavRecyclerView(){
-
-        // Clear old list
-        favouritePlaces.clear();
-
-        final String Uid = mAuth.getUid();
-        final DocumentReference docRef = db.collection("users").document(Uid);
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-
-                        // Get Favourite Places from DB
-                        favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
-
-                        // notify adapter
-                        adapter.notifyDataSetChanged();
-                        Log.d("TAB2", "Favourite places received: " + favouritePlaces);
-
-
-                    } else {
-                        Log.d("TAB2", "No such document");
-                    }
-                } else {
-                    Log.d("TAB2", "get failed with ", task.getException());
-                }
-            }
-        });
-
-    }
-
-
-
-
-
-
-
     public void startEZMap(){
 
         HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
@@ -278,9 +242,8 @@ public class Tab2Fragment extends Fragment {
     }
 
     private boolean isCurrentDestinationFavourited(String currentDestination) {
-
         for(String places : favouritePlaces){
-            if(places.toUpperCase().equals(currentDestination.toUpperCase())){
+            if(comparePlaces(places, currentDestination)){
                 isCurrentDestinationFavourited = true;
                 return true;
             }
@@ -288,6 +251,10 @@ public class Tab2Fragment extends Fragment {
 
         isCurrentDestinationFavourited = false;
         return false;
+    }
+
+    private boolean comparePlaces(String place1, String place2){
+        return place1.toUpperCase().equals(place2.toUpperCase());
     }
 
 
@@ -310,42 +277,70 @@ public class Tab2Fragment extends Fragment {
             // Current Destination was Not Favourited but Favourited during EZ Direction
             if(ezdirection_to_tab2 && !isCurrentDestinationFavourited){
                 Log.d("TAB2", "ADD CURRENT FAV Place");
-                addCurrentFavouritePlace();
+                addCurrentDestinationToFavouritePlace();
 
             }else if(!ezdirection_to_tab2 && isCurrentDestinationFavourited){
                 Log.d("TAB2", "REMOVE CURRENT FAV Place");
-                removeCurrentFavouritePlace();
+                removeCurrentDestinationToFavouritePlace();
             }
 
 
         }
     }
 
-    private void addCurrentFavouritePlace(){
-        final String Uid = mAuth.getUid();
 
+    private void addCurrentDestinationToFavouritePlace(){
+
+        // Locally
+        int index = adapter.getItemCount();
+        favouritePlaces.add(index, currentDestination);
+        adapter.notifyItemInserted(index);
+        Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
+
+
+        // Update DB
+        final String Uid = mAuth.getUid();
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(currentDestination));
                 Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + currentDestination);
-
-                rebuildFavRecyclerView();
             }
         });
 
     }
 
-    private void removeCurrentFavouritePlace(){
-        final String Uid = mAuth.getUid();
+    private int getIndex(String dest, ArrayList<String> list){
+        int index = 0;
 
+        for (String item : list){
+            if(comparePlaces(item, currentDestination)){
+
+                return index;
+            }
+            index++;
+        }
+
+        return -1;
+    }
+
+    private void removeCurrentDestinationToFavouritePlace(){
+
+        int index = getIndex(currentDestination, favouritePlaces);
+        if(index >= 0){
+            favouritePlaces.remove(index);
+            adapter.notifyItemRemoved(index);
+            Log.d("TAB2/rmD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
+        }
+
+        // Update DB
+        final String Uid = mAuth.getUid();
         db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(currentDestination));
                 Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ currentDestination);
 
-                rebuildFavRecyclerView();
             }
         });
 

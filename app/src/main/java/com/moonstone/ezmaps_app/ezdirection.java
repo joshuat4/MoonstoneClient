@@ -177,9 +177,11 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
 
         /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
-        initFusedLocationProvider(); // Initialise Fused Location Provider
+        /*initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
-        startLocationUpdatesPermission(); // Initiate Request permission to access GPS
+        startLocationUpdatesPermission(); // Initiate Request permission to access GPS*/
+
+        executeURL();
 
     }
 
@@ -200,7 +202,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 mCurrentLocation = locationResult.getLastLocation();
                 mLastUpdateTime = Calendar.getInstance().getTime().toString();
 
-                executeURL();
+
                 logUpdateLocation("EZDIRECTION/initFLP");
             }
         };
@@ -249,14 +251,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("is_requesting_updates", mRequestingLocationUpdates);
         outState.putParcelable("last_known_location", mCurrentLocation);
         outState.putString("last_updated_on", mLastUpdateTime);
 
-    }
+    }*/
 
     /**
      * Starting location updates
@@ -384,7 +386,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     /*********                  Methods Handling Activity's Life Cycle                *************/
     /* -------------------------------------------------------------------------------------------*/
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
 
@@ -396,10 +398,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         logUpdateLocation("EZDIRECTION/onResume");
 
-    }
+    }*/
 
 
-    @Override
+    /*@Override
     protected void onPause() {
         super.onPause();
 
@@ -407,7 +409,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             // pausing location updates
             stopLocationUpdates();
         }
-    }
+    }*/
 
     @Override
     public void finish() {
@@ -457,23 +459,31 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     /* Send URL with Current Location's Coordinates and Destination */
     public void executeURL(){
+
+        // Ready the URL
+        String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
+
         if(mCurrentLocation != null){
-            // Ready the URL
-            String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
             String latitudeURL = Double.toString(mCurrentLocation.getLatitude());
             String longitudeURL = Double.toString(mCurrentLocation.getLongitude());
-            String destinationURL = currentDestination.replaceAll(" ", "%20");
             Log.d("EZDIRECTION/URL", "Latitude: " + latitudeURL);
             Log.d("EZDIRECTION/URL", "Longitude: " + longitudeURL);
-            Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
 
-            String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
-            Log.d("EZDIRECTION/URL", "URL: " + url);
-
-            // Execute the URL (async)
-            new RetrieveFeed(this).execute(url);
 
         }
+
+
+        String destinationURL = currentDestination.replaceAll(" ", "%20");
+        Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=-37.799239,144.961320---"
+                + destinationURL;
+
+        //String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
+        Log.d("EZDIRECTION/URL", "URL: " + url);
+
+        // Execute the URL (async)
+        new RetrieveFeed(this).execute(url);
+
     }
 
     /* Wait to receive Object initiated by executeURL */
