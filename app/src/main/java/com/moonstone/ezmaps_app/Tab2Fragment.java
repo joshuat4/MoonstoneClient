@@ -172,33 +172,6 @@ public class Tab2Fragment extends Fragment {
             }
         });
 
-
-
-        FirebaseDatabase.getInstance().getReference()
-                .child("message").push().setValue(newMessage, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                databaseReference.child("reachedServer").setValue("reached");
-            }
-        });
-
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            if (dataSnapshot.getValue() != null) {
-
-                if (newMessage != null) {
-                    for (int i = 0; i < myArrayList().size(); i++) {
-                        if (myArrayList().get(i).timestamp == newMessage.timestamp) {
-                            myArrayList().remove(i);
-                            myArrayList().add(i, newMessage);
-                            break;
-                        }
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }
-
-
     }
 
 
@@ -297,19 +270,18 @@ public class Tab2Fragment extends Fragment {
 
             Log.d("TAB2", "PASSED ITEM RECEIVED: " + ezdirection_to_tab2);
 
-            // If it's favourited at Tab2 and favourited at EZdirection, there's no need to refresh favRecyclerView
-            if(ezdirection_to_tab2 != isCurrentDestinationFavourited){
-                // Depending on whether it's favourited or not
-                if(ezdirection_to_tab2){
-                    addCurrentFavouritePlace();
+            // Current Destination was Not Favourited but Favourited during EZ Direction
+            if(ezdirection_to_tab2 && !isCurrentDestinationFavourited){
+                Log.d("TAB2", "ADD CURRENT FAV Place");
+                addCurrentFavouritePlace();
 
-                }else{
-                    removeCurrentFavouritePlace();
-                }
-
-                adapter.filterOut(currentDestination);
-
+            }else if(!ezdirection_to_tab2 && isCurrentDestinationFavourited){
+                Log.d("TAB2", "REMOVE CURRENT FAV Place");
+                removeCurrentFavouritePlace();
             }
+
+
+            //adapter.filterOut(currentDestination);
 
         }
     }
