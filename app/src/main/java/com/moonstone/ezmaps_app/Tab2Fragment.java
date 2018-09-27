@@ -79,7 +79,6 @@ public class Tab2Fragment extends Fragment {
             // Get Favourite Places from Firestore
             loadFavouritePlaces(view);
 
-
             Picasso.get()
                     .load("https://source.unsplash.com/collection/1980117/1600x900")
                     .into(image);
@@ -135,17 +134,17 @@ public class Tab2Fragment extends Fragment {
                 }
             });
 
+
+
         source.clearFocus();
 
         return view;
     }
 
 
-
     public void loadFavouritePlaces(final View view){
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
-
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -153,16 +152,16 @@ public class Tab2Fragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-
+                        // Get Favourite Places from DB
                         favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
+                        Log.d("TAB2", "Favourite places received: " + favouritePlaces);
 
                         // If Fav Places is not Empty, open up a recycler list of fav places
                         if(!favouritePlaces.isEmpty()){
+                            Log.d("TAB2", "FAVOURITE PLACE NOT EMPTY, LOAD Recycler View");
                             initFavRecyclerView(view, favouritePlaces);
                         }
 
-
-                        Log.d("TAB2", "DocumentSnapshot data: " + document.getData());
                     } else {
                         Log.d("TAB2", "No such document");
                     }
@@ -176,7 +175,6 @@ public class Tab2Fragment extends Fragment {
 
 
     public void initFavRecyclerView(View view, ArrayList<String> favouritePlaces){
-
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         favRecyclerView = view.findViewById(R.id.favRecyclerView);
 
@@ -208,8 +206,45 @@ public class Tab2Fragment extends Fragment {
             }
         });
 
+    }
+
+    public void rebuildFavRecyclerView(){
+
+        // Clear old list
+        favouritePlaces.clear();
+
+        final String Uid = mAuth.getUid();
+        final DocumentReference docRef = db.collection("users").document(Uid);
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+                        // Get Favourite Places from DB
+                        favouritePlaces = (ArrayList<String>) document.get("favouritePlaces");
+
+                        // notify adapter
+                        adapter.notifyDataSetChanged();
+                        Log.d("TAB2", "Favourite places received: " + favouritePlaces);
+
+
+                    } else {
+                        Log.d("TAB2", "No such document");
+                    }
+                } else {
+                    Log.d("TAB2", "get failed with ", task.getException());
+                }
+            }
+        });
 
     }
+
+
+
+
 
     private int REQUEST_CODE = 1;
     private static final int RESULT_OK = -1;
@@ -294,6 +329,8 @@ public class Tab2Fragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(currentDestination));
                 Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + currentDestination);
+
+                rebuildFavRecyclerView();
             }
         });
 
@@ -308,7 +345,7 @@ public class Tab2Fragment extends Fragment {
                 db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(currentDestination));
                 Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ currentDestination);
 
-
+                rebuildFavRecyclerView();
             }
         });
 

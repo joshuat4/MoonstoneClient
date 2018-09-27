@@ -1,14 +1,18 @@
 package com.moonstone.ezmaps_app;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.DateFormat;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -32,9 +36,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -50,43 +62,68 @@ import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
 public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener, LocationListener {
-    private ArrayList<String> imageUrlsList;
-    private ArrayList<String> textDirectionsList;
 
-    private View recyclerView;
+    /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
+    private String mLastUpdateTime; // Last Update Time
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000; // location updates interval (10s)
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // location fastest updates interval (5s)
+    private static final int REQUEST_CHECK_SETTINGS = 100;
 
-    private Toolbar toolbar;
-    private ActionBar actionbar;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private SettingsClient mSettingsClient;
+    private LocationRequest mLocationRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private LocationCallback mLocationCallback;
+    private Location mCurrentLocation;
 
-    private int counter = 0;
-    private int numView;
-    private RecyclerViewAdapter adapter;
-    private LinearLayoutManager layoutManager;
-
-    private ImageButton leftButton;
-    private ImageButton rightButton;
-
-    private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
+    private Boolean mRequestingLocationUpdates; // requesting location flag
 
     private LocationManager locationManager;
     private double latitude, longitude;
 
 
-    /* THE ONE USING RIGHTNOW */
+    /* Main Activity attributes */
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+    private ImageButton leftButton;
+    private ImageButton rightButton;
 
-    private Map<String, Object> tab2_to_ezdirection;
+
+    /* Recycler View Attributes */
+    private ArrayList<String> imageUrlsList;
+    private ArrayList<String> textDirectionsList;
+    private View recyclerView;
+    private RecyclerViewAdapter adapter;
+    private LinearLayoutManager layoutManager;
+
+    /* Utilities */
+    private int counter = 0;
+    private int numView;
+    private Map<String, Object> tab2_to_ezdirection; // Object received from Tab 2
     private boolean isCurrentDestinationFavourited;
-    private String currentDestination;
+    private String currentDestination; // Name of the current destination
+
+    /* Firebase Firestore */
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /* Set up the activity's layout */
         setContentView(R.layout.activity_ezdirection);
-
         recyclerView = findViewById(R.id.recyclerView);
-
         toolbar = findViewById(R.id.my_toolbar);
+        leftButton = findViewById(R.id.leftButton);
+        rightButton = findViewById(R.id.rightButton);
+
+        /* Listen on for Left and Right clicks */
+        leftButton.setOnClickListener(this);
+        rightButton.setOnClickListener(this);
+
+        /* Set Up Action Bar */
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
         actionbar.setTitle("EZMap");
@@ -97,50 +134,51 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
         });
 
-        leftButton = findViewById(R.id.leftButton);
-        rightButton = findViewById(R.id.rightButton);
-
-        leftButton.setOnClickListener(this);
-        rightButton.setOnClickListener(this);
-
+        /* Set up Firebase Firestore */
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView((RecyclerView) recyclerView);
-
-        //Get tab2_to_ezdirection item and resolve
+        /* Retrieve Object from Tab 2 */
         Intent intent = getIntent();
         tab2_to_ezdirection = (HashMap<String, Object>) intent.getSerializableExtra("tab2_to_ezdirection");
         isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
         currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
-
         Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
 
+        /* Attach Snapper to Recycler View */
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView((RecyclerView) recyclerView);
 
-        // Using GPS to get current coordinates
+
+        /* Getting Current Locations's GPS Coordinates */
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            Log.d("EZDIRECTION", "PERMISSION TO ACCESS LOCATION SERVICE CHECKED");
 
             return;
         }
         Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         onLocationChanged(location);
+        Log.d("EZDIRECTION", "Location Object: " + location.toString());
 
-        // Prepare URL from current coordinates and currentDestination
+
+        /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
+        initFusedLocationProvider(); // Initialise Fused Location Provider
+        restoreValuesFromBundle(savedInstanceState); // restore the values from saved instance state
+
+
+
+        // Prepare URL for initiating contact with Server */
         String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
         url += Double.toString(latitude) + "," + Double.toString(longitude) +  "---" + currentDestination.replaceAll(" ", "%20");
         Log.d("EZDIRECTION", "URL: " + url);
-
-
-        //execute async task
-        new RetrieveFeed(this).execute(url);
+        new RetrieveFeed(this).execute(url); //execute async task
 
     }
 
 
-
+    /* Handle activity after it has been closed */
     @Override
     public void finish() {
         Log.d("EZDIRECTION", "FINISH IS CALLED");
@@ -153,6 +191,15 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         super.finish();
     }
 
+    /* Checking when Card Image has been Swiped */
+    private void updateCounter(int newState){
+        if(newState != -1){
+            counter = newState;
+        }
+        invalidateOptionsMenu();
+    }
+
+    /* Handling Right and Left Card Swipe */
     @Override
     public void onClick(View view){
         switch(view.getId()){
@@ -180,8 +227,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }
 
-
-
+    /* Receive JSON Object from Server for Card Images and Texts */
     @Override
     public void processFinish(JSONArray output){
         //Here you will receive the result fired from async class
@@ -210,17 +256,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }
 
+
+    /* Main Activity Layout handling Top toolbar */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_ezmap, menu);
         return true;
-    }
-
-    private void updateCounter(int newState){
-        if(newState != -1){
-            counter = newState;
-        }
-        invalidateOptionsMenu();
     }
 
     @Override
@@ -267,7 +308,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     }
 
 
-
+    /* Handling Recycler View */
     private void initRecyclerView() {
         final String TAG = "initRecyclerView";
         Log.d(TAG, "initRecyclerView: init recyclerview");
@@ -302,8 +343,151 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
         });
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Log.e("EZDIRECTION", "User agreed to make required location settings changes.");
+                        // Nothing to do. startLocationupdates() gets called in onResume again.
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Log.e("EZDIRECTION", "User chose not to make required location settings changes.");
+                        mRequestingLocationUpdates = false;
+                        break;
+                }
+                break;
+        }
+    }
+
+
+    /* Handling instanced of Activity's Life Cycle */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mRequestingLocationUpdates) {
+            // pausing location updates
+            stopLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Resuming location updates depending on button state and
+        // allowed permissions
+        if (mRequestingLocationUpdates && checkPermissions()) {
+            startLocationUpdates();
+        }
+
+        updateLocationUI();
+    }
+
+
+    /* Helper Functions for Accessing User's GPS Coordinates */
+    private void openSettings() {
+        Intent intent = new Intent();
+        intent.setAction(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package",
+                BuildConfig.APPLICATION_ID, null);
+        intent.setData(uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    /* To Stop Current Location Updates */
+    public void stopLocationUpdates() {
+        // Removing location updates
+        mFusedLocationClient
+                .removeLocationUpdates(mLocationCallback)
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
+                        toggleButtons();
+                    }
+                });
+    }
+
+
+    public void showLastKnownLocation() {
+        if (mCurrentLocation != null) {
+            Toast.makeText(getApplicationContext(), "Lat: " + mCurrentLocation.getLatitude()
+                    + ", Lng: " + mCurrentLocation.getLongitude(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Last known location is not available!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /* Handling Location Service */
+    public void initFusedLocationProvider(){
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                // location is received
+                mCurrentLocation = locationResult.getLastLocation();
+                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+
+                updateLocationUI();
+            }
+        };
+
+        mRequestingLocationUpdates = false;
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+
 
     }
+
+
+    /* Restore from any saved instance */
+    private void restoreValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("is_requesting_updates")) {
+                mRequestingLocationUpdates = savedInstanceState.getBoolean("is_requesting_updates");
+            }
+
+            if (savedInstanceState.containsKey("last_known_location")) {
+                mCurrentLocation = savedInstanceState.getParcelable("last_known_location");
+            }
+
+            if (savedInstanceState.containsKey("last_updated_on")) {
+                mLastUpdateTime = savedInstanceState.getString("last_updated_on");
+            }
+        }
+
+        updateLocationUI();
+    }
+
+
+
 
 
     @Override
