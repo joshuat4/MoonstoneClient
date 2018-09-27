@@ -183,8 +183,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
         startLocationUpdatesPermission(); // Initiate Request permission to access GPS
 
-        executeURL();
-
     }
 
 
@@ -280,7 +278,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                                 mLocationCallback, Looper.myLooper());
 
+                        executeURL();
+
                         logUpdateLocation("EZDIRECTION/LocUpSuccess");
+
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -391,12 +392,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     @Override
     public void onResume() {
         super.onResume();
+        logUpdateLocation("EZDIRECTION/onResume");
 
         // Resuming location updates depending on button state and allowed permissions
         if (mRequestingLocationUpdates && checkPermissions()) {
             startLocationUpdates();
+
         }
-        logUpdateLocation("EZDIRECTION/onResume");
+
     }
 
 
@@ -431,6 +434,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         Log.e("EZDIRECTION/Result", "User agreed to make required location settings changes.");
+
                         // Nothing to do. startLocationupdates() gets called in onResume again.
                         break;
                     case Activity.RESULT_CANCELED:
