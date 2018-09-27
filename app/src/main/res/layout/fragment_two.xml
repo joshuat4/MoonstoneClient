@@ -33,19 +33,21 @@
             android:orientation="vertical"
             android:layout_centerVertical="true">
 
+
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:fontFamily="@font/sf_movie_poster_bold"
+                android:fontFamily="@font/rusted_orlando_sans"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:text="Search Me"
-                android:textSize="100sp"
+                android:text="Search A Place"
+                android:textSize="45sp"
                 android:textColor="@color/colorForeground"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
