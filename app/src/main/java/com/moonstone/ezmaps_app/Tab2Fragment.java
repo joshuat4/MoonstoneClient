@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tab2Fragment extends Fragment {
+public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickListener {
 
     private ImageButton button;
     private EditText source;
@@ -123,7 +123,7 @@ public class Tab2Fragment extends Fragment {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                        startEZMap();
+                        startEZMap(currentDestination);
 
                         return true;
                     }
@@ -136,7 +136,7 @@ public class Tab2Fragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
-                    startEZMap();
+                    startEZMap(currentDestination);
                 }
             });
 
@@ -144,6 +144,18 @@ public class Tab2Fragment extends Fragment {
 
         return view;
     }
+
+
+    @Override
+    public void onImageClick(String destination) {
+        startEZMap(destination);
+
+    }
+
+    interface OnImageClickListener {
+        void onItemClick(String order);
+    }
+
 
 
     public void loadFavouritePlaces(final View view){
@@ -219,16 +231,16 @@ public class Tab2Fragment extends Fragment {
 
     }
 
-    public void startEZMap(){
+    public void startEZMap(String destination){
 
         HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
 
         // Get the current destination typed into the search field
-        currentDestination = source.getText().toString().trim();
-        tab2_to_ezdirection.put("currentDestination", currentDestination);
+        destination = source.getText().toString().trim();
+        tab2_to_ezdirection.put("currentDestination", destination);
 
         // Check if the current destination is favourited
-        if(isCurrentDestinationFavourited(currentDestination)){
+        if(isCurrentDestinationFavourited(destination)){
 
             tab2_to_ezdirection.put("isCurrentDestinationFavourited", true);
 

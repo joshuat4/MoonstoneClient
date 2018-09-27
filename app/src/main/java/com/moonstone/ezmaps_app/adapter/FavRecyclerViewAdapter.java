@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,9 +23,12 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
     private List<String> favouriteList;
     private Context mContext;
 
-    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext) {
+    private OnImageClickListener onImageClickListener;
+
+    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext, OnImageClickListener onImageClickListener) {
         this.favouriteList = favouriteList;
         this.mContext = mContext;
+        this.onImageClickListener = onImageClickListener;
     }
 
     @NonNull
@@ -53,6 +57,12 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
         viewHolder.title.setText(cleanUpName(favouriteList.get(i)));
 
+        viewHolder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onImageClickListener.onImageClick(cleanUpName(favouriteList.get(i)));
+            }
+        });
 
     }
 
@@ -72,12 +82,16 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
         }
     }
 
+
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         TextView title;
+        private final Context context;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            context = itemView.getContext();
             image = itemView.findViewById(R.id.favImage);
             title = itemView.findViewById(R.id.favTitle);
 
@@ -88,6 +102,8 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
         @Override
         public void onClick(View v){
+
+            final Intent intent;
 
             Toast.makeText(mContext, "LAYOUT POSITION: " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
 
