@@ -3,7 +3,6 @@ package com.moonstone.ezmaps_app;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,29 +19,28 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
 
+//the activity wherein instant messaging takes place
 public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
     private MessageRecyclerViewAdapter adapter;
+    //facilitates updating the recycler view without reinitialising it
     private boolean notFirstTime = false;
 
     private EditText textField;
@@ -50,32 +48,20 @@ public class Chat extends AppCompatActivity {
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
-    private static final String TEST_CHILD = "testing";
 
     private static String toUserID;
     private static String fromUserID;
     private String userName;
     private Timestamp currentTime;
 
-    private ArrayList<String> text = new ArrayList<>();
-    private ArrayList<String> from = new ArrayList<>();
-    private ArrayList<String> to = new ArrayList<>();
-    private ArrayList<String> time = new ArrayList<>();
+    //where the text messages will be stored
     private ArrayList<EzMessage> ezMessagesArray = new ArrayList<>();
-
-    public String getFromUserID() {
-        return fromUserID;
-    }
 
     public static void setFromUserID(String s) {
         fromUserID = s;
     }
 
     Handler handler = new Handler();
-
-    public String getToUserID() {
-        return toUserID;
-    }
 
     public static void setToUserID(String s) {
         toUserID = s;
@@ -114,6 +100,7 @@ public class Chat extends AppCompatActivity {
             }
         });
 
+        //instantiate and update the chat
         handler.post(updateView);
 
 
@@ -145,7 +132,6 @@ public class Chat extends AppCompatActivity {
     //Sets up the recycler view
     private void initRecyclerView(){
         RecyclerView recyclerView =  findViewById(R.id.messageRecyclerView);
-        Log.d("HERE", text.toString());
         adapter = new MessageRecyclerViewAdapter(this, ezMessagesArray);
         recyclerView.setAdapter(adapter) ;
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -168,6 +154,7 @@ public class Chat extends AppCompatActivity {
         //other stuff
     }
 
+    //allow the loading process to be run periodically
     private final Runnable updateView = new Runnable(){
         public void run(){
             try {
@@ -180,11 +167,13 @@ public class Chat extends AppCompatActivity {
         }
     };
 
+    //where data is fetched from the firestore, and fed into the recyclerview
     private void loadDataFromFirebase() {
         Log.d("HERE", "just in ldff");
         messagesLoading.setVisibility(View.VISIBLE);
         final String Uid = mAuth.getUid();
 
+        //get all the messages for the currrently selected contact
         db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -196,6 +185,7 @@ public class Chat extends AppCompatActivity {
                         }
 
                         int newDocs = 0;
+                        //get any messages not already loaded
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
@@ -212,6 +202,7 @@ public class Chat extends AppCompatActivity {
                                     break;
                             }
                         }
+                        //sot and display the messages if there are any
                         if(newDocs>0){
                            ezMessagesArray.sort(new EzMessagesComparator());
                            if(notFirstTime){

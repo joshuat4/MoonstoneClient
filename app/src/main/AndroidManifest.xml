@@ -37,15 +37,6 @@
         <activity android:name=".UserLogin" />
         <activity android:name=".NewContactSearch" />
         <activity
-            android:name=".UserSignUp">
-        </activity>
-
-        <activity android:name=".UserLogin">
-        </activity>
-
-        <activity android:name=".NewContactSearch">
-        </activity>
-        <activity
             android:name=".EditProfile"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme"
