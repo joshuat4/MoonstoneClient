@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -138,7 +139,7 @@ public class Tab2Fragment extends Fragment {
                     startEZMap();
                 }
             });
-            
+
         source.clearFocus();
 
         return view;
@@ -181,7 +182,11 @@ public class Tab2Fragment extends Fragment {
 
 
     public void initFavRecyclerView(View view, ArrayList<String> favouritePlaces){
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        layoutManager = new GridLayoutManager(getActivity(), 2);
+
+
+        //layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         favRecyclerView = view.findViewById(R.id.favRecyclerView);
 
         SnapHelper helper = new LinearSnapHelper();

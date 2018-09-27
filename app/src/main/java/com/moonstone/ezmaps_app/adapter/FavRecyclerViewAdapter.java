@@ -52,14 +52,7 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
 
         viewHolder.title.setText(cleanUpName(favouriteList.get(i)));
-        viewHolder.image.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Toast.makeText(mContext, favouriteList.get(i), Toast.LENGTH_SHORT).show();
 
-
-            }
-        });
 
     }
 
@@ -79,7 +72,7 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         TextView title;
 
@@ -87,6 +80,17 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
             super(itemView);
             image = itemView.findViewById(R.id.favImage);
             title = itemView.findViewById(R.id.favTitle);
+
+            itemView.setClickable(true);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v){
+
+            Toast.makeText(mContext, "LAYOUT POSITION: " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+
         }
     }
 }

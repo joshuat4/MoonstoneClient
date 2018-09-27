@@ -95,11 +95,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private Boolean mRequestingLocationUpdates; // requesting location flag
 
-    /* OLD */
     private LocationManager locationManager;
     private double latitude, longitude;
-
-
 
     /* Main Activity attributes */
     private Toolbar toolbar;
@@ -161,8 +158,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
 
-        /* Getting Current Locations's GPS Coordinates *//*
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        /* Getting Current Locations's GPS Coordinates */
+        /*locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             Log.d("EZDIRECTION", "PERMISSION TO ACCESS LOCATION SERVICE CHECKED");
@@ -171,8 +168,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
         Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         onLocationChanged(location);
-        Log.d("EZDIRECTION", "Location Object: " + location.toString());
-*/
+        Log.d("EZDIRECTION", "Location Object: " + location.toString());*/
 
 
 
