@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -137,9 +138,7 @@ public class Tab2Fragment extends Fragment {
                     startEZMap();
                 }
             });
-
-
-
+            
         source.clearFocus();
 
         return view;
@@ -288,7 +287,6 @@ public class Tab2Fragment extends Fragment {
         }
     }
 
-
     private void addCurrentDestinationToFavouritePlace(){
 
         // Locally
@@ -297,18 +295,25 @@ public class Tab2Fragment extends Fragment {
         adapter.notifyItemInserted(index);
         Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
 
-
-        // Update DB
-        final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayUnion(currentDestination));
-                Log.d("EZDIRECTION", "SUCCESSFULLY ADDED FAVOURITE PLACES: " + currentDestination);
-            }
-        });
+        updateFavouritePlacesToDB(favouritePlaces);
 
     }
+
+    private void removeCurrentDestinationToFavouritePlace(){
+
+        int index = getIndex(currentDestination, favouritePlaces);
+        if(index >= 0){
+            favouritePlaces.remove(index);
+            adapter.notifyItemRemoved(index);
+            Log.d("TAB2/rmD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
+
+            updateFavouritePlacesToDB(favouritePlaces);
+        }
+
+    }
+
+
+
 
     private int getIndex(String dest, ArrayList<String> list){
         int index = 0;
@@ -324,27 +329,32 @@ public class Tab2Fragment extends Fragment {
         return -1;
     }
 
-    private void removeCurrentDestinationToFavouritePlace(){
 
-        int index = getIndex(currentDestination, favouritePlaces);
-        if(index >= 0){
-            favouritePlaces.remove(index);
-            adapter.notifyItemRemoved(index);
-            Log.d("TAB2/rmD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
-        }
-
-        // Update DB
+    private void updateFavouritePlacesToDB(ArrayList<String> list){
         final String Uid = mAuth.getUid();
-        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                db.collection("users").document(Uid).update("favouritePlaces", FieldValue.arrayRemove(currentDestination));
-                Log.d("EZDIRECTION", "SUCCESSFULLY REMOVED FAVOURITE PLACES: "+ currentDestination);
+        DocumentReference docRef = db.collection("users").document(Uid);
+        docRef
+                .update("favouritePlaces", list)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
-            }
-        });
+
+
+                        Log.d("TAB2/updateDB", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAB2/updateDB", "Error updating document", e);
+                    }
+                });
 
     }
+
+
+
 
 
 
