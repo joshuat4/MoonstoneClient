@@ -95,8 +95,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private Boolean mRequestingLocationUpdates; // requesting location flag
 
-
-
     /* OLD */
     private LocationManager locationManager;
     private double latitude, longitude;
@@ -202,6 +200,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 mCurrentLocation = locationResult.getLastLocation();
                 mLastUpdateTime = Calendar.getInstance().getTime().toString();
 
+                executeURL();
                 logUpdateLocation("EZDIRECTION/initFLP");
             }
         };
@@ -236,6 +235,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
         }
 
+        logUpdateLocation("EZDIRECTION/restore");
     }
 
 
@@ -277,8 +277,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                         //noinspection MissingPermission
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                                 mLocationCallback, Looper.myLooper());
-
-                        executeURL();
 
                         logUpdateLocation("EZDIRECTION/LocUpSuccess");
 
@@ -384,21 +382,19 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
 
 
-
-
-
     /*********                  Methods Handling Activity's Life Cycle                *************/
     /* -------------------------------------------------------------------------------------------*/
     @Override
     public void onResume() {
         super.onResume();
-        logUpdateLocation("EZDIRECTION/onResume");
 
         // Resuming location updates depending on button state and allowed permissions
         if (mRequestingLocationUpdates && checkPermissions()) {
             startLocationUpdates();
 
         }
+
+        logUpdateLocation("EZDIRECTION/onResume");
 
     }
 
@@ -435,11 +431,19 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                     case Activity.RESULT_OK:
                         Log.e("EZDIRECTION/Result", "User agreed to make required location settings changes.");
 
+
+                        // AFTER GETTING PERMISSION
+                        this.recreate();
+
                         // Nothing to do. startLocationupdates() gets called in onResume again.
                         break;
                     case Activity.RESULT_CANCELED:
                         Log.e("EZDIRECTION/Result", "User chose not to make required location settings changes.");
                         mRequestingLocationUpdates = false;
+
+                        // AFTER NOT GETTING PERMISSION
+                        this.finish();
+
                         break;
                 }
                 break;
@@ -453,21 +457,23 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     /* Send URL with Current Location's Coordinates and Destination */
     public void executeURL(){
+        if(mCurrentLocation != null){
+            // Ready the URL
+            String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
+            String latitudeURL = Double.toString(mCurrentLocation.getLatitude());
+            String longitudeURL = Double.toString(mCurrentLocation.getLongitude());
+            String destinationURL = currentDestination.replaceAll(" ", "%20");
+            Log.d("EZDIRECTION/URL", "Latitude: " + latitudeURL);
+            Log.d("EZDIRECTION/URL", "Longitude: " + longitudeURL);
+            Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
 
-        // Ready the URL
-        String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
-        String latitudeURL = Double.toString(latitude);
-        String longitudeURL = Double.toString(longitude);
-        String destinationURL = currentDestination.replaceAll(" ", "%20");
-        Log.d("EZDIRECTION/URL", "Latitude: " + latitudeURL);
-        Log.d("EZDIRECTION/URL", "Longitude: " + longitudeURL);
-        Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
+            String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
+            Log.d("EZDIRECTION/URL", "URL: " + url);
 
-        String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
-        Log.d("EZDIRECTION/URL", "URL: " + url);
+            // Execute the URL (async)
+            new RetrieveFeed(this).execute(url);
 
-        // Execute the URL (async)
-        new RetrieveFeed(this).execute(url);
+        }
     }
 
     /* Wait to receive Object initiated by executeURL */
@@ -531,7 +537,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 super.onScrolled(recyclerView, dx, dy);
 
                 Log.d("EZDIRECTION/Recycler", "LAST ITEM: " +
-                        layoutManager.findLastCompletelyVisibleItemPosition());
+                    layoutManager.findLastCompletelyVisibleItemPosition());
 
             }
         });
