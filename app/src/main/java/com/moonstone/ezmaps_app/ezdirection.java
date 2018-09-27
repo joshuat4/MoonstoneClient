@@ -1,8 +1,15 @@
 package com.moonstone.ezmaps_app;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +34,7 @@ import java.util.ArrayList;
 import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
-public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener{
+public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener, LocationListener {
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
 
@@ -44,6 +51,9 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private ImageButton leftButton;
     private ImageButton rightButton;
+
+    private LocationManager locationManager;
+    private double latitude, longitude;
 
 
     /* THE ONE USING RIGHTNOW */
@@ -83,7 +93,20 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         destination = destination.replaceAll(" ", "%20");
         System.out.println("XX" + destination);
 
-        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145%20Queensberry%20Street,%20Carlton%20VIC---" + destination;
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+
+        onLocationChanged(location);
+
+
+        url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=" + Double.toString(latitude) + "," + Double.toString(longitude) +  "---" + destination;
 
         //execute async task
         new RetrieveFeed(this).execute(url);
@@ -243,4 +266,24 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
