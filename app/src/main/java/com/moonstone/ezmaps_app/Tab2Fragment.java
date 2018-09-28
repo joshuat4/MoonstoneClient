@@ -121,15 +121,14 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
             });
 
-            source.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                        // Get the current destination typed into the search field
-                        currentDestination = source.getText().toString().trim();
-                        startEZMap(currentDestination);
-
-                        return true;
+            source.setOnKeyListener(new View.OnKeyListener() {
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                            currentDestination = source.getText().toString().trim();
+                            startEZMap(currentDestination);
+                            return true;
+                        }
                     }
                     return false;
                 }
