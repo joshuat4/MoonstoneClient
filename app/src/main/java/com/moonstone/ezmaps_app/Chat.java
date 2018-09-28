@@ -98,7 +98,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                overridePendingTransition(R.anim.exit, R.anim.enter);
+
             }
         });
 
@@ -127,6 +127,8 @@ public class Chat extends AppCompatActivity {
             }
         });
     }
+
+
 
     //Sets up the recycler view
     private void initRecyclerView(){

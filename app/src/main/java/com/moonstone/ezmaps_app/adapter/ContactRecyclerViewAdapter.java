@@ -179,7 +179,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails, Activity mActivity){
+    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
         Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;
@@ -236,7 +236,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 Intent i = new Intent(mContext, Chat.class);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
-                mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
 
             }
         });
