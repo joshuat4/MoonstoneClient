@@ -1,6 +1,9 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -71,6 +74,7 @@ public class NewContactSearch extends AppCompatActivity{
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(Activity.RESULT_OK);
                 finish();
             }
         });
@@ -136,6 +140,8 @@ public class NewContactSearch extends AppCompatActivity{
         filterSearch.setSelected(true);
 
     }
+
+
 
 
     private boolean compareContacts(String text, String against){

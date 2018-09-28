@@ -244,9 +244,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         viewHolder.email = emails.get(i);
 
         //last one
-        if(i == contactNames.size() - 1){
+        /*if(i == contactNames.size() - 1){
             Tab3Fragment.contactsLoading.setVisibility(View.GONE);
-        }
+        }*/
     }
 
 

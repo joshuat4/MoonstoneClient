@@ -86,6 +86,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         //Add/remove contact handling code
         if(contacts.contains(viewHolder.id)){
             changeToRemoveButton(butt);
+        }else{
+            changeToAddButton(butt);
         }
 
         butt.setOnClickListener(new View.OnClickListener() {

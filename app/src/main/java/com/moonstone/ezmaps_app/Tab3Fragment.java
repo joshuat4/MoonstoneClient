@@ -2,6 +2,7 @@ package com.moonstone.ezmaps_app;
 
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class Tab3Fragment extends Fragment {
 
     private EditText contactFilter;
     private Button newContactButton;
-    public static ProgressBar contactsLoading;
+    public ProgressBar contactsLoading;
     private ImageButton clearButton;
 
     //Arrays needed for recyclerView
@@ -55,6 +56,7 @@ public class Tab3Fragment extends Fragment {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
@@ -115,6 +117,7 @@ public class Tab3Fragment extends Fragment {
         return fragmentLayout;
     }
 
+
     private void loadContactsFromDB(){
 
         final String Uid = mAuth.getUid();
@@ -132,45 +135,49 @@ public class Tab3Fragment extends Fragment {
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("TAB3", "Current data: " + snapshot.getData());
 
-                    contactsLoading.setVisibility(View.VISIBLE);
+                    names.clear();
+                    emails.clear();
+                    ids.clear();
+                    profilePics.clear();
 
-                    // If there are updates, initialise recycler view of contacts
                     try{
-
-                        names.clear();
-                        emails.clear();
-                        ids.clear();
-                        profilePics.clear();
-
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
-                        for (String contact : contacts){
-                            db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        Log.d("TAB3", "CONTACTS: " + contacts);
 
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(!contacts.isEmpty()){
+                            for (String contact : contacts){
+                                db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                    profilePics.add(documentSnapshot.get("profilePic").toString());
-                                    emails.add(documentSnapshot.get("email").toString());
-                                    names.add(documentSnapshot.get("name").toString());
-                                    ids.add(documentSnapshot.getId());
+                                        profilePics.add(documentSnapshot.get("profilePic").toString());
+                                        emails.add(documentSnapshot.get("email").toString());
+                                        names.add(documentSnapshot.get("name").toString());
+                                        ids.add(documentSnapshot.getId());
 
-                                    if(names.size() == contacts.size()){
-                                        initRecyclerView();
+                                        if(names.size() == contacts.size()){
+                                            Log.d("TAB3", "second list num: " + names.size());
+                                            Log.d("TAB3", "contacts size: " + contacts.size());
+                                            Log.d("TAB3", "contacts available: init recycler view: ");
+                                            initRecyclerView();
+                                            contactsAvailable = true;
+
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+
+                        }else{
+                            contactsAvailable = false;
+                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                            initRecyclerView();
                         }
-
-                        contactsAvailable = true;
-
 
                     } catch (NullPointerException n){
                         contactsAvailable = false;
 
                     }
-
-                    contactsLoading.setVisibility(View.GONE);
 
                 } else {
                     Log.d("TAB3", "Current data: null");
@@ -191,6 +198,9 @@ public class Tab3Fragment extends Fragment {
         adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        contactFilter.setSelected(false);
+        contactsLoading.setVisibility(View.GONE);
     }
 
     private void filter(String text){
@@ -222,7 +232,8 @@ public class Tab3Fragment extends Fragment {
     }
 
     private void newContact(){
-        startActivity(new Intent(getActivity(), NewContactSearch.class));
+        Intent intent = new Intent(getActivity(), NewContactSearch.class);
+        startActivityForResult(intent, 3);
     }
 
     @Override
@@ -235,6 +246,16 @@ public class Tab3Fragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((requestCode == 3) && (resultCode == Activity.RESULT_OK)){
+            android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(this).attach(this).commit();
+
+        }
     }
 
 
