@@ -178,7 +178,7 @@ public class Tab3Fragment extends Fragment {
 
         Log.d("HERE", names.toString());
 
-        adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
+        adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails, getActivity());
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

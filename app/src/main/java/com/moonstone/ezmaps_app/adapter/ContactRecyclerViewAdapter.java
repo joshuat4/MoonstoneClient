@@ -151,6 +151,7 @@
 package com.moonstone.ezmaps_app;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -172,18 +173,20 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> contactNames = new ArrayList<>();
     private ArrayList<String> profilePics = new ArrayList<>();
     private Context mContext;
+    private Activity mActivity;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
+    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails, Activity mActivity){
         Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
         this.ids = ids;
         this.emails = emails;
+        this.mActivity = mActivity;
     }
 
     //Actually recycles the view holders
@@ -233,6 +236,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 Intent i = new Intent(mContext, Chat.class);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
+                mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
 
             }
         });

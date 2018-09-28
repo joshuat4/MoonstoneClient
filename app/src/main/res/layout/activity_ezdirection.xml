@@ -23,6 +23,13 @@
         app:navigationIcon="?android:attr/homeAsUpIndicator"
         app:navigationContentDescription="Navigation button description"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:progressBarStyle"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <!-- When things are not found -->
     <ImageView
         android:layout_width="180dp"

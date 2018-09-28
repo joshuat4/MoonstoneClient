@@ -62,8 +62,6 @@ public class Chat extends AppCompatActivity {
         fromUserID = s;
     }
 
-
-
     public String getToUserID() {
         return toUserID;
     }
@@ -100,6 +98,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.exit, R.anim.enter);
             }
         });
 

@@ -40,7 +40,6 @@ public class CameraUpload extends Upload {
                 startActivityForResult(pickImageIntent, CAMERA_REQUEST_CODE);
         }
 
-
         Log.d("CAMERAUPLOAD", "RES CODE " + resultCode + "/ " + RESULT_OK);
         Log.d("CAMERAUPLOAD", "REQ CODE  " + requestCode + "/ " + CAMERA_REQUEST_CODE);
         Log.d("CAMERAUPLOAD", "DATA " + data);

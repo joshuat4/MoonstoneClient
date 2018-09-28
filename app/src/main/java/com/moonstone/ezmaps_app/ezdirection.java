@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,6 +117,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private TextView notFoundText;
     private TextView notFoundSubtext;
     private ImageView notFoundImg;
+    private ProgressBar progressBar;
+    private int progressStatus = 0;
     private boolean isCardLoaded = false;
 
 
@@ -136,6 +140,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         toolbar = findViewById(R.id.my_toolbar);
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+        progressBar = findViewById(R.id.progressBar);
 
         notFoundText = findViewById(R.id.notFoundText);
         notFoundSubtext = findViewById(R.id.notFoundSubtext);
@@ -497,13 +502,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     }
 
-
-
     /* Wait to receive Object initiated by executeURL */
     @Override
     public void processFinish(JSONArray output){
         //Here you will receive the result fired from async class
         //of onPostExecute(result) method.;
+
         if (output != null) {
             imageUrlsList = new ArrayList<>();
             textDirectionsList = new ArrayList<>();
@@ -520,11 +524,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
             initRecyclerView();
             isCardLoaded = true;
+            progressBar.setVisibility(View.GONE);
             setLeftRightButtonVisibility("VISIBILE");
             invalidateOptionsMenu();
-        }else{
 
+        }else{
             isCardLoaded = false;
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             setNotFoundVisibility("VISIBLE");
             setLeftRightButtonVisibility("GONE");
         }
@@ -683,20 +690,22 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
 
-        if(id == R.id.favouriteFull){
-            isCurrentDestinationFavourited = false;
-            invalidateOptionsMenu();
-            return true;
-        }
+        if(isCardLoaded){
+            if(id == R.id.favouriteFull){
+                isCurrentDestinationFavourited = false;
+                invalidateOptionsMenu();
+                return true;
+            }
 
-        if(id == R.id.favouriteEmpty){
-            isCurrentDestinationFavourited = true;
-            invalidateOptionsMenu();
-            return true;
-        }
+            if(id == R.id.favouriteEmpty){
+                isCurrentDestinationFavourited = true;
+                invalidateOptionsMenu();
+                return true;
+            }
 
-        if(id == R.id.options){
-            return true;
+            if(id == R.id.options){
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
