@@ -92,10 +92,11 @@
             android:id="@+id/sendButton"
             android:src="@drawable/send_button"
             android:theme="@style/FrontButton"
-            android:background="@android:color/transparent"
+            android:background="@drawable/send_button_layout"
             android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:paddingStart="2dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
 
     </LinearLayout>
 
