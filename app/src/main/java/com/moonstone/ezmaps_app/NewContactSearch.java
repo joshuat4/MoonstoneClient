@@ -191,6 +191,9 @@ public class NewContactSearch extends AppCompatActivity{
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+
+                        Log.d("Add Contacts", "user's contacts received: " + contacts);
+                        Log.d("Add Contacts", "Initialise Recycler view");
                         initRecyclerView(contacts);
                         findContactsLoading.setVisibility(View.GONE);
                     }

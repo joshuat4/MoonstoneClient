@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -85,9 +86,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         //Add/remove contact handling code
         if(contacts.contains(viewHolder.id)){
             butt.setText("REMOVE");
-        }
-        else{
-            //Not in contacts list
+            butt.setTextColor(Color.parseColor("#FF0040"));
+            butt.setBackgroundResource(R.drawable.rm_button);
         }
 
         butt.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,6 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             profilePic = itemView.findViewById(R.id.profilePic);
             contactName = itemView.findViewById(R.id.contactName);
             ContactParentLayout = itemView.findViewById(R.id.contactParentLayout);
