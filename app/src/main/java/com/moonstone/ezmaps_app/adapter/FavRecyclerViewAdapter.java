@@ -18,17 +18,15 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter.ViewHolder> {
+class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter.ViewHolder>{
 
     private List<String> favouriteList;
     private Context mContext;
 
-    private OnImageClickListener onImageClickListener;
 
-    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext, OnImageClickListener onImageClickListener) {
+    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext) {
         this.favouriteList = favouriteList;
         this.mContext = mContext;
-        this.onImageClickListener = onImageClickListener;
     }
 
     @NonNull
@@ -57,13 +55,6 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
         viewHolder.title.setText(cleanUpName(favouriteList.get(i)));
 
-        viewHolder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onImageClickListener.onImageClick(cleanUpName(favouriteList.get(i)));
-            }
-        });
-
     }
 
     @Override
@@ -81,7 +72,6 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
             }
         }
     }
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

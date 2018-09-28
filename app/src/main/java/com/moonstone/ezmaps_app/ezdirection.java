@@ -468,7 +468,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         }
 
-
         String destinationURL = currentDestination.replaceAll(" ", "%20");
         Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
         String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=-37.799239,144.961320---"
@@ -512,8 +511,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     /* Create Recycler View */
     private void initRecyclerView() {
-        final String TAG = "initRecyclerView";
-        Log.d(TAG, "initRecyclerView: init recyclerview");
+        Log.d("EZDIRECTION/Recycler", "initRecyclerView: init recyclerview");
 
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
                 false);

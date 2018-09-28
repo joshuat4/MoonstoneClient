@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickListener {
+public class Tab2Fragment extends Fragment {
 
     private ImageButton button;
     private EditText source;
@@ -69,6 +69,8 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
 
     private int REQUEST_CODE = 1;
     private static final int RESULT_OK = -1;
+
+    private boolean ezdirectionInSession = false;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -145,19 +147,6 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
         return view;
     }
 
-
-    @Override
-    public void onImageClick(String destination) {
-        startEZMap(destination);
-
-    }
-
-    interface OnImageClickListener {
-        void onItemClick(String order);
-    }
-
-
-
     public void loadFavouritePlaces(final View view){
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
@@ -194,11 +183,7 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
 
 
     public void initFavRecyclerView(View view, ArrayList<String> favouritePlaces){
-
         layoutManager = new GridLayoutManager(getActivity(), 2);
-
-
-        //layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         favRecyclerView = view.findViewById(R.id.favRecyclerView);
 
         SnapHelper helper = new LinearSnapHelper();
@@ -232,29 +217,32 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
     }
 
     public void startEZMap(String destination){
+        if(!ezdirectionInSession){
+            HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
 
-        HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
+            // Get the current destination typed into the search field
+            destination = source.getText().toString().trim();
+            tab2_to_ezdirection.put("currentDestination", destination);
 
-        // Get the current destination typed into the search field
-        destination = source.getText().toString().trim();
-        tab2_to_ezdirection.put("currentDestination", destination);
+            // Check if the current destination is favourited
+            if(isCurrentDestinationFavourited(destination)){
 
-        // Check if the current destination is favourited
-        if(isCurrentDestinationFavourited(destination)){
+                tab2_to_ezdirection.put("isCurrentDestinationFavourited", true);
 
-            tab2_to_ezdirection.put("isCurrentDestinationFavourited", true);
+            }else{
 
-        }else{
+                tab2_to_ezdirection.put("isCurrentDestinationFavourited", false);
 
-            tab2_to_ezdirection.put("isCurrentDestinationFavourited", false);
+            }
+
+            ezdirectionInSession = true;
+
+            // Send the hashmap (tab2_to_ezdirection) to EZDirection
+            Intent intent = new Intent(this.getActivity(), ezdirection.class);
+            intent.putExtra("tab2_to_ezdirection", tab2_to_ezdirection);
+            startActivityForResult(intent, REQUEST_CODE);
 
         }
-
-        // Send the hashmap (tab2_to_ezdirection) to EZDirection
-        Intent intent = new Intent(this.getActivity(), ezdirection.class);
-        intent.putExtra("tab2_to_ezdirection", tab2_to_ezdirection);
-        startActivityForResult(intent, REQUEST_CODE);
-
     }
 
     private boolean isCurrentDestinationFavourited(String currentDestination) {
@@ -300,7 +288,7 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
                 removeCurrentDestinationToFavouritePlace();
             }
 
-
+            ezdirectionInSession = false;
         }
     }
 
@@ -329,9 +317,6 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
 
     }
 
-
-
-
     private int getIndex(String dest, ArrayList<String> list){
         int index = 0;
 
@@ -346,7 +331,6 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
         return -1;
     }
 
-
     private void updateFavouritePlacesToDB(ArrayList<String> list){
         final String Uid = mAuth.getUid();
         DocumentReference docRef = db.collection("users").document(Uid);
@@ -355,8 +339,6 @@ public class Tab2Fragment extends Fragment implements Tab2Fragment.OnImageClickL
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
-
 
                         Log.d("TAB2/updateDB", "DocumentSnapshot successfully updated!");
                     }
