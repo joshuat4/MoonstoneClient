@@ -32,6 +32,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -104,13 +106,17 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ImageButton leftButton;
     private ImageButton rightButton;
 
-
     /* Recycler View Attributes */
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
     private View recyclerView;
     private RecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
+    private TextView notFoundText;
+    private TextView notFoundSubtext;
+    private ImageView notFoundImg;
+    private boolean isCardLoaded = false;
+
 
     /* Utilities */
     private int counter = 0;
@@ -130,6 +136,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         toolbar = findViewById(R.id.my_toolbar);
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+
+        notFoundText = findViewById(R.id.notFoundText);
+        notFoundSubtext = findViewById(R.id.notFoundSubtext);
+        notFoundImg = findViewById(R.id.notFoundImg);
 
         /* Listen on for Left and Right clicks */
         leftButton.setOnClickListener(this);
@@ -170,8 +180,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         onLocationChanged(location);
         Log.d("EZDIRECTION", "Location Object: " + location.toString());*/
 
-
-
         /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
         /*initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
@@ -180,6 +188,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         executeURL();
 
     }
+
+
 
 
     /*********                         Methods Handling Geolocation                   *************/
@@ -407,16 +417,23 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }*/
 
+
+
     @Override
     public void finish() {
-        Log.d("EZDIRECTION/Finish", "FINISH IS CALLED");
-
         Intent returnIntent = new Intent();
         returnIntent.putExtra("ezdirection_to_tab2", isCurrentDestinationFavourited);
 
-        Log.d("EZDIRECTION/Finish", "ITEM IS PASSED Back to Tab 2");
-        setResult(RESULT_OK, returnIntent);
+        if(isCardLoaded){
+            Log.d("EZDirection/Finish", "Card was loaded");
+            setResult(RESULT_OK, returnIntent);
 
+        }else{
+            Log.d("EZDirection/Finish", "Card was NOT loaded");
+            setResult(RESULT_CANCELED, returnIntent);
+        }
+
+        Log.d("EZDirection/Finish", "EZDirection activity has ended");
         super.finish();
     }
 
@@ -465,7 +482,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             Log.d("EZDIRECTION/URL", "Latitude: " + latitudeURL);
             Log.d("EZDIRECTION/URL", "Longitude: " + longitudeURL);
 
-
         }
 
         String destinationURL = currentDestination.replaceAll(" ", "%20");
@@ -480,6 +496,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         new RetrieveFeed(this).execute(url);
 
     }
+
+
 
     /* Wait to receive Object initiated by executeURL */
     @Override
@@ -501,11 +519,55 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
 
             initRecyclerView();
+            isCardLoaded = true;
+            setLeftRightButtonVisibility("VISIBILE");
             invalidateOptionsMenu();
+        }else{
+
+            isCardLoaded = false;
+            setNotFoundVisibility("VISIBLE");
+            setLeftRightButtonVisibility("GONE");
         }
-        else{
-            Intent intent = new Intent(this , error.class);
-            startActivity(intent);
+    }
+
+    private void setLeftRightButtonVisibility(String visibility){
+        switch (visibility.toUpperCase()){
+            case "VISIBLE":
+                leftButton.setVisibility(View.VISIBLE);
+                rightButton.setVisibility(View.VISIBLE);
+                break;
+
+            case "INVISIBLE":
+                leftButton.setVisibility(View.INVISIBLE);
+                rightButton.setVisibility(View.INVISIBLE);
+                break;
+
+            case "GONE":
+                leftButton.setVisibility(View.GONE);
+                rightButton.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    private void setNotFoundVisibility(String visibility){
+        switch (visibility.toUpperCase()){
+            case "VISIBLE":
+                notFoundImg.setVisibility(View.VISIBLE);
+                notFoundText.setVisibility(View.VISIBLE);
+                notFoundSubtext.setVisibility(View.VISIBLE);
+                break;
+
+            case "INVISIBLE":
+                notFoundImg.setVisibility(View.INVISIBLE);
+                notFoundText.setVisibility(View.INVISIBLE);
+                notFoundSubtext.setVisibility(View.INVISIBLE);
+                break;
+
+            case "GONE":
+                notFoundImg.setVisibility(View.GONE);
+                notFoundText.setVisibility(View.GONE);
+                notFoundSubtext.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -521,10 +583,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         adapter = new RecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
         numView = adapter.getItemCount();
-
         recyclerView.setAdapter(adapter);
         layoutManager.setSmoothScrollbarEnabled(false);
 
+        // Listening on scrolling
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -562,9 +624,9 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     /* Handling Right and Left Card Swipe */
     @Override
     public void onClick(View view){
+
         switch(view.getId()){
             case R.id.rightButton:
-
                 if(counter < numView - 1){
                     counter += 1;
                 }
@@ -572,19 +634,19 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 layoutManager.scrollToPosition(counter);
                 invalidateOptionsMenu();
                 Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
-
                 break;
-            case R.id.leftButton:
 
+            case R.id.leftButton:
                 if(counter >= 1){
                     counter -= 1;
                 }
-
                 layoutManager.scrollToPosition(counter);
                 invalidateOptionsMenu();
                 Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
                 break;
         }
+
+
     }
 
 
@@ -639,15 +701,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
-
-
-
-
 
     /* OLD Location Listener */
     @Override

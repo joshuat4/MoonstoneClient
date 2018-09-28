@@ -267,36 +267,35 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
         return place1.toUpperCase().equals(place2.toUpperCase());
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         Log.d("TAB2", "Activity is returned");
-        Log.d("TAB2", "REQ CODE: " + requestCode);
-        Log.d("TAB2", "RES CODE: " + resultCode);
-        Log.d("TAB2", "DATA: " + (boolean) data.getExtras().get("ezdirection_to_tab2"));
+        Log.d("TAB2", "Request Code: " + requestCode);
+        Log.d("TAB2", "Result Code: " + resultCode);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            Log.d("TAB2", "REQUEST CODE RECEIVED");
-
             boolean ezdirection_to_tab2 = (boolean) data.getExtras().get("ezdirection_to_tab2");
 
-            Log.d("TAB2", "PASSED ITEM RECEIVED: " + ezdirection_to_tab2);
-
-            // Current Destination was Not Favourited but Favourited during EZ Direction
+            Log.d("TAB2", "Passed item received: " + ezdirection_to_tab2);
             if(ezdirection_to_tab2 && !isCurrentDestinationFavourited){
-                Log.d("TAB2", "ADD CURRENT FAV Place");
+                Log.d("TAB2", "Add current favourite place");
                 addCurrentDestinationToFavouritePlace();
 
             }else if(!ezdirection_to_tab2 && isCurrentDestinationFavourited){
-                Log.d("TAB2", "REMOVE CURRENT FAV Place");
+                Log.d("TAB2", "Remove current favourite place");
                 removeCurrentDestinationToFavouritePlace();
             }
 
-            ezdirectionInSession = false;
-            Log.d("TAB2", "EZDirection session is over: " + ezdirectionInSession);
+
+        }else{
+            Log.d("TAB2", " ");
+            Log.d("TAB2", "Passed item not received");
+
         }
+
+        ezdirectionInSession = false;
+        Log.d("TAB2", "EZDirection session is over: " + ezdirectionInSession);
     }
 
     private void addCurrentDestinationToFavouritePlace(){
