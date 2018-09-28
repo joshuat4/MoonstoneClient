@@ -110,14 +110,12 @@ public class Tab3Fragment extends Fragment {
 
         loadContactsFromDB();
 
-        contactFilter.clearFocus();
+        contactFilter.setSelected(false);
 
         return fragmentLayout;
     }
 
     private void loadContactsFromDB(){
-
-        contactsLoading.setVisibility(View.VISIBLE);
 
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
@@ -133,31 +131,17 @@ public class Tab3Fragment extends Fragment {
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("TAB3", "Current data: " + snapshot.getData());
-                } else {
-                    Log.d("TAB3", "Current data: null");
-                }
-            }
-        });
 
-
-
-
-
-        // Checks to see if there are any new updates (if user has new contacts added or deleted)
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("TAB3", "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("TAB3", "Current data: " + snapshot.getData());
+                    contactsLoading.setVisibility(View.VISIBLE);
 
                     // If there are updates, initialise recycler view of contacts
                     try{
+
+                        names.clear();
+                        emails.clear();
+                        ids.clear();
+                        profilePics.clear();
+
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
                         for (String contact : contacts){
@@ -165,24 +149,28 @@ public class Tab3Fragment extends Fragment {
 
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                profilePics.add(documentSnapshot.get("profilePic").toString());
-                                emails.add(documentSnapshot.get("email").toString());
-                                names.add(documentSnapshot.get("name").toString());
-                                ids.add(documentSnapshot.getId());
 
-                                if(names.size() == contacts.size()){
-                                    initRecyclerView();
-                                }
+                                    profilePics.add(documentSnapshot.get("profilePic").toString());
+                                    emails.add(documentSnapshot.get("email").toString());
+                                    names.add(documentSnapshot.get("name").toString());
+                                    ids.add(documentSnapshot.getId());
+
+                                    if(names.size() == contacts.size()){
+                                        initRecyclerView();
+                                    }
                                 }
                             });
                         }
 
                         contactsAvailable = true;
 
+
                     } catch (NullPointerException n){
                         contactsAvailable = false;
 
                     }
+
+                    contactsLoading.setVisibility(View.GONE);
 
                 } else {
                     Log.d("TAB3", "Current data: null");
@@ -190,13 +178,12 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-        // Regardless of the result, kill the Loading
-        contactsLoading.setVisibility(View.GONE);
 
     }
 
     //Sets up the recycler view
     private void initRecyclerView(){
+
         RecyclerView recyclerView =  fragmentLayout.findViewById(R.id.contactRecyclerView);
 
         Log.d("HERE", names.toString());

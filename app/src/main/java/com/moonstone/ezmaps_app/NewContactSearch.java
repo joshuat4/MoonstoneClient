@@ -133,6 +133,8 @@ public class NewContactSearch extends AppCompatActivity{
             }
         });
 
+        filterSearch.setSelected(true);
+
     }
 
 

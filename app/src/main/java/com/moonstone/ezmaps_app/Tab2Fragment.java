@@ -145,7 +145,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
                 }
             });
 
-        source.clearFocus();
+        source.setSelected(false);
 
         return view;
     }
