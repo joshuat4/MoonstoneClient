@@ -110,6 +110,8 @@ public class Tab3Fragment extends Fragment {
 
         loadContactsFromDB();
 
+        contactFilter.clearFocus();
+
         return fragmentLayout;
     }
 
@@ -119,6 +121,27 @@ public class Tab3Fragment extends Fragment {
 
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
+
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("TAB3", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("TAB3", "Current data: " + snapshot.getData());
+                } else {
+                    Log.d("TAB3", "Current data: null");
+                }
+            }
+        });
+
+
+
+
 
         // Checks to see if there are any new updates (if user has new contacts added or deleted)
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {

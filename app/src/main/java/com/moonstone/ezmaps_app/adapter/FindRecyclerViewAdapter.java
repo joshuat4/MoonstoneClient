@@ -85,9 +85,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
         //Add/remove contact handling code
         if(contacts.contains(viewHolder.id)){
-            butt.setText("REMOVE");
-            butt.setTextColor(Color.parseColor("#FF0040"));
-            butt.setBackgroundResource(R.drawable.rm_button);
+            changeToRemoveButton(butt);
         }
 
         butt.setOnClickListener(new View.OnClickListener() {
@@ -101,13 +99,13 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                     case "ADD":
                         Log.d("FINDRECYCLER", "ADD CONTACT: " + viewHolder.id);
                         addContact(viewHolder);
-                        butt.setText("REMOVE");
+                        changeToRemoveButton(butt);
                         break;
 
                     case "REMOVE":
                         Log.d("FINDRECYCLER", "REMOVE CONTACT: " + viewHolder.id);
                         removeContact(viewHolder);
-                        butt.setText("ADD");
+                        changeToAddButton(butt);
                         break;
 
                 }
@@ -118,6 +116,20 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         /*if(i == contactNames.size() - 1){
             com.moonstone.ezmaps_app.NewContactSearch.findContactsLoading.setVisibility(View.GONE);
         }*/
+    }
+
+    public void changeToRemoveButton(Button butt){
+        butt.setText("REMOVE");
+        butt.setTextColor(Color.parseColor("#FF0040"));
+        butt.setBackgroundResource(R.drawable.rm_button);
+
+    }
+
+    public void changeToAddButton(Button butt){
+        butt.setText("ADD");
+        butt.setTextColor(Color.parseColor("#2A89F2"));
+        butt.setBackgroundResource(R.drawable.rm_button);
+
     }
 
 
