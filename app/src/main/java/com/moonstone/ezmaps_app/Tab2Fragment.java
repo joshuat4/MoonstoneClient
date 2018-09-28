@@ -125,6 +125,8 @@ public class Tab2Fragment extends Fragment {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        // Get the current destination typed into the search field
+                        currentDestination = source.getText().toString().trim();
                         startEZMap(currentDestination);
 
                         return true;
@@ -138,6 +140,8 @@ public class Tab2Fragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
+                    // Get the current destination typed into the search field
+                    currentDestination = source.getText().toString().trim();
                     startEZMap(currentDestination);
                 }
             });
@@ -219,23 +223,18 @@ public class Tab2Fragment extends Fragment {
     public void startEZMap(String destination){
         if(!ezdirectionInSession){
             HashMap<String, Object> tab2_to_ezdirection = new HashMap<String, Object>();
-
-            // Get the current destination typed into the search field
-            destination = source.getText().toString().trim();
             tab2_to_ezdirection.put("currentDestination", destination);
 
-            // Check if the current destination is favourited
             if(isCurrentDestinationFavourited(destination)){
-
                 tab2_to_ezdirection.put("isCurrentDestinationFavourited", true);
 
             }else{
-
                 tab2_to_ezdirection.put("isCurrentDestinationFavourited", false);
 
             }
 
             ezdirectionInSession = true;
+            Log.d("TAB2", "EZDirection is in session: " + ezdirectionInSession);
 
             // Send the hashmap (tab2_to_ezdirection) to EZDirection
             Intent intent = new Intent(this.getActivity(), ezdirection.class);
@@ -289,6 +288,7 @@ public class Tab2Fragment extends Fragment {
             }
 
             ezdirectionInSession = false;
+            Log.d("TAB2", "EZDirection session is over: " + ezdirectionInSession);
         }
     }
 
@@ -305,7 +305,7 @@ public class Tab2Fragment extends Fragment {
     }
 
     private void removeCurrentDestinationToFavouritePlace(){
-
+        Log.d("TAB2/rm", "CURRENT: " + currentDestination + " FAV PLACES: " + favouritePlaces);
         int index = getIndex(currentDestination, favouritePlaces);
         if(index >= 0){
             favouritePlaces.remove(index);
@@ -321,8 +321,7 @@ public class Tab2Fragment extends Fragment {
         int index = 0;
 
         for (String item : list){
-            if(comparePlaces(item, currentDestination)){
-
+            if(comparePlaces(item, dest)){
                 return index;
             }
             index++;
