@@ -22,11 +22,12 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
     private List<String> favouriteList;
     private Context mContext;
+    final private ListItemClickListener mOnClickListener;
 
-
-    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext) {
+    public FavRecyclerViewAdapter(ArrayList<String> favouriteList, Context mContext, ListItemClickListener listener) {
         this.favouriteList = favouriteList;
         this.mContext = mContext;
+        mOnClickListener = listener;
     }
 
     @NonNull
@@ -38,23 +39,18 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
 
     public String cleanUpName(String name) {
-
         return name.replace("%20"," ");
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-
         String url = "https://source.unsplash.com/1600x900/?" + favouriteList.get(i);
-
         Glide.with(mContext)
                 .asBitmap()
                 .load(url)
                 .into(viewHolder.image);
 
-
         viewHolder.title.setText(cleanUpName(favouriteList.get(i)));
-
     }
 
     @Override
@@ -62,17 +58,9 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
         return favouriteList.size();
     }
 
-
-    public void filterOut(String filter) {
-        final int size = favouriteList.size();
-        for(int i = size - 1; i>= 0; i--) {
-            if (!favouriteList.get(i).equals(filter)) {
-                favouriteList.remove(i);
-                notifyItemRemoved(i);
-            }
-        }
+    public interface ListItemClickListener {
+        void onListItemClick(int clickedItemIndex);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
@@ -92,9 +80,9 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
         @Override
         public void onClick(View v){
-
             final Intent intent;
-
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
             Toast.makeText(mContext, "LAYOUT POSITION: " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
 
         }

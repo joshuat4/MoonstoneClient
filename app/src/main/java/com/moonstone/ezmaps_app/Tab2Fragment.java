@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tab2Fragment extends Fragment {
+public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.ListItemClickListener{
 
     private ImageButton button;
     private EditText source;
@@ -151,6 +151,13 @@ public class Tab2Fragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        currentDestination = favouritePlaces.get(clickedItemIndex);
+        startEZMap(currentDestination);
+
+    }
+
     public void loadFavouritePlaces(final View view){
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
@@ -194,7 +201,7 @@ public class Tab2Fragment extends Fragment {
         helper.attachToRecyclerView((RecyclerView) favRecyclerView);
 
         favRecyclerView.setLayoutManager(layoutManager);
-        adapter = new FavRecyclerViewAdapter(favouritePlaces, getActivity());
+        adapter = new FavRecyclerViewAdapter(favouritePlaces, getActivity(), this);
         favRecyclerView.setAdapter(adapter);
 
         Log.d("TAB2", "INITIALISE FAV RECYCLER");
@@ -350,8 +357,6 @@ public class Tab2Fragment extends Fragment {
                 });
 
     }
-
-
 
 
 
