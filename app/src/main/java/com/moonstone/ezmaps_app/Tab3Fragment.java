@@ -259,8 +259,6 @@ public class Tab3Fragment extends Fragment {
     }
 
 
-
-
     /*
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

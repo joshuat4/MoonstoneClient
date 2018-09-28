@@ -93,6 +93,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
             image.setColorFilter(ContextCompat.getColor(getContext(), R.color.tblack));
 
+            clearButton.setVisibility(View.GONE);
             clearButton.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v){
