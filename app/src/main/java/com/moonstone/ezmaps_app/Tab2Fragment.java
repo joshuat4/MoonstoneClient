@@ -309,12 +309,12 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
             adapter.notifyItemInserted(index);
 
         }else{
-            index = adapter.getItemCount();
+            index = 0;
             favouritePlaces.add(currentDestination);
             initFavRecyclerView(view, favouritePlaces);
         }
 
-        
+
         Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
         updateFavouritePlacesToDB(favouritePlaces);
 
