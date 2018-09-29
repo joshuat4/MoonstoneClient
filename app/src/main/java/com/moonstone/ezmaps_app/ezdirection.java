@@ -704,6 +704,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
 
             if(id == R.id.options){
+                ShareImageDialog bottomSheet = new ShareImageDialog();
+                bottomSheet.show(getSupportFragmentManager(), "ShareImageDialog");
                 return true;
             }
         }
