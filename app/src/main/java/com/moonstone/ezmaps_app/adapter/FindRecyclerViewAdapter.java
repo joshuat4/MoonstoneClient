@@ -93,7 +93,6 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-<<<<<<< HEAD
                 Log.d("FINDRECYCLER", "BUTTON CLICKED");
 
                 String check = butt.getText().toString();
@@ -113,8 +112,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
                 }
 
-=======
-                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                /*db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
@@ -142,8 +140,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                                 break;
                         }
                     }
-                });
->>>>>>> master
+                });*/
+
             }
         });
 

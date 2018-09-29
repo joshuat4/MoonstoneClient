@@ -126,7 +126,63 @@ public class Tab3Fragment extends Fragment {
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
 
+
+
+
+
         docRef.collection("contacts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("TAG", "listen:error", e);
+                    return;
+                }
+
+                final ArrayList<String> contacts = new ArrayList<>();
+
+                //gets all added contacts from the database
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            contacts.add(dc.getDocument().getId());
+                            Log.d("TAB3", "new contact: " + dc.getDocument().getId());
+                            break;
+                        case MODIFIED:
+                            break;
+                        case REMOVED:
+                            break;
+                    }
+                }
+
+                //gets all relevant users frrom the users collection
+                for (String contact : contacts){
+                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                            emails.add(documentSnapshot.get("email").toString());
+                            names.add(documentSnapshot.get("name").toString());
+                            ids.add(documentSnapshot.getId());
+
+                            if( (names.size() == contacts.size()) && (names.size() > 0)){
+                                initRecyclerView();
+                            }
+                        }
+                    });
+                }
+
+                contactsAvailable = true;
+
+            }
+        });
+
+
+
+
+
+        /*docRef.collection("contacts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
                                 @Nullable FirebaseFirestoreException e) {
@@ -170,7 +226,7 @@ public class Tab3Fragment extends Fragment {
                 }
 
             }
-        });
+        });*/
     }
 
     //Sets up the recycler view
@@ -178,7 +234,7 @@ public class Tab3Fragment extends Fragment {
 
         RecyclerView recyclerView =  fragmentLayout.findViewById(R.id.contactRecyclerView);
 
-        Log.d("HERE", names.toString());
+        Log.d("TAB3", "Initialise recycler view: " + names.toString());
 
         adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
         recyclerView.setAdapter(adapter) ;

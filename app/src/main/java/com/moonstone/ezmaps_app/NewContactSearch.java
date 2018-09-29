@@ -1,7 +1,5 @@
 package com.moonstone.ezmaps_app;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
