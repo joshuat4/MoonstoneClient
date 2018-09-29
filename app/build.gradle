@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.moonstone.ezmaps_app"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -49,6 +49,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    // Unit Testing (mock obj)
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+
     implementation 'com.android.support:multidex:1.0.0'
 
     // Android layout
@@ -85,9 +89,7 @@ dependencies {
     // dexter runtime permissions
     implementation 'com.karumi:dexter:5.0.0'
 
-    // Unit Testing (mock obj)
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+
 
 }
 

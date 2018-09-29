@@ -74,7 +74,7 @@ public class NewContactSearch extends AppCompatActivity{
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(Activity.RESULT_OK);
+                //setResult(Activity.RESULT_OK);
                 finish();
             }
         });

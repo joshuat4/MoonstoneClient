@@ -93,6 +93,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+<<<<<<< HEAD
                 Log.d("FINDRECYCLER", "BUTTON CLICKED");
 
                 String check = butt.getText().toString();
@@ -112,6 +113,37 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
                 }
 
+=======
+                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        ArrayList<String > recieved = (ArrayList<String>) documentSnapshot.get("contacts");
+                        HashMap<String,String> newContact = new HashMap<>();
+                        String check = butt.getText().toString();
+                        switch (check.toUpperCase()){
+                            case "ADD CONTACT":
+                                //Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
+                                recieved.add(viewHolder.id);
+                                contacts.add(viewHolder.id);
+                                db.collection("users").document(Uid).update("contacts", recieved);
+                                newContact.put("name", contactNames.get(i));
+                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).set(newContact);
+                                butt.setText("REMOVE");
+                                break;
+                            case "REMOVE":
+                                //Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
+                                recieved.remove(viewHolder.id);
+                                contacts.remove(viewHolder.id);
+                                db.collection("users").document(Uid).update("contacts", recieved);
+                                //Hmm
+                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).delete();
+                                butt.setText("ADD CONTACT");
+                                break;
+                        }
+                    }
+                });
+>>>>>>> master
             }
         });
 

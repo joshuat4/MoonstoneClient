@@ -24,14 +24,17 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.moonstone.ezmaps_app.ContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
@@ -123,69 +126,51 @@ public class Tab3Fragment extends Fragment {
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
 
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        docRef.collection("contacts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
+            public void onEvent(@Nullable QuerySnapshot snapshots,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("TAB3", "Listen failed.", e);
+                    Log.w("TAB3", "listen:error", e);
                     return;
                 }
 
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("TAB3", "Current data: " + snapshot.getData());
+                final ArrayList<String> contacts = new ArrayList<>();
 
-                    names.clear();
-                    emails.clear();
-                    ids.clear();
-                    profilePics.clear();
-
-                    try{
-                        final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
-
-                        Log.d("TAB3", "CONTACTS: " + contacts);
-
-                        if(!contacts.isEmpty()){
-                            for (String contact : contacts){
-                                db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                                        profilePics.add(documentSnapshot.get("profilePic").toString());
-                                        emails.add(documentSnapshot.get("email").toString());
-                                        names.add(documentSnapshot.get("name").toString());
-                                        ids.add(documentSnapshot.getId());
-
-                                        if(names.size() == contacts.size()){
-                                            Log.d("TAB3", "second list num: " + names.size());
-                                            Log.d("TAB3", "contacts size: " + contacts.size());
-                                            Log.d("TAB3", "contacts available: init recycler view: ");
-                                            initRecyclerView();
-                                            contactsAvailable = true;
-
-                                        }
-                                    }
-                                });
-                            }
-
-                        }else{
-                            contactsAvailable = false;
-                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
-                            initRecyclerView();
-                        }
-
-                    } catch (NullPointerException n){
-                        contactsAvailable = false;
-
+                //gets all added contacts from the database
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            contacts.add(dc.getDocument().getId());
+                            Log.d("contacts", "new contact: " + dc.getDocument().getId());
+                            break;
+                        case MODIFIED:
+                            break;
+                        case REMOVED:
+                            break;
                     }
-
-                } else {
-                    Log.d("TAB3", "Current data: null");
                 }
+
+                //gets all relevant users frrom the users collection
+                for (String contact : contacts){
+                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                            emails.add(documentSnapshot.get("email").toString());
+                            names.add(documentSnapshot.get("name").toString());
+                            ids.add(documentSnapshot.getId());
+
+                            if( (names.size() == contacts.size()) && (names.size() > 0)){
+                                contactsAvailable = true;
+                                initRecyclerView();
+                            }
+                        }
+                    });
+                }
+
             }
         });
-
-
     }
 
     //Sets up the recycler view
@@ -248,7 +233,7 @@ public class Tab3Fragment extends Fragment {
 
     }
 
-    @Override
+   /* @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == 3) && (resultCode == Activity.RESULT_OK)){
@@ -256,7 +241,7 @@ public class Tab3Fragment extends Fragment {
             ft.detach(this).attach(this).commit();
 
         }
-    }
+    }*/
 
 
     /*

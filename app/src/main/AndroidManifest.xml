@@ -35,20 +35,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".UserSignUp">
-        </activity>
-
-        <activity android:name=".UserLogin">
-        </activity>
-
-        <activity android:name=".ChatActivity">
-        </activity>
-
-        <activity android:name=".NewContactSearch">
-        </activity>
-
+        <activity android:name=".UserSignUp" />
+        <activity android:name=".UserLogin" />
+        <activity android:name=".NewContactSearch" />
         <activity
             android:name=".EditProfile"
             android:label="@string/title_edit_profile"
