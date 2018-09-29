@@ -1,5 +1,6 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -72,7 +73,7 @@ public class NewContactSearch extends AppCompatActivity{
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setResult(Activity.RESULT_OK);
+                setResult(Activity.RESULT_OK);
                 finish();
             }
         });
@@ -131,7 +132,6 @@ public class NewContactSearch extends AppCompatActivity{
             @Override
             public void afterTextChanged(Editable s) {
                 clearButton.setVisibility(View.VISIBLE);
-                //filter(s.toString());
             }
         });
 

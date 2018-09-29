@@ -61,22 +61,17 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         return holder;
     }
 
-    //Called every time a new item is added to the list
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        //Gets the image and puts it into the referenced imageView
+
         Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
-
         viewHolder.contactName.setText(contactNames.get(i));
-
-        //Add onclicklistener to each list entry
         viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
             }
         });
-
 
         viewHolder.id = ids.get(i);
         viewHolder.email = emails.get(i);
@@ -112,42 +107,9 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
                 }
 
-                /*db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                        ArrayList<String > recieved = (ArrayList<String>) documentSnapshot.get("contacts");
-                        HashMap<String,String> newContact = new HashMap<>();
-                        String check = butt.getText().toString();
-                        switch (check.toUpperCase()){
-                            case "ADD CONTACT":
-                                //Toast.makeText(  v.getContext(),  "added", Toast.LENGTH_SHORT).show();
-                                recieved.add(viewHolder.id);
-                                contacts.add(viewHolder.id);
-                                db.collection("users").document(Uid).update("contacts", recieved);
-                                newContact.put("name", contactNames.get(i));
-                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).set(newContact);
-                                butt.setText("REMOVE");
-                                break;
-                            case "REMOVE":
-                                //Toast.makeText(  v.getContext(),  "removed", Toast.LENGTH_SHORT).show();
-                                recieved.remove(viewHolder.id);
-                                contacts.remove(viewHolder.id);
-                                db.collection("users").document(Uid).update("contacts", recieved);
-                                //Hmm
-                                db.collection("users").document(Uid).collection("contacts").document(viewHolder.id).delete();
-                                butt.setText("ADD CONTACT");
-                                break;
-                        }
-                    }
-                });*/
-
             }
         });
 
-        /*if(i == contactNames.size() - 1){
-            com.moonstone.ezmaps_app.NewContactSearch.findContactsLoading.setVisibility(View.GONE);
-        }*/
     }
 
     public void changeToRemoveButton(Button butt){
@@ -163,7 +125,6 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         butt.setBackgroundResource(R.drawable.rm_button);
 
     }
-
 
     public void addContact(@NonNull final ViewHolder viewHolder){
         final String Uid = mAuth.getUid();

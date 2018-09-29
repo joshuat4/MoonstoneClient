@@ -60,7 +60,6 @@ public class Tab3Fragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
@@ -126,107 +125,67 @@ public class Tab3Fragment extends Fragment {
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
 
-
-
-
-
-        docRef.collection("contacts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("TAG", "listen:error", e);
+                    Log.w("TAB3", "Listen failed.", e);
                     return;
                 }
 
-                final ArrayList<String> contacts = new ArrayList<>();
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("TAB3", "Current data: " + snapshot.getData());
 
-                //gets all added contacts from the database
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            contacts.add(dc.getDocument().getId());
-                            Log.d("TAB3", "new contact: " + dc.getDocument().getId());
-                            break;
-                        case MODIFIED:
-                            break;
-                        case REMOVED:
-                            break;
-                    }
-                }
+                    names.clear();
+                    emails.clear();
+                    ids.clear();
+                    profilePics.clear();
 
-                //gets all relevant users frrom the users collection
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    try{
+                        final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
+                        Log.d("TAB3", "CONTACTS: " + contacts);
 
-                            if( (names.size() == contacts.size()) && (names.size() > 0)){
-                                initRecyclerView();
+                        if(!contacts.isEmpty()){
+                            for (String contact : contacts){
+                                db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                                        profilePics.add(documentSnapshot.get("profilePic").toString());
+                                        emails.add(documentSnapshot.get("email").toString());
+                                        names.add(documentSnapshot.get("name").toString());
+                                        ids.add(documentSnapshot.getId());
+
+                                        if(names.size() == contacts.size()){
+                                            Log.d("TAB3", "second list num: " + names.size());
+                                            Log.d("TAB3", "contacts size: " + contacts.size());
+                                            Log.d("TAB3", "contacts available: init recycler view: ");
+                                            initRecyclerView();
+                                            contactsAvailable = true;
+
+                                        }
+                                    }
+                                });
                             }
+
+                        }else{
+                            contactsAvailable = false;
+                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                            initRecyclerView();
                         }
-                    });
+
+                    } catch (NullPointerException n){
+                        contactsAvailable = false;
+
+                    }
+
+                } else {
+                    Log.d("TAB3", "Current data: null");
                 }
-
-                contactsAvailable = true;
-
             }
         });
-
-
-
-
-
-        /*docRef.collection("contacts").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("TAB3", "listen:error", e);
-                    return;
-                }
-
-                final ArrayList<String> contacts = new ArrayList<>();
-
-                //gets all added contacts from the database
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    switch (dc.getType()) {
-                        case ADDED:
-                            contacts.add(dc.getDocument().getId());
-                            Log.d("contacts", "new contact: " + dc.getDocument().getId());
-                            break;
-                        case MODIFIED:
-                            break;
-                        case REMOVED:
-                            break;
-                    }
-                }
-
-                //gets all relevant users frrom the users collection
-                for (String contact : contacts){
-                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            profilePics.add(documentSnapshot.get("profilePic").toString());
-                            emails.add(documentSnapshot.get("email").toString());
-                            names.add(documentSnapshot.get("name").toString());
-                            ids.add(documentSnapshot.getId());
-
-                            if( (names.size() == contacts.size()) && (names.size() > 0)){
-                                contactsAvailable = true;
-                                initRecyclerView();
-                            }
-                        }
-                    });
-                }
-
-            }
-        });*/
     }
 
     //Sets up the recycler view
