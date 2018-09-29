@@ -2,7 +2,8 @@ package com.moonstone.ezmaps_app;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,25 +19,28 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import com.moonstone.ezmaps_app.MessageRecyclerViewAdapter;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
+
+//the activity wherein instant messaging takes place
 public class Chat extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
     private MessageRecyclerViewAdapter adapter;
+    //facilitates updating the recycler view without reinitialising it
     private boolean notFirstTime = false;
 
     private EditText textField;
@@ -44,29 +48,20 @@ public class Chat extends AppCompatActivity {
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
-    private static final String TEST_CHILD = "testing";
 
     private static String toUserID;
     private static String fromUserID;
     private String userName;
+    private Timestamp currentTime;
 
-    private ArrayList<String> text = new ArrayList<>();
-    private ArrayList<String> from = new ArrayList<>();
-    private ArrayList<String> to = new ArrayList<>();
-
-    public String getFromUserID() {
-        return fromUserID;
-    }
+    //where the text messages will be stored
+    private ArrayList<EzMessage> ezMessagesArray = new ArrayList<>();
 
     public static void setFromUserID(String s) {
         fromUserID = s;
     }
 
-
-
-    public String getToUserID() {
-        return toUserID;
-    }
+    Handler handler = new Handler();
 
     public static void setToUserID(String s) {
         toUserID = s;
@@ -75,6 +70,8 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        currentTime = Timestamp.now();
+        Log.d("time", "time: " + currentTime.toDate().toString());
 
         //Get data passed through from ContactRecyclerViewAdapter
         Bundle extras = getIntent().getExtras();
@@ -103,13 +100,15 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-//        loadDataFromFirebase();
+        //instantiate and update the chat
+        handler.post(updateView);
 
 
         //SEND MESSAGE
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
+                currentTime = Timestamp.now();
                 final String Uid = mAuth.getUid();
                 // Add a new document with a generated id.
                 final Map<String, Object> message = new HashMap<>();
@@ -118,6 +117,7 @@ public class Chat extends AppCompatActivity {
                 message.put("toUserId", toUserID);
                 message.put("text", textField.getText().toString());
                 message.put("fromUserId", Uid);
+                message.put("time", currentTime.toDate().toString());
 
                 //Add to map for actual database
                 db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(message);
@@ -132,92 +132,97 @@ public class Chat extends AppCompatActivity {
     //Sets up the recycler view
     private void initRecyclerView(){
         RecyclerView recyclerView =  findViewById(R.id.messageRecyclerView);
-        Log.d("HERE", text.toString());
-        adapter = new MessageRecyclerViewAdapter(this, text);
+        adapter = new MessageRecyclerViewAdapter(this, ezMessagesArray);
         recyclerView.setAdapter(adapter) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setStackFromEnd(true);
+        recyclerView.setLayoutManager(llm);
     }
-
-//    private void filter(String text){
-//
-//        //Filtered arrays
-//        ArrayList<String> ftext = new ArrayList<>();
-//
-//        int counter = 0;
-//
-//        for(String message : text){
-//            if(message.toLowerCase().contains(text.toLowerCase())){
-//                ftext.add(text.get());
-//            }
-//            counter += 1;
-//        }
-//        adapter.filterList(fmessages);
-//    }
 
     private void refresh(){
         Log.d("messages", "refresh");
+        final String Uid = mAuth.getUid();
         adapter.clear();
-        adapter.refreshData();
         loadDataFromFirebase();
+        adapter.refreshData();
     }
 
 
     @Override
     public void onResume(){
-        loadDataFromFirebase();
         super.onResume();
         //other stuff
     }
 
-    private void loadDataFromFirebase() {
-        messagesLoading.setVisibility(View.VISIBLE);
-        if (text.size() > 0) {
-            text.clear();
-            from.clear();
-            to.clear();
+    //allow the loading process to be run periodically
+    private final Runnable updateView = new Runnable(){
+        public void run(){
+            try {
+                loadDataFromFirebase();
+//                handler.postDelayed(this, 5000);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    };
+
+    //where data is fetched from the firestore, and fed into the recyclerview
+    private void loadDataFromFirebase() {
+        Log.d("HERE", "just in ldff");
+        messagesLoading.setVisibility(View.VISIBLE);
         final String Uid = mAuth.getUid();
-        Log.d("HERE", "please don't run");
-        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        //get all the messages for the currrently selected contact
+        db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (DocumentSnapshot querySnapshot : task.getResult()) {
-//                            final String docId = querySnapshot.getId();
-//                            db.collection("messages").document(docId).get()
-//                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<DocumentSnapshot> task2) {
-//                                            DocumentSnapshot doc = task2.getResult();
-//                                            Log.d("messages", "aaaaaaa");
-//                                            text.add(doc.getString("name"));
-//                                            from.add(doc.getString("profilePic"));
-//                                            to.add(doc.getString("profilePic"));
-//                                        }
-//                                    });
-                            text.add(querySnapshot.getString("text"));
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("TAG", "listen:error", e);
+                            return;
                         }
-                        messagesLoading.setVisibility(View.GONE);
-                        Log.d("messages", "1");
-                        if(!notFirstTime){
-                            initRecyclerView();
-                            Log.d("messages", "2");
-                            notFirstTime = true;
-                        } else {
-                            Log.d("messages", "3");
-                            adapter.clear();
-                            adapter.refreshData();
+
+                        int newDocs = 0;
+                        //get any messages not already loaded
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
+                                           dc.getDocument().getString("toUserId"),
+                                           dc.getDocument().getString("fromUserId"),
+                                           new Date(dc.getDocument().getString("time"))));
+                                   Log.d("messages", "new doc: " + dc.getDocument().getString("text"));
+                                   newDocs++;
+                                    break;
+                                case MODIFIED:
+                                    break;
+                                case REMOVED:
+                                    break;
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Chat.this, "FAIL", Toast.LENGTH_SHORT).show();
-                        Log.d(
-                                "FAILURE IN CHAT", e.getMessage());
+                        //sot and display the messages if there are any
+                        if(newDocs>0){
+                           ezMessagesArray.sort(new EzMessagesComparator());
+                           if(notFirstTime){
+                               adapter.notifyDataSetChanged();
+                              RecyclerView rv = findViewById(R.id.messageRecyclerView);
+                              rv.scrollToPosition(ezMessagesArray.size() - 1);
+                           } else if(ezMessagesArray.size() > 0) {
+                               ezMessagesArray.sort(new EzMessagesComparator());
+                               initRecyclerView();
+                               Log.d("messages", "2");
+                               notFirstTime = true;
+                               adapter.notifyDataSetChanged();
+                           }
+                       }
+
+
                     }
                 });
+
+        messagesLoading.setVisibility(View.GONE);
     }
 
     //Toolbar stuff
@@ -243,6 +248,12 @@ public class Chat extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updateView);
     }
 
 

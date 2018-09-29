@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapter;
 
 
 import android.content.Context;
@@ -11,13 +11,17 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+import com.moonstone.ezmaps_app.EzMessage;
+import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> textMessages = new ArrayList<>();
+    private ArrayList<EzMessage> textMessages = new ArrayList<>();
     private Context mContext;
+    private FirebaseAuth mAuth;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
@@ -25,7 +29,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
     private int testing = 0;
 
-    public MessageRecyclerViewAdapter(Context context, ArrayList<String> textMessages){
+    public MessageRecyclerViewAdapter(Context context, ArrayList<EzMessage> textMessages){
         Log.d("messages", textMessages.toString());
         this.textMessages = textMessages;
         this.mContext = context;
@@ -36,20 +40,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if(testing % 2 == 0){
+        mAuth = FirebaseAuth.getInstance();
+        final String Uid = mAuth.getUid();
+        if(textMessages.get(i).getFromUserId().equals(Uid)){
             Log.d("messages", "view holder 1 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
-            testing +=1;
             return holder;
         }
         else{
             Log.d("messages", "view holder 2 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
-            testing +=1;
             return holder;
         }
     }
@@ -61,13 +65,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
 
         //Gets the image and puts it into the referenced imageView
 
-        viewHolder.messageText.setText(textMessages.get(i));
+        viewHolder.messageText.setText(textMessages.get(i).getText());
 
         //Add onclicklistener to each list entry
         viewHolder.MessageParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Toast.makeText(mContext,textMessages.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,textMessages.get(i).getText(), Toast.LENGTH_SHORT).show();
 
             }
         });
