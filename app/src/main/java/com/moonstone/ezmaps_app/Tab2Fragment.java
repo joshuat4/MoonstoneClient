@@ -69,12 +69,13 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
     private int REQUEST_CODE = 1;
     private static final int RESULT_OK = -1;
+    private View view;
 
     private boolean ezdirectionInSession = false;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_two, container, false);
+            view = inflater.inflate(R.layout.fragment_two, container, false);
 
             image = (ImageView) view.findViewById(R.id.image);
             clearButton = (ImageButton) view.findViewById(R.id.clearButton);
@@ -301,11 +302,20 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
     private void addCurrentDestinationToFavouritePlace(){
 
         // Locally
-        int index = adapter.getItemCount();
-        favouritePlaces.add(index, currentDestination);
-        adapter.notifyItemInserted(index);
-        Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
+        int index;
+        if(adapter != null){
+            index = adapter.getItemCount();
+            favouritePlaces.add(currentDestination);
+            adapter.notifyItemInserted(index);
 
+        }else{
+            index = adapter.getItemCount();
+            favouritePlaces.add(currentDestination);
+            initFavRecyclerView(view, favouritePlaces);
+        }
+
+        
+        Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
         updateFavouritePlacesToDB(favouritePlaces);
 
     }
