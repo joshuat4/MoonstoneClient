@@ -239,7 +239,10 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        //other stuff
+        if(adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -248,16 +251,18 @@ public class Tab3Fragment extends Fragment {
 
     }
 
-   /* @Override
+   @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == 3) && (resultCode == Activity.RESULT_OK)){
-            android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.detach(this).attach(this).commit();
+            refreshFragment();
 
         }
-    }*/
+    }
 
+    public void refreshFragment(){
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
 
     /*
     @Override

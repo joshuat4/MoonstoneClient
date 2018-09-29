@@ -104,7 +104,6 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                         removeContact(viewHolder);
                         changeToAddButton(butt);
                         break;
-
                 }
 
             }
