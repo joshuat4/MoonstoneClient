@@ -55,7 +55,7 @@ public class FrontPage extends AppCompatActivity {
         _test2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("test1@test1.com","test1test1");
+                userLogin("test2@test2.com","test2test2");
 
             }
         });

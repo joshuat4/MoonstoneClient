@@ -61,6 +61,10 @@ public class Chat extends AppCompatActivity {
         fromUserID = s;
     }
 
+    public String getToUserID() {
+        return toUserID;
+    }
+
     Handler handler = new Handler();
 
     public static void setToUserID(String s) {
@@ -97,6 +101,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+
             }
         });
 
@@ -128,6 +133,8 @@ public class Chat extends AppCompatActivity {
             }
         });
     }
+
+
 
     //Sets up the recycler view
     private void initRecyclerView(){

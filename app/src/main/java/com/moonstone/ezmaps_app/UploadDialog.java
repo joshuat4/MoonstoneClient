@@ -21,7 +21,7 @@ public class UploadDialog extends BottomSheetDialogFragment implements OnClickLi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet, container, false);
+        View view = inflater.inflate(R.layout.bottom_sheet_edit_image, container, false);
 
         Button _choosePhoto = view.findViewById(R.id.choosePhoto);
         Button _takePhoto = view.findViewById(R.id.takePhoto);

@@ -1,6 +1,8 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,9 +43,10 @@ public class NewContactSearch extends AppCompatActivity{
     private FindRecyclerViewAdapter adapter;
 
     private EditText filterSearch;
-    public static ProgressBar findContactsLoading;
+    public ProgressBar findContactsLoading;
     private Toolbar toolbar;
     private ActionBar actionbar;
+    private Button searchButton;
 
     private ImageButton clearButton;
 
@@ -53,17 +59,56 @@ public class NewContactSearch extends AppCompatActivity{
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.find_new_contacts);
+        filterSearch = findViewById(R.id.filterAllContacts);
+        findContactsLoading = findViewById(R.id.findContactsLoading);
+        searchButton = findViewById(R.id.searchButton);
+        clearButton = findViewById(R.id.clearButton);
+        toolbar = findViewById(R.id.my_toolbar);
+
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Add New Contacts");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        });
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
-        filterSearch = findViewById(R.id.filterAllContacts);
-        findContactsLoading = findViewById(R.id.findContactsLoading);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        clearButton = findViewById(R.id.clearButton);
+        searchButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Add Contacts","search button initiated");
+                findContactsLoading.setVisibility(View.VISIBLE);
+                searchForContacts(filterSearch.getText().toString().trim());
+            }
+        });
+
+        filterSearch.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        Log.d("Add Contacts", "enter button initiated");
+                        findContactsLoading.setVisibility(View.VISIBLE);
+                        searchForContacts(filterSearch.getText().toString().trim());
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         clearButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -72,51 +117,6 @@ public class NewContactSearch extends AppCompatActivity{
             }
         });
 
-
-        toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
-        actionbar = getSupportActionBar();
-        actionbar.setTitle("Add New Contacts");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
-        Task<QuerySnapshot> d = db.collection("users").get();
-
-        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<DocumentSnapshot> l = task.getResult().getDocuments();
-                //Fill in the necessary arrays
-                for (DocumentSnapshot doc : l) {
-                    if(doc.getId().equals(mAuth.getUid())){
-
-                    }
-                    else{
-                        profilePics.add(doc.get("profilePic").toString());
-                        emails.add(doc.get("email").toString());
-                        names.add(doc.get("name").toString());
-                        ids.add(doc.getId());
-                    }
-                }
-
-                final String Uid = mAuth.getUid();
-                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
-//                fragmentLayout.findViewById(R.id.contactsLoading).setVisibility(View.GONE);
-                        initRecyclerView(contacts);
-                    }
-                });
-            }
-        });
 
         filterSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -132,21 +132,93 @@ public class NewContactSearch extends AppCompatActivity{
             @Override
             public void afterTextChanged(Editable s) {
                 clearButton.setVisibility(View.VISIBLE);
-                filter(s.toString());
             }
         });
 
+        filterSearch.setSelected(true);
+
     }
 
-    private void back(){
-        finish();
+
+
+
+    private boolean compareContacts(String text, String against){
+
+        if(against.toUpperCase().contains(text.toUpperCase())){
+
+            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
+
+            return true;
+        }
+
+
+        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
+
+        return false;
     }
+
+
+    private void searchForContacts(final String inputText){
+        profilePics.clear();
+        names.clear();
+        emails.clear();
+        ids.clear();
+
+        Log.d("Add Contacts", "Searching for contacts: " + inputText);
+
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                List<DocumentSnapshot> list = task.getResult().getDocuments();
+
+                for (DocumentSnapshot doc : list) {
+                    if(!doc.getId().equals(mAuth.getUid())){
+                        // Check for name
+                        String name = doc.get("name").toString();
+                        String email = doc.get("email").toString();
+
+                        if(compareContacts(inputText, name) ||
+                                compareContacts(inputText, email)){
+
+                            profilePics.add(doc.get("profilePic").toString());
+                            emails.add(doc.get("email").toString());
+                            names.add(doc.get("name").toString());
+                            ids.add(doc.getId());
+                        }
+
+                    }
+                }
+
+                Log.d("Add Contacts", "Contacts found: " + names.size());
+
+                final String Uid = mAuth.getUid();
+                db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+
+                        Log.d("Add Contacts", "user's contacts received: " + contacts);
+                        Log.d("Add Contacts", "Initialise Recycler view");
+                        initRecyclerView(contacts);
+                        findContactsLoading.setVisibility(View.GONE);
+                    }
+                });
+            }
+
+
+        });
+
+
+    }
+
 
     private void initRecyclerView(ArrayList<String> contacts){
         RecyclerView recyclerView =  findViewById(R.id.findRecyclerView);
         adapter = new FindRecyclerViewAdapter(this, names, profilePics, ids, emails, contacts);
-        recyclerView.setAdapter(adapter) ;
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     private void filter(String text){
