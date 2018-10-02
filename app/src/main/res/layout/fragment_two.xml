@@ -59,7 +59,7 @@
                 android:layout_marginRight="25dp"
                 android:background="@drawable/search_shape">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/searchBar"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,6 +30,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +50,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moonstone.ezmaps_app.FavRecyclerViewAdapter;
 
+import com.moonstone.ezmaps_app.adapter.PlaceAutocompleteAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,15 +58,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.ListItemClickListener{
+public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.ListItemClickListener,
+    GoogleApiClient.OnConnectionFailedListener{
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
     private ImageButton button;
-    private EditText source;
+    private AutoCompleteTextView source;
     private ImageView image;
     private ImageButton clearButton;
 
     private LinearLayoutManager layoutManager;
     private FavRecyclerViewAdapter adapter;
+    private PlaceAutocompleteAdapter placeAdapter;
+    private GoogleApiClient mGoogleApiClient;
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -69,6 +86,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
     private int REQUEST_CODE = 1;
     private static final int RESULT_OK = -1;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds( new LatLng(-44, 107), new LatLng(-15,158));
     private View view;
 
     private boolean ezdirectionInSession = false;
@@ -79,7 +97,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
             image = (ImageView) view.findViewById(R.id.image);
             clearButton = (ImageButton) view.findViewById(R.id.clearButton);
-            source = (EditText) view.findViewById(R.id.searchBar);
+            source = (AutoCompleteTextView) view.findViewById(R.id.searchBar);
             button = (ImageButton) view.findViewById(R.id.searchButton);
 
             db = FirebaseFirestore.getInstance();
@@ -103,7 +121,25 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
                 }
             });
 
+            ///////////////////////autocomplete stuff//////////////////////////////////////////////
 
+
+            mGoogleApiClient = new GoogleApiClient
+                .Builder(this.getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this.getActivity(), this)
+                .build();
+
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setCountry("AU")
+                .build();
+
+            placeAdapter = new PlaceAutocompleteAdapter(this.getActivity(), mGoogleApiClient, LAT_LNG_BOUNDS, typeFilter);
+
+
+            source.setAdapter(placeAdapter);
+            /////////////////////////////////////////////////////////////////////////////////////
             source.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -122,6 +158,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
                 }
 
             });
+
 
             source.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -366,8 +403,6 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
                 });
 
     }
-
-
 
 
 }
