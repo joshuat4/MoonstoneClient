@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -243,7 +244,7 @@ public class Chat extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
-            Toast.makeText(Chat.this, "Call pressed", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(getApplicationContext(), Calling.class));
             return true;
         }
 
