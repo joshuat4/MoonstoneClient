@@ -29,30 +29,40 @@ public class Calling extends AppCompatActivity {
 
     private IRtcEngineEventHandler myRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
-        public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-//            setupRemoteVideo(uid);
+        public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupRemoteVideo(uid);
+                }
+            });
         }
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-            Log.d("callingmy", "remote video set up");
-            setupRemoteVideo(uid);
+            //Log.d("callingmy", "remote video set up");
+            //setupRemoteVideo(uid);
             super.onUserJoined(uid, elapsed);
         }
     };
 
     private void setupRemoteVideo(int uid) {
         Log.d("callingmy", "remote video set up2a");
-        FrameLayout container =  (FrameLayout)findViewById(R.id.remote_video_view_container);
+        FrameLayout container =  findViewById(R.id.remote_video_view_container);
         Log.d("callingmy", "remote video set up2f");
         Log.d("callingmy", "remote video set up2ff");
+
+        if (container.getChildCount() >= 1) {
+            return;
+        }
+
 
 
 
         //This is the problem line
 
 
-        SurfaceView surfaceView = RtcEngine.CreateRendererView(this);
+        SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
 
 
 
@@ -63,8 +73,8 @@ public class Calling extends AppCompatActivity {
         myRtcEngine.setupRemoteVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, uid));
 
         surfaceView.setTag(uid);
-        //new LongOperation().execute(Integer.toString(uid));
-    }
+    //new LongOperation().execute(Integer.toString(uid));
+}
 
     @Override
     protected  void onCreate(Bundle savedInstanceState){
