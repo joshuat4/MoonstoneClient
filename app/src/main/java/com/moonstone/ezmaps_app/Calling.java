@@ -8,9 +8,18 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
+import com.google.android.gms.vision.Frame;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 import java.util.Random;
 
@@ -26,6 +35,18 @@ public class Calling extends AppCompatActivity {
 
     private RtcEngine myRtcEngine;
     private FirebaseAuth mAuth;
+
+    private FrameLayout remoteContainer;
+    private FrameLayout localContainer;
+
+    private ImageButton switchCamera;
+    private ImageButton audioMode;
+    private ImageButton endCall;
+
+    private CircleImageView callerPic;
+    private TextView callerName;
+
+
 
     private IRtcEngineEventHandler myRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
@@ -48,18 +69,11 @@ public class Calling extends AppCompatActivity {
 
     private void setupRemoteVideo(int uid) {
         Log.d("callingmy", "remote video set up2a");
-        FrameLayout container =  findViewById(R.id.remote_video_view_container);
-        Log.d("callingmy", "remote video set up2f");
-        Log.d("callingmy", "remote video set up2ff");
 
-        if (container.getChildCount() >= 1) {
+        if (remoteContainer.getChildCount() >= 1) {
             return;
         }
 
-
-
-
-        //This is the problem line
 
 
         SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
@@ -68,7 +82,7 @@ public class Calling extends AppCompatActivity {
 
 
         Log.d("callingmy", "remote video set up2cc");
-        container.addView(surfaceView);
+        remoteContainer.addView(surfaceView);
         Log.d("callingmy", "remote video set up2");
         myRtcEngine.setupRemoteVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, uid));
 
@@ -81,9 +95,50 @@ public class Calling extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_ui);
         mAuth = FirebaseAuth.getInstance();
+        localContainer = findViewById(R.id.frontCameraContainer);
+        remoteContainer =  findViewById(R.id.remote_video_view_container);
         Log.d("callingmy", "initiallising");
-
         initializeRtcEngine();
+
+        switchCamera = findViewById(R.id.switch_camera);
+        audioMode = findViewById(R.id.mic_button);
+        endCall = findViewById(R.id.end_call);
+
+        callerName = findViewById(R.id.callerName);
+        callerPic = findViewById(R.id.callerPic);
+
+        //Get data passed through from ContactRecyclerViewAdapter
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            callerName.setText(extras.getString("name"));
+        }
+
+        switchCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRtcEngine.switchCamera();
+            }
+        });
+
+        endCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        audioMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRtcEngine.disableVideo();
+                localContainer.setVisibility(View.INVISIBLE);
+                remoteContainer.setVisibility(View.INVISIBLE);
+
+                callerPic.setVisibility(View.VISIBLE);
+                callerName.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     private void setupVideoProfile() {
@@ -114,11 +169,10 @@ public class Calling extends AppCompatActivity {
 
     //Assign front camera to little framelayout
     private void localVideoConfig(){
-        FrameLayout container = findViewById(R.id.frontCameraContainer);
         SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
 
         surfaceView.setZOrderMediaOverlay(true);
-        container.addView(surfaceView);
+        localContainer.addView(surfaceView);
 
         myRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
     }

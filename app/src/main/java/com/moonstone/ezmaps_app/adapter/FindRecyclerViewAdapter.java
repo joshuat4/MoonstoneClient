@@ -146,7 +146,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profilePic = itemView.findViewById(R.id.profilePic);
+            profilePic = itemView.findViewById(R.id.callerPic);
             contactName = itemView.findViewById(R.id.contactName);
             ContactParentLayout = itemView.findViewById(R.id.contactParentLayout);
 

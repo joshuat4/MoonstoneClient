@@ -4,8 +4,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.moonstone.ezmaps_app"
-        minSdkVersion 22
-        targetSdkVersion 22
+        minSdkVersion 24
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         multiDexEnabled true

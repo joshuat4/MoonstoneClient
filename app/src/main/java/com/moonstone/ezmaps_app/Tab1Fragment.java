@@ -56,7 +56,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
         _nameField = (TextView)view.findViewById(R.id.nameField);
         _emailField = (TextView) view.findViewById(R.id.emailField);
-        _profilePic = (CircleImageView) view.findViewById(R.id.profilePic);
+        _profilePic = (CircleImageView) view.findViewById(R.id.callerPic);
         _QRButton = (Button) view.findViewById(R.id.QRButton);
         _QRButton.setOnClickListener(this);
 
