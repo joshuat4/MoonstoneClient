@@ -491,7 +491,8 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         String destinationURL = currentDestination.replaceAll(" ", "%20");
         Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
-        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=-37.799239,144.961320---"
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145 Queensberry St " +
+                "Carlton VIC 3053---"
                 + destinationURL;
 
         //String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
