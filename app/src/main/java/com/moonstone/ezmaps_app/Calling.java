@@ -2,6 +2,7 @@ package com.moonstone.ezmaps_app;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
@@ -136,6 +137,7 @@ public class Calling extends AppCompatActivity {
 
                 callerPic.setVisibility(View.VISIBLE);
                 callerName.setVisibility(View.VISIBLE);
+                audioMode.setImageResource(R.drawable.videocamera);
             }
         });
 
