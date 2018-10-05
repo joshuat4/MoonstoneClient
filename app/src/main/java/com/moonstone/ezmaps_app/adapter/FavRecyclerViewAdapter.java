@@ -39,7 +39,15 @@ class FavRecyclerViewAdapter extends RecyclerView.Adapter<FavRecyclerViewAdapter
 
 
     public String cleanUpName(String name) {
-        return name.replace("%20"," ");
+        int commaIndex = name.indexOf(',');
+        name.replace("%20"," ");
+
+        String placeholder = name;
+        if(commaIndex != -1){
+            placeholder = name.substring(0,commaIndex);
+        }
+
+        return placeholder;
     }
 
     @Override
