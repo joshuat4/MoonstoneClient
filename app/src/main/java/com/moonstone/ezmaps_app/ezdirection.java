@@ -119,8 +119,15 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ImageView notFoundImg;
     private ProgressBar progressBar;
     private int progressStatus = 0;
+    private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
 
+    // Status
+    public static String CURRENT_STATUS;
+    public static String GPS_SUCCESS = "GPS SUCCESS";
+    public static String GPS_FAILURE = "GPS FAILURE";
+    public static String CARDS_FULLY_LOADED = "CARDS FULLY LOADED";
+    public static String CARDS_NOT_LOADED = "CARDS FULLY LOADED";
 
     /* Utilities */
     private int counter = 0;
@@ -186,11 +193,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         Log.d("EZDIRECTION", "Location Object: " + location.toString());*/
 
         /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
-        /*initFusedLocationProvider(); // Initialise Fused Location Provider
+        initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
-        startLocationUpdatesPermission(); // Initiate Request permission to access GPS*/
+        startLocationUpdatesPermission(); // Initiate Request permission to access GPS
 
-        executeURL();
 
     }
 
@@ -210,27 +216,43 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 super.onLocationResult(locationResult);
 
                 // Getting Current Location and Update Time
-                mCurrentLocation = locationResult.getLastLocation();
-                mLastUpdateTime = Calendar.getInstance().getTime().toString();
-
+                checkCurrentGPSStatus(locationResult.getLastLocation(),Calendar.getInstance().getTime().toString());
 
                 logUpdateLocation("EZDIRECTION/initFLP");
             }
         };
 
         mRequestingLocationUpdates = false;
-
         mLocationRequest = LocationRequest.create();
-
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
 
+    private void checkCurrentGPSStatus(Location currentLocation, String lastUpdateTime){
+
+        // Check to see if they have changed and isn't null
+        if(currentLocation == null || lastUpdateTime == null){
+            Log.d("EZDIRECTION/StatusCheck", "Current Location and Last Update time is null");
+            return;
+        }
+
+        mLastUpdateTime = lastUpdateTime;
+        mCurrentLocation = currentLocation;
+
+
+        // If the cards are not loaded, and object has not been returned (regardless of validity)
+        if(!isCardLoaded && !isLocationNotFound){
+            executeURL();
+            Log.d("EZDIRECTION/StatusCheck", "URL Executed");
+        }
+
+
+
+    }
 
     /* Restoring values from saved instance state */
     private void restoreValuesFromBundle(Bundle savedInstanceState) {
@@ -262,14 +284,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
     }
 
-    /*@Override
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("is_requesting_updates", mRequestingLocationUpdates);
         outState.putParcelable("last_known_location", mCurrentLocation);
         outState.putString("last_updated_on", mLastUpdateTime);
 
-    }*/
+    }
 
     /**
      * Starting location updates
@@ -283,7 +305,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                     @SuppressLint("MissingPermission")
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        Log.i("EZDIRECTION", "All location settings are satisfied.");
+                        Log.i("EZDIRECTION/LocUpSuccess", "All location settings are satisfied.");
 
                         Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
 
@@ -291,7 +313,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                                 mLocationCallback, Looper.myLooper());
 
-                        logUpdateLocation("EZDIRECTION/LocUpSuccess");
+                        Log.d("EZDIRECTION/LocUpSuccess", "Successfully started Location Update");
 
                     }
                 })
@@ -301,7 +323,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                         int statusCode = ((ApiException) e).getStatusCode();
                         switch (statusCode) {
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                Log.i("EZDIRECTION", "Location settings are not satisfied. Attempting to upgrade " +
+                                Log.i("EZDIRECTION/LocUpFailure", "Location settings are not satisfied. Attempting to upgrade " +
                                         "location settings ");
                                 try {
                                     // Show the dialog by calling startResolutionForResult(), and check the
@@ -309,18 +331,16 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(ezdirection.this, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
-                                    Log.i("EZDIRECTION", "PendingIntent unable to execute request.");
+                                    Log.i("EZDIRECTION/LocUpFailure", "PendingIntent unable to execute request.");
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                                 String errorMessage = "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings.";
-                                Log.e("EZDIRECTION", errorMessage);
-
+                                Log.e("EZDIRECTION/LocUpFailure", errorMessage);
                                 Toast.makeText(ezdirection.this, errorMessage, Toast.LENGTH_LONG).show();
                         }
 
-                        logUpdateLocation("EZDIRECTION/LocUpFailure");
                     }
                 });
     }
@@ -395,9 +415,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
 
 
+
+
+
     /*********                  Methods Handling Activity's Life Cycle                *************/
     /* -------------------------------------------------------------------------------------------*/
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -409,10 +432,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         logUpdateLocation("EZDIRECTION/onResume");
 
-    }*/
+    }
 
 
-    /*@Override
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -420,7 +443,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             // pausing location updates
             stopLocationUpdates();
         }
-    }*/
+    }
 
 
 
@@ -478,30 +501,27 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     /* Send URL with Current Location's Coordinates and Destination */
     public void executeURL(){
 
-        // Ready the URL
-        String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
-
         if(mCurrentLocation != null){
+            String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
             String latitudeURL = Double.toString(mCurrentLocation.getLatitude());
             String longitudeURL = Double.toString(mCurrentLocation.getLongitude());
+            String destinationURL = currentDestination.replaceAll(" ", "%20");
+            String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
+
+            new RetrieveFeed(this).execute(url);
+
             Log.d("EZDIRECTION/URL", "Latitude: " + latitudeURL);
             Log.d("EZDIRECTION/URL", "Longitude: " + longitudeURL);
+            Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
+            Log.d("EZDIRECTION/URL", "URL: " + url);
 
+        }else{
+
+            Toast.makeText(this.getApplicationContext(), "GPS is currently not working",Toast.LENGTH_SHORT).show();
         }
 
-        String destinationURL = currentDestination.replaceAll(" ", "%20");
-        Log.d("EZDIRECTION/URL", "Desination: " + destinationURL);
-        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=145 Queensberry St " +
-                "Carlton VIC 3053---"
-                + destinationURL;
-
-        //String url = bodyURL + latitudeURL + "," + longitudeURL +  "---" + destinationURL;
-        Log.d("EZDIRECTION/URL", "URL: " + url);
-
-        // Execute the URL (async)
-        new RetrieveFeed(this).execute(url);
-
     }
+
 
     /* Wait to receive Object initiated by executeURL */
     @Override
@@ -525,12 +545,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
             initRecyclerView();
             isCardLoaded = true;
+            isLocationNotFound = false;
             progressBar.setVisibility(View.GONE);
             setLeftRightButtonVisibility("VISIBILE");
             invalidateOptionsMenu();
 
         }else{
             isCardLoaded = false;
+            isLocationNotFound = true;
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             setNotFoundVisibility("VISIBLE");
