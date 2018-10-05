@@ -62,9 +62,12 @@ public class Calling extends AppCompatActivity {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-            //Log.d("callingmy", "remote video set up");
-            //setupRemoteVideo(uid);
-            super.onUserJoined(uid, elapsed);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupRemoteVideo(uid);
+                }
+            });
         }
     };
 
@@ -131,13 +134,27 @@ public class Calling extends AppCompatActivity {
         audioMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myRtcEngine.disableVideo();
-                localContainer.setVisibility(View.INVISIBLE);
-                remoteContainer.setVisibility(View.INVISIBLE);
 
-                callerPic.setVisibility(View.VISIBLE);
-                callerName.setVisibility(View.VISIBLE);
-                audioMode.setImageResource(R.drawable.videocamera);
+                if (audioMode.getTag().equals(R.drawable.video_camera)) {
+                    myRtcEngine.enableVideo();
+                    localContainer.setVisibility(View.VISIBLE);
+                    remoteContainer.setVisibility(View.VISIBLE);
+
+                    callerPic.setVisibility(View.INVISIBLE);
+                    callerName.setVisibility(View.INVISIBLE);
+                    audioMode.setImageResource(R.drawable.microphone);
+                }
+                else{
+                    myRtcEngine.disableVideo();
+                    localContainer.setVisibility(View.INVISIBLE);
+                    remoteContainer.setVisibility(View.INVISIBLE);
+
+                    callerPic.setVisibility(View.VISIBLE);
+                    callerName.setVisibility(View.VISIBLE);
+                    audioMode.setImageResource(R.drawable.videocamera);
+                }
+
+
             }
         });
 
