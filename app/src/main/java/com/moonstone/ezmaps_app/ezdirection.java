@@ -251,7 +251,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         }
 
 
-
     }
 
     /* Restoring values from saved instance state */
