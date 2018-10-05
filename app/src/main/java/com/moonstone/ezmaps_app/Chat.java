@@ -66,6 +66,7 @@ public class Chat extends AppCompatActivity {
     Handler handler = new Handler();
 
     public static void setToUserID(String s) {
+        Log.d("testing", "user id set as" + s);
         toUserID = s;
     }
 
@@ -247,6 +248,7 @@ public class Chat extends AppCompatActivity {
         if (id == R.id.action_call) {
             Intent i = new Intent(getApplicationContext(), Calling.class);
             i.putExtra("name",userName );
+            i.putExtra("toUserId", toUserID);
             startActivity(i);
             return true;
         }

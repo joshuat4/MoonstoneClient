@@ -4,59 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/callerPic"
-        android:layout_width="263dp"
-        android:layout_height="332dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginVertical="10dp"
-        android:paddingTop="50dp"
-        android:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="254dp"
-        android:text="Persons name"
-        android:textSize="30sp" />
-
-    <ImageButton
-        android:id="@+id/mic_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/end_call"
-        android:layout_marginStart="50dp"
-        android:background="@null"
-        app:srcCompat="@drawable/microphone" />
-
-    <ImageButton
-        android:id="@+id/switch_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/end_call"
-        android:layout_marginEnd="50dp"
-        android:background="@null"
-        app:srcCompat="@drawable/switchcamera" />
-
-
-    <ImageButton
-        android:id="@+id/end_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:background="@null"
-        app:srcCompat="@drawable/endcall" />
-
-
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack">
 
 </RelativeLayout>

@@ -20,8 +20,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import com.google.android.gms.vision.Frame;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.json.JSONArray;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 import io.agora.rtc.IRtcEngineEventHandler;
@@ -32,10 +38,11 @@ import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
-public class Calling extends AppCompatActivity {
+public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResponse{
 
     private RtcEngine myRtcEngine;
     private FirebaseAuth mAuth;
+    private String toUserId;
 
     private FrameLayout remoteContainer;
     private FrameLayout localContainer;
@@ -46,6 +53,7 @@ public class Calling extends AppCompatActivity {
 
     private CircleImageView callerPic;
     private TextView callerName;
+    private String roomId;
 
 
 
@@ -61,7 +69,7 @@ public class Calling extends AppCompatActivity {
         }
 
         @Override
-        public void onUserJoined(int uid, int elapsed) {
+        public void onUserJoined(final int uid, int elapsed) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -94,11 +102,29 @@ public class Calling extends AppCompatActivity {
     //new LongOperation().execute(Integer.toString(uid));
 }
 
+    private void notifyRecipient(){
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            toUserId = extras.getString("toUserId");
+        }
+
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId ;
+        Log.d("Testing", url);
+        //execute async task
+        new RetrieveFeed(this).execute(url);
+
+    }
+
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_ui);
         mAuth = FirebaseAuth.getInstance();
+
+        //Setup room id
+        roomId = "MoonstoneCallRoom:" + Integer.toString(new Random().nextInt(100000) + 1);
+
+        notifyRecipient();
         localContainer = findViewById(R.id.frontCameraContainer);
         remoteContainer =  findViewById(R.id.remote_video_view_container);
         Log.d("callingmy", "initiallising");
@@ -106,6 +132,7 @@ public class Calling extends AppCompatActivity {
 
         switchCamera = findViewById(R.id.switch_camera);
         audioMode = findViewById(R.id.mic_button);
+        audioMode.setTag("audio");
         endCall = findViewById(R.id.end_call);
 
         callerName = findViewById(R.id.callerName);
@@ -134,8 +161,8 @@ public class Calling extends AppCompatActivity {
         audioMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (audioMode.getTag().equals(R.drawable.video_camera)) {
+                Log.d("ok", audioMode.getTag().toString());
+                if (audioMode.getTag().toString().equals("video_cam")) {
                     myRtcEngine.enableVideo();
                     localContainer.setVisibility(View.VISIBLE);
                     remoteContainer.setVisibility(View.VISIBLE);
@@ -143,6 +170,7 @@ public class Calling extends AppCompatActivity {
                     callerPic.setVisibility(View.INVISIBLE);
                     callerName.setVisibility(View.INVISIBLE);
                     audioMode.setImageResource(R.drawable.microphone);
+                    audioMode.setTag("audio");
                 }
                 else{
                     myRtcEngine.disableVideo();
@@ -152,6 +180,7 @@ public class Calling extends AppCompatActivity {
                     callerPic.setVisibility(View.VISIBLE);
                     callerName.setVisibility(View.VISIBLE);
                     audioMode.setImageResource(R.drawable.videocamera);
+                    audioMode.setTag("video_cam");
                 }
 
 
@@ -183,7 +212,7 @@ public class Calling extends AppCompatActivity {
 
     private void joinRoom() {
         myRtcEngine.enableVideo();
-        myRtcEngine.joinChannel(null, "IT-Project-Moonstone:room1", null, new Random().nextInt(100000)+1);
+        myRtcEngine.joinChannel(null, roomId, null, new Random().nextInt(100000)+1);
     }
 
     //Assign front camera to little framelayout
@@ -210,35 +239,11 @@ public class Calling extends AppCompatActivity {
     }
 
 
-    private class LongOperation extends AsyncTask<String, Void, String> {
-        private FrameLayout container;
-        private int uid;
-        private SurfaceView surfaceView;
-        @Override
-        protected String doInBackground(String... params) {
-            uid = Integer.parseInt(params[0]);
-            FrameLayout container =  (FrameLayout)findViewById(R.id.remote_video_view_container);
-            SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
-            return "Executed ";
-        }
 
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("callingmy", "remote video set up2cc");
-            container.addView(surfaceView);
-            Log.d("callingmy", "remote video set up2");
-            myRtcEngine.setupRemoteVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, uid));
-
-            surfaceView.setTag(uid);
-        }
-
-        @Override
-        protected void onPreExecute() {}
+    @Override
+    public void processFinish(JSONArray output){
 
     }
-
-
-
 }
 
 
