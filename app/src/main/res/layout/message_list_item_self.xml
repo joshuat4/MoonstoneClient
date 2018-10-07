@@ -23,7 +23,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:id="@+id/messageText"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/message_item_self"

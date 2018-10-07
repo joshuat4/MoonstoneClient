@@ -7,15 +7,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.moonstone.ezmaps_app.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecyclerViewAdapter.ViewHolder> {
+public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<EzMessage> textMessages = new ArrayList<>();
     private Context mContext;
@@ -33,72 +35,125 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         this.mContext = context;
     }
 
+    private static final int LAYOUT_IMAGE= 0;
+    private static final int LAYOUT_TEXT= 1;
 
-        //Actually recycles the view holders
+    @Override
+    public int getItemViewType(int position) {
+
+        if(textMessages.get(position).getTextType() == null){
+            return LAYOUT_TEXT;
+        }
+
+
+        if(textMessages.get(position).getTextType().equals("IMAGE")){
+            return LAYOUT_IMAGE;
+
+        }else{
+            return LAYOUT_TEXT;
+        }
+    }
+
+
+
+
+    //Actually recycles the view holders
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         mAuth = FirebaseAuth.getInstance();
         final String Uid = mAuth.getUid();
+
+        View view = null;
+        RecyclerView.ViewHolder viewHolder = null;
+
         if(textMessages.get(i).getFromUserId().equals(Uid)){
-            Log.d("messages", "view holder 1 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_self, viewGroup, false);
-            ViewHolder holder = new ViewHolder(view);
-            holder.setIsRecyclable(false);
-            return holder;
-        }
-        else{
-            Log.d("messages", "view holder 2 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item, viewGroup, false);
-            ViewHolder holder = new ViewHolder(view);
-            holder.setIsRecyclable(false);
-            return holder;
-        }
-    }
+            if(i == LAYOUT_IMAGE){
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image_self, viewGroup, false);
+                viewHolder = new ViewHolderImage(view);
 
-    //Called every time a new item is added to the list
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-        Log.d("messages", "view" + Integer.toString(i));
-
-        //Gets the image and puts it into the referenced imageView
-
-        viewHolder.messageText.setText(textMessages.get(i).getText());
-
-        //Add onclicklistener to each list entry
-        viewHolder.MessageParentLayout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Toast.makeText(mContext,textMessages.get(i).getText(), Toast.LENGTH_SHORT).show();
+            }else{
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_self, viewGroup, false);
+                viewHolder = new ViewHolderText(view);
 
             }
-        });
 
-        //last one
-//        if(i == textMessages.size() - 1){
-//            chat_page.messagesLoading.setVisibility(View.GONE);
-//        }
+
+        }else{
+            if(i == LAYOUT_IMAGE){
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image, viewGroup, false);
+                viewHolder = new ViewHolderImage(view);
+
+            }else{
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item, viewGroup, false);
+                viewHolder = new ViewHolderText(view);
+
+            }
+
+        }
+
+        viewHolder.setIsRecyclable(false);
+        return viewHolder;
+
     }
 
-
     @Override
-    public int getItemCount() {
-        return textMessages.size();
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
+
+        if(viewHolder.getItemViewType()== LAYOUT_IMAGE) {
+            ViewHolderImage holder = (ViewHolderImage) viewHolder;
+            Picasso.get().load(textMessages.get(position).getText()).into(holder.messageText);
+            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // when clicked zoom in to image
+                }
+            });
+
+
+        } else {
+            ViewHolderText holder = (ViewHolderText) viewHolder;
+            holder.messageText.setText(textMessages.get(position).getText());
+            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext,textMessages.get(position).getText(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
     }
 
     //Basically the class of the entry itself
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolderText extends RecyclerView.ViewHolder {
         TextView messageText;
         RelativeLayout MessageParentLayout;
 
-
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolderText(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.messageText);
             MessageParentLayout = itemView.findViewById(R.id.messageParentLayout);
 
         }
+    }
+
+    public class ViewHolderImage extends RecyclerView.ViewHolder {
+        ImageView messageText;
+        RelativeLayout MessageParentLayout;
+
+        public ViewHolderImage(@NonNull View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.messageText);
+            MessageParentLayout = itemView.findViewById(R.id.messageParentLayout);
+
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return textMessages.size();
     }
 
 

@@ -20,11 +20,14 @@ import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.moonstone.ezmaps_app.R;
 
 import java.text.DateFormat;
@@ -147,14 +150,39 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendImage(String from, ArrayList<String> imageUrl, String to, String time){
 
+    private void sendImage(String from, ArrayList<String> imageUrlList, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
+
+        for(String imageUrl : imageUrlList){
+            message.put("toUserId", to);
+            message.put("text", imageUrl);
+            message.put("fromUserId", from);
+            message.put("time", time);
+            message.put("textType", "IMAGE");
+
+            db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+            db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+
+        }
+
+        Log.d("messages", "Image Sent");
 
     }
 
     private void sendImage(String from, String imageUrl, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
 
+        message.put("toUserId", to);
+        message.put("text", imageUrl);
+        message.put("fromUserId", from);
+        message.put("time", time);
+        message.put("textType", "IMAGE");
 
+        db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+        db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+
+        Log.d("messages", "Image Sent");
     }
 
     private void sendText(String from, String text, String to, String time){
@@ -163,12 +191,12 @@ public class ChatActivity extends AppCompatActivity {
         message.put("text", text);
         message.put("fromUserId", from);
         message.put("time", time);
+        message.put("textType", "TEXT");
 
         db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
         db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
-        Log.d("messages", "Message written");
+        Log.d("messages", "Message written: " + text);
     }
-
 
 
     //Sets up the recycler view
@@ -238,7 +266,8 @@ public class ChatActivity extends AppCompatActivity {
                                         Date date = dateFormat.parse(dc.getDocument().getString("time"));
                                         ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
                                                 dc.getDocument().getString("toUserId"),
-                                                dc.getDocument().getString("fromUserId"),date));
+                                                dc.getDocument().getString("fromUserId"),date,
+                                                dc.getDocument().getString("textType")));
 
                                     } catch (ParseException e1) {
                                         e1.printStackTrace();
