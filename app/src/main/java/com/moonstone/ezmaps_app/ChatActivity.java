@@ -26,6 +26,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.moonstone.ezmaps_app.adapters.MessageRecyclerViewAdapter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,7 +38,7 @@ import java.util.Locale;
 import java.util.Map;
 
 //the activity wherein instant messaging takes place
-public class Chat extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -271,7 +272,7 @@ public class Chat extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
-            Toast.makeText(Chat.this, "Call pressed", Toast.LENGTH_LONG).show();
+            Toast.makeText(ChatActivity.this, "Call pressed", Toast.LENGTH_LONG).show();
             return true;
         }
 

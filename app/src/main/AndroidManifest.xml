@@ -29,18 +29,18 @@
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".FrontPage">
+        <activity android:name=".FrontPageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserSignUp" />
-        <activity android:name=".UserLogin" />
-        <activity android:name=".NewContactSearch" />
+        <activity android:name=".UserSignUpActivity" />
+        <activity android:name=".UserLoginActivity" />
+        <activity android:name=".NewContactSearchActivity" />
         <activity
-            android:name=".EditProfile"
+            android:name=".EditProfileActivity"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme"
             android:title="Edit Profile" />
@@ -49,22 +49,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
 
-        <activity android:name=".ezmap" />
-        <activity android:name=".Chat" />
+        <activity android:name=".ChatActivity" />
         <activity
-            android:name=".ezdirection"
+            android:name=".EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".error"
             android:label="@string/title_activity_error"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ImageUpload" />
-        <activity android:name=".CameraUpload" />
+        <activity android:name=".ImageUploadActivity" />
+        <activity android:name=".CameraUploadActivity" />
         <activity
-            android:name=".QRCode"
+            android:name=".QRCodeActivity"
             android:theme="@style/AppTheme.PopMe"></activity>
-        <activity android:name=".ChooseContacts"></activity>
+        <activity android:name=".ChooseContactsActivity"></activity>
     </application>
 
 </manifest>

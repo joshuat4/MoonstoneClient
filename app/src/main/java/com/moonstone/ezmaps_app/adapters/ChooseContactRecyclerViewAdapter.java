@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.moonstone.ezmaps_app.Chat;
+import com.moonstone.ezmaps_app.ChatActivity;
 import com.moonstone.ezmaps_app.MyFirebaseMessagingService;
 import com.moonstone.ezmaps_app.R;
 
@@ -77,10 +77,10 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
                 Log.d("ChooseContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
                 Log.d("ChooseContactRecyclerView", "onClick: " + ids.get(i));
 
-                Chat.setToUserID(ids.get(i));
-                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
+                ChatActivity.setToUserID(ids.get(i));
+                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
                 String name = contactNames.get(i);
-                Intent i = new Intent(mContext, Chat.class);
+                Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
 

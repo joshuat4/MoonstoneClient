@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import com.squareup.picasso.Picasso;
 
-public class CameraUpload extends Upload {
+public class CameraUploadActivity extends UploadActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
 

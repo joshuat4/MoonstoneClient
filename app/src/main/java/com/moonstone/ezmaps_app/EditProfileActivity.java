@@ -45,7 +45,7 @@ import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditProfile extends AppCompatActivity implements OnClickListener {
+public class EditProfileActivity extends AppCompatActivity implements OnClickListener {
 
     private Toolbar _toolbar;
 
@@ -178,14 +178,14 @@ public class EditProfile extends AppCompatActivity implements OnClickListener {
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editImage:
-                UploadDialog bottomSheet = new UploadDialog();
-                bottomSheet.show(getSupportFragmentManager(), "UploadDialog");
+                UploadDialogFragment bottomSheet = new UploadDialogFragment();
+                bottomSheet.show(getSupportFragmentManager(), "UploadDialogFragment");
                 break;
             case R.id.signOutButton:
                 FirebaseAuth.getInstance().signOut();
 
                 // Restarts
-                Intent intent = new Intent(this, FrontPage.class);
+                Intent intent = new Intent(this, FrontPageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

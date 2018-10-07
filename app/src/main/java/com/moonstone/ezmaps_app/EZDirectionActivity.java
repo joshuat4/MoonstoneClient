@@ -63,7 +63,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.moonstone.ezmaps_app.adapters.EZCardRecyclerViewAdapter;
 
 
-public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
+public class EZDirectionActivity extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
@@ -286,7 +286,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(ezdirection.this, REQUEST_CHECK_SETTINGS);
+                                    rae.startResolutionForResult(EZDirectionActivity.this, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
                                     Log.i("EZDIRECTION/LocUpFailure", "PendingIntent unable to execute request.");
                                 }
@@ -295,7 +295,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                                 String errorMessage = "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings.";
                                 Log.e("EZDIRECTION/LocUpFailure", errorMessage);
-                                Toast.makeText(ezdirection.this, errorMessage, Toast.LENGTH_LONG).show();
+                                Toast.makeText(EZDirectionActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -690,12 +690,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
 
             if(id == R.id.options){
-                ShareImageDialog bottomSheet = new ShareImageDialog();
+                ShareImageDialogFragment bottomSheet = new ShareImageDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("counter", counter);
                 bundle.putStringArrayList("imageUrlsList", imageUrlsList);
                 bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "ShareImageDialog");
+                bottomSheet.show(getSupportFragmentManager(), "ShareImageDialogFragment");
                 return true;
             }
         }

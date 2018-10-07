@@ -2,7 +2,6 @@ package com.moonstone.ezmaps_app;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,17 +21,14 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.moonstone.ezmaps_app.ContactRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.adapters.ContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
@@ -231,7 +226,7 @@ public class Tab3Fragment extends Fragment {
     }
 
     private void newContact(){
-        Intent intent = new Intent(getActivity(), NewContactSearch.class);
+        Intent intent = new Intent(getActivity(), NewContactSearchActivity.class);
         startActivityForResult(intent, 3);
     }
 

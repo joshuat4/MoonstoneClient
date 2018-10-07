@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-public class ShareImageDialog extends BottomSheetDialogFragment implements View.OnClickListener {
+public class ShareImageDialogFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private Button shareCurrentImage;
     private Button shareAllImages;
@@ -38,7 +38,7 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
         Button shareAllImages = view.findViewById(R.id.shareAllImages);
         Button cancelButton = view.findViewById(R.id.cancelButton);
 
-        currentIntent = new Intent(getActivity(), ChooseContacts.class);
+        currentIntent = new Intent(getActivity(), ChooseContactsActivity.class);
 
         shareCurrentImage.setOnClickListener(this);
         shareAllImages.setOnClickListener(this);
@@ -54,7 +54,7 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
         switch (v.getId()){
             case R.id.shareCurrentImage:
                 this.dismiss();
-                Log.d("ShareImageDialog", "Share Current Image BUTTON CLICK");
+                Log.d("ShareImageDialogFragment", "Share Current Image BUTTON CLICK");
                 currentIntent.putExtra("images", currentImageUrlsList);
                 currentIntent.putExtra("isShareAll", false);
                 currentIntent.putExtra("currentImage", currentCounter);
@@ -63,7 +63,7 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
 
             case R.id.shareAllImages:
                 this.dismiss();
-                Log.d("ShareImageDialog", "Share All Image BUTTON CLICK");
+                Log.d("ShareImageDialogFragment", "Share All Image BUTTON CLICK");
 
                 currentIntent.putExtra("images", currentImageUrlsList);
                 currentIntent.putExtra("isShareAll", true);

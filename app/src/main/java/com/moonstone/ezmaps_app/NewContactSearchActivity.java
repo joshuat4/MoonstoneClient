@@ -34,7 +34,7 @@ import com.moonstone.ezmaps_app.adapters.FindRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewContactSearch extends AppCompatActivity{
+public class NewContactSearchActivity extends AppCompatActivity{
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;

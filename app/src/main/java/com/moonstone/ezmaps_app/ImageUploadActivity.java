@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
-public class ImageUpload extends Upload {
+public class ImageUploadActivity extends UploadActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 

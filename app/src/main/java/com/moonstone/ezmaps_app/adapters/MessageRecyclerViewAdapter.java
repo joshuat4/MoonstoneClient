@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapters;
 
 
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.moonstone.ezmaps_app.EzMessage;
+import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
 

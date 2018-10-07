@@ -26,7 +26,7 @@ import com.moonstone.ezmaps_app.adapters.ChooseContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
-public class ChooseContacts extends AppCompatActivity {
+public class ChooseContactsActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -113,12 +113,12 @@ public class ChooseContacts extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("ChooseContacts", "Listen failed.", e);
+                    Log.w("ChooseContactsActivity", "Listen failed.", e);
                     return;
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    Log.d("ChooseContacts", "Current data: " + snapshot.getData());
+                    Log.d("ChooseContactsActivity", "Current data: " + snapshot.getData());
 
                     names.clear();
                     emails.clear();
@@ -128,7 +128,7 @@ public class ChooseContacts extends AppCompatActivity {
                     try {
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
-                        Log.d("ChooseContacts", "CONTACTS: " + contacts);
+                        Log.d("ChooseContactsActivity", "CONTACTS: " + contacts);
 
                         if (!contacts.isEmpty()) {
                             for (String contact : contacts) {
@@ -142,9 +142,9 @@ public class ChooseContacts extends AppCompatActivity {
                                         ids.add(documentSnapshot.getId());
 
                                         if (names.size() == contacts.size()) {
-                                            Log.d("ChooseContacts", "second list num: " + names.size());
-                                            Log.d("ChooseContacts", "contacts size: " + contacts.size());
-                                            Log.d("ChooseContacts", "contacts available: init recycler view: ");
+                                            Log.d("ChooseContactsActivity", "second list num: " + names.size());
+                                            Log.d("ChooseContactsActivity", "contacts size: " + contacts.size());
+                                            Log.d("ChooseContactsActivity", "contacts available: init recycler view: ");
                                             initRecyclerView();
                                             contactsAvailable = true;
 
@@ -155,7 +155,7 @@ public class ChooseContacts extends AppCompatActivity {
 
                         } else {
                             contactsAvailable = false;
-                            Log.d("ChooseContacts", "contacts NOT available: init recycler view: ");
+                            Log.d("ChooseContactsActivity", "contacts NOT available: init recycler view: ");
                             initRecyclerView();
                         }
 
@@ -165,7 +165,7 @@ public class ChooseContacts extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.d("ChooseContacts", "Current data: null");
+                    Log.d("ChooseContactsActivity", "Current data: null");
                 }
             }
         });
@@ -176,7 +176,7 @@ public class ChooseContacts extends AppCompatActivity {
 
         RecyclerView recyclerView = fragmentLayout.findViewById(R.id.contactRecyclerView);
 
-        Log.d("ChooseContacts", "Initialise recycler view: " + names.toString());
+        Log.d("ChooseContactsActivity", "Initialise recycler view: " + names.toString());
 
         adapter = new ChooseContactRecyclerViewAdapter(getApplicationContext(), names, profilePics, ids, emails, intent.getExtras());
         recyclerView.setAdapter(adapter);
@@ -209,7 +209,7 @@ public class ChooseContacts extends AppCompatActivity {
         try {
             adapter.filterList(fnames, fprofilePics, fids, femails);
         } catch (NullPointerException e) {
-            Log.d("ChooseContacts", "Filter " + e.getMessage());
+            Log.d("ChooseContactsActivity", "Filter " + e.getMessage());
         }
 
     }

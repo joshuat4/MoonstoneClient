@@ -74,14 +74,14 @@
 //
 //                //-------------------------PLS HELP------------------------------
 //                // Need this to redirect to chat_page
-////                Intent intent = new Intent(, FrontPage.class);
+////                Intent intent = new Intent(, FrontPageActivity.class);
 ////                startActivity(intent);
 ////                overridePendingTransition(R.anim.enter, R.anim.exit);
-//                Chat.setToUserID(ids.get(i));
-//                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
+//                ChatActivity.setToUserID(ids.get(i));
+//                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
 //
 //
-//                mContext.startActivity(new Intent(mContext, Chat.class));
+//                mContext.startActivity(new Intent(mContext, ChatActivity.class));
 //
 //
 //            }
@@ -148,13 +148,12 @@
 //        }
 //    }
 //}
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapters;
 
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -165,6 +164,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.moonstone.ezmaps_app.ChatActivity;
+import com.moonstone.ezmaps_app.MyFirebaseMessagingService;
+import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -229,14 +231,14 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                 //-------------------------PLS HELP------------------------------
                 // Need this to redirect to chat_page
-//                Intent intent = new Intent(, FrontPage.class);
+//                Intent intent = new Intent(, FrontPageActivity.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
 
-                Chat.setToUserID(ids.get(i));
-                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
+                ChatActivity.setToUserID(ids.get(i));
+                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
                 String name = contactNames.get(i);
-                Intent i = new Intent(mContext, Chat.class);
+                Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
 
