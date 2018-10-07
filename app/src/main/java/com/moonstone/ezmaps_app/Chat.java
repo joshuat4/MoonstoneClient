@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +76,7 @@ public class Chat extends AppCompatActivity {
     Handler handler = new Handler();
 
     public static void setToUserID(String s) {
+        Log.d("testing", "user id set as" + s);
         toUserID = s;
     }
 
@@ -266,7 +269,10 @@ public class Chat extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
-            Toast.makeText(Chat.this, "Call pressed", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), Calling.class);
+            i.putExtra("name",userName );
+            i.putExtra("toUserId", toUserID);
+            startActivity(i);
             return true;
         }
 

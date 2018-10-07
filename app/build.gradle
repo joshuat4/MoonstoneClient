@@ -28,6 +28,7 @@ android {
     }
     sourceSets {
         main {
+            jniLibs.srcDirs = ['libs']
             java.srcDirs = ['src/main/java', 'src/main/java/startup', 'src/main/java/com.moonstone.ezmaps_app/startup', 'src/main/java/com/moonstone/ezmaps_app/startup', 'src/main/java/com/moonstone/ezmaps_app/contacts', 'src/main/java/com/moonstone/ezmaps_app/profile', 'src/main/java/com/moonstone/ezmaps_app/ezmap', 'src/main/java/com/moonstone/ezmaps_app/add_contacts', 'src/main/java/com/moonstone/ezmaps_app/chat']
         }
     }

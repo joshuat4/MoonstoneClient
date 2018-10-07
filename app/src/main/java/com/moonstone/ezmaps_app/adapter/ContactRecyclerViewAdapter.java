@@ -266,7 +266,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profilePic = itemView.findViewById(R.id.profilePic);
+            profilePic = itemView.findViewById(R.id.callerPic);
             contactName = itemView.findViewById(R.id.contactName);
             ContactParentLayout = itemView.findViewById(R.id.contactParentLayout);
 

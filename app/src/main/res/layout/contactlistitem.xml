@@ -8,7 +8,7 @@
     android:background="@drawable/dynamic_border">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profilePic"
+            android:id="@+id/callerPic"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@mipmap/ic_launcher"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="15dp"
-            android:layout_toEndOf="@+id/profilePic"
+            android:layout_toEndOf="@+id/callerPic"
             android:text="First Name Last"
             android:textColor="@color/colorBlack"
             android:textSize="18dp"
