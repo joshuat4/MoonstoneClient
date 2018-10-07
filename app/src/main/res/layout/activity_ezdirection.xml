@@ -11,7 +11,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorForeground"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,14 +20,56 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
         app:navigationContentDescription="Navigation button description"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:progressBarStyle"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- When things are not found -->
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:id="@+id/notFoundImg"
+        android:src="@drawable/not_found_img"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notFoundText"
+        android:layout_below="@+id/notFoundImg"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:text="Oops... No results found."/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notFoundText"
+        android:id="@+id/notFoundSubtext"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:textStyle="normal"
+        android:text="Please return to the main menu and try again."/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
-        android:layout_above="@+id/currentLocationButton"
         android:orientation= "horizontal"
         android:id = "@+id/recyclerView"/>
 
@@ -38,24 +80,26 @@
         android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:theme="@style/FrontButton"
-        android:text="Current Location"/>
+        android:theme="@style/AcceptButton"
+        android:text="My Next Stop"/>
 
     <ImageButton
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:includeFontPadding="false"
         android:minWidth="0dp"
         android:background="?android:selectableItemBackground"
+        android:visibility="visible"
         android:src="@drawable/left_arrow"
         android:layout_alignParentStart="true"
         android:theme="@style/CardButton"
         android:id="@+id/leftButton"/>
 
     <ImageButton
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:src="@drawable/right_arrow"
+        android:visibility="visible"
         android:background="?android:selectableItemBackground"
         android:layout_alignParentEnd="true"
         android:theme="@style/CardButton"

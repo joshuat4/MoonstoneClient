@@ -8,7 +8,7 @@
     android:background="@drawable/dynamic_border">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/callerPic"
+        android:id="@+id/profilePic"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@mipmap/ic_launcher"
@@ -23,20 +23,19 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="15dp"
-        android:layout_toEndOf="@+id/callerPic"
-        android:text="First Name Last"
+        android:layout_toEndOf="@+id/profilePic"
+        android:text="First Name"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
         android:layout_gravity="center"/>
 
     <Button
         android:id="@+id/addUser"
-        android:theme="@style/AcceptButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="8dp"
         android:text="Add" />
 
 </RelativeLayout>

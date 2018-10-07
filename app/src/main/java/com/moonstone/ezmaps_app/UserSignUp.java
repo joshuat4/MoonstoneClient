@@ -126,10 +126,12 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
 
                    final Map<String, Object> userMap = new HashMap<>();
                    final ArrayList<String> contacts = new ArrayList<>();
+                   final ArrayList<String> favouritePlaces = new ArrayList<>();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
-                   userMap.put("profilePic", "https://images.pexels.com/photos/132037/pexels-photo-132037.jpeg?auto=compress&cs=tinysrgb&h=350");
+                   userMap.put("profilePic", "https://source.unsplash.com/hchKfNuAblU/500x500");
                    userMap.put("name", name);
+                   userMap.put("favouritePlaces", favouritePlaces);
 
                    //This goes to Cloud Firestore
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

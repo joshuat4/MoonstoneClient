@@ -151,6 +151,7 @@
 package com.moonstone.ezmaps_app;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -172,6 +173,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> contactNames = new ArrayList<>();
     private ArrayList<String> profilePics = new ArrayList<>();
     private Context mContext;
+    private Activity mActivity;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
@@ -184,6 +186,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         this.mContext = context;
         this.ids = ids;
         this.emails = emails;
+        this.mActivity = mActivity;
     }
 
     //Actually recycles the view holders
@@ -241,9 +244,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         viewHolder.email = emails.get(i);
 
         //last one
-        if(i == contactNames.size() - 1){
+        /*if(i == contactNames.size() - 1){
             Tab3Fragment.contactsLoading.setVisibility(View.GONE);
-        }
+        }*/
     }
 
 

@@ -6,25 +6,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
     android:background="@color/colorBackground">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="4dp"
-        android:layout_marginVertical="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:id="@+id/details">
 
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginVertical="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/callerPic"
+                android:id="@+id/profilePic"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 app:civ_border_width="3dp"
@@ -40,8 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center_horizontal"
-                android:textSize="20dp"
-                android:layout_below="@id/callerPic"/>
+                android:textSize="20sp" />
 
             <TextView
                 android:text="Email"
@@ -49,9 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:textSize="20dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_below="@id/nameField"/>
+                android:textSize="20sp"
+                android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
 
@@ -68,8 +69,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginVertical="5dp"
-            android:paddingHorizontal="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:weightSum="2">
 
             <Button

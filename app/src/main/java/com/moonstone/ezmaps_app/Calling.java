@@ -17,7 +17,6 @@ import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-import com.google.android.gms.vision.Frame;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
