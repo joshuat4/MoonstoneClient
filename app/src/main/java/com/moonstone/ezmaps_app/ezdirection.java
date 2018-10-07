@@ -82,7 +82,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
-public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener, LocationListener {
+public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
@@ -98,9 +98,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private Location mCurrentLocation; // Location Object
 
     private Boolean mRequestingLocationUpdates; // requesting location flag
-
-    private LocationManager locationManager;
-    private double latitude, longitude;
 
     /* Main Activity attributes */
     private Toolbar toolbar;
@@ -122,19 +119,14 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
 
-    // Status
-    public static String CURRENT_STATUS;
-    public static String GPS_SUCCESS = "GPS SUCCESS";
-    public static String GPS_FAILURE = "GPS FAILURE";
-    public static String CARDS_FULLY_LOADED = "CARDS FULLY LOADED";
-    public static String CARDS_NOT_LOADED = "CARDS FULLY LOADED";
-
     /* Utilities */
     private int counter = 0;
     private int numView;
     private Map<String, Object> tab2_to_ezdirection; // Object received from Tab 2
     private boolean isCurrentDestinationFavourited;
     private String currentDestination; // Name of the current destination
+
+
 
 
     @Override
@@ -179,24 +171,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
-
-        /* Getting Current Locations's GPS Coordinates */
-        /*locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Log.d("EZDIRECTION", "PERMISSION TO ACCESS LOCATION SERVICE CHECKED");
-
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-        onLocationChanged(location);
-        Log.d("EZDIRECTION", "Location Object: " + location.toString());*/
-
         /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
         initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
         startLocationUpdatesPermission(); // Initiate Request permission to access GPS
-
 
     }
 
@@ -242,7 +220,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         mLastUpdateTime = lastUpdateTime;
         mCurrentLocation = currentLocation;
-
 
         // If the cards are not loaded, and object has not been returned (regardless of validity)
         if(!isCardLoaded && !isLocationNotFound){
@@ -410,9 +387,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                 Manifest.permission.ACCESS_FINE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
-
-
-
 
 
 
@@ -736,6 +710,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
             if(id == R.id.options){
                 ShareImageDialog bottomSheet = new ShareImageDialog();
+                Bundle bundle = new Bundle();
+                bundle.putInt("counter", counter);
+                bundle.putStringArrayList("imageUrlsList", imageUrlsList);
+                bottomSheet.setArguments(bundle);
                 bottomSheet.show(getSupportFragmentManager(), "ShareImageDialog");
                 return true;
             }
@@ -744,25 +722,5 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         return super.onOptionsItemSelected(item);
     }
 
-    /* OLD Location Listener */
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-    }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 }

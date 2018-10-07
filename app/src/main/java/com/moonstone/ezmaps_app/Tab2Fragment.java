@@ -281,7 +281,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
             ezdirectionInSession = true;
             Log.d("TAB2", "EZDirection is in session: " + ezdirectionInSession);
 
-            // Send the hashmap (tab2_to_ezdirection) to EZDirection
+            // Set Result
             Intent intent = new Intent(this.getActivity(), ezdirection.class);
             intent.putExtra("tab2_to_ezdirection", tab2_to_ezdirection);
             startActivityForResult(intent, REQUEST_CODE);

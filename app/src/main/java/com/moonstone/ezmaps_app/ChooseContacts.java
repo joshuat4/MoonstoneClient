@@ -1,13 +1,236 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.ArrayList;
 
 public class ChooseContacts extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private View fragmentLayout;
+    private com.moonstone.ezmaps_app.ContactRecyclerViewAdapter adapter;
+    private boolean contactsAvailable = false;
+
+    private EditText contactFilter;
+    public ProgressBar contactsLoading;
+    private ImageButton clearButton;
+
+    private ArrayList<String> profilePics;
+    private ArrayList<String> ids;
+    private ArrayList<String> emails;
+    private ArrayList<String> names;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_contacts);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
+        contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+
+        profilePics = new ArrayList<>();
+        ids = new ArrayList<>();
+        emails = new ArrayList<>();
+        names = new ArrayList<>();
+
+        clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contactFilter.getText().clear();
+                clearButton.setVisibility(View.GONE);
+            }
+        });
+
+        //Filter code
+        contactFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                clearButton.setVisibility(View.VISIBLE);
+
+                // Check if there is contacts available before filtering
+                if (contactsAvailable) {
+                    filter(s.toString());
+                }
+
+            }
+        });
+
+        loadContactsFromDB();
+        contactFilter.setSelected(false);
+
     }
+
+    private void loadContactsFromDB() {
+
+        final String Uid = mAuth.getUid();
+        final DocumentReference docRef = db.collection("users").document(Uid);
+
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("TAB3", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("TAB3", "Current data: " + snapshot.getData());
+
+                    names.clear();
+                    emails.clear();
+                    ids.clear();
+                    profilePics.clear();
+
+                    try {
+                        final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
+
+                        Log.d("TAB3", "CONTACTS: " + contacts);
+
+                        if (!contacts.isEmpty()) {
+                            for (String contact : contacts) {
+                                db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                                        profilePics.add(documentSnapshot.get("profilePic").toString());
+                                        emails.add(documentSnapshot.get("email").toString());
+                                        names.add(documentSnapshot.get("name").toString());
+                                        ids.add(documentSnapshot.getId());
+
+                                        if (names.size() == contacts.size()) {
+                                            Log.d("TAB3", "second list num: " + names.size());
+                                            Log.d("TAB3", "contacts size: " + contacts.size());
+                                            Log.d("TAB3", "contacts available: init recycler view: ");
+                                            initRecyclerView();
+                                            contactsAvailable = true;
+
+                                        }
+                                    }
+                                });
+                            }
+
+                        } else {
+                            contactsAvailable = false;
+                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                            initRecyclerView();
+                        }
+
+                    } catch (NullPointerException n) {
+                        contactsAvailable = false;
+
+                    }
+
+                } else {
+                    Log.d("TAB3", "Current data: null");
+                }
+            }
+        });
+    }
+
+    //Sets up the recycler view
+    private void initRecyclerView() {
+
+        RecyclerView recyclerView = fragmentLayout.findViewById(R.id.contactRecyclerView);
+
+        Log.d("TAB3", "Initialise recycler view: " + names.toString());
+
+        adapter = new com.moonstone.ezmaps_app.ContactRecyclerViewAdapter(getApplicationContext(), names, profilePics, ids, emails);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        contactFilter.setSelected(false);
+        contactsLoading.setVisibility(View.GONE);
+    }
+
+    private void filter(String text) {
+
+        //Filtered arrays
+        ArrayList<String> fprofilePics = new ArrayList<>();
+        ArrayList<String> fids = new ArrayList<>();
+        ArrayList<String> femails = new ArrayList<>();
+        ArrayList<String> fnames = new ArrayList<>();
+
+        int counter = 0;
+
+        for (String name : names) {
+            if (name.toLowerCase().contains(text.toLowerCase())) {
+                fprofilePics.add(profilePics.get(counter));
+                fids.add(ids.get(counter));
+                femails.add(emails.get(counter));
+                fnames.add(names.get(counter));
+            }
+            counter += 1;
+        }
+
+        try {
+            adapter.filterList(fnames, fprofilePics, fids, femails);
+        } catch (NullPointerException e) {
+            Log.d("TAB3", "Filter " + e.getMessage());
+        }
+
+    }
+
+    private static final int RESULT_OK = -1;
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            if(requestCode == ShareImageDialog.REQUEST_CODE_Current_Image){
+
+
+            }else if(requestCode == ShareImageDialog.REQUEST_CODE_All_Image){
+
+            }
+        }
+
+    }
+
+
+
+
+
 }

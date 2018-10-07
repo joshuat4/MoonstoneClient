@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

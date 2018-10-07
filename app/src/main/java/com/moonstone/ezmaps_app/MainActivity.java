@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.moonstone.ezmaps_app.adapter.TabAdapter;
+
 import java.util.HashMap;
 import java.util.Map;
 import android.view.inputmethod.InputMethodManager;
