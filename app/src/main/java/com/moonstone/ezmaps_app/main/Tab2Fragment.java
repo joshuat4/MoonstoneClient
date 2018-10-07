@@ -326,20 +326,22 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
         // Locally
         int index;
-        if(adapter != null){
-            index = adapter.getItemCount();
-            favouritePlaces.add(currentDestination);
-            adapter.notifyItemInserted(index);
 
-        }else{
-            index = 0;
-            favouritePlaces.add(currentDestination);
-            initFavRecyclerView(view, favouritePlaces);
+        if(currentDestination != null){
+            if(adapter != null){
+                index = adapter.getItemCount();
+                favouritePlaces.add(currentDestination);
+                adapter.notifyItemInserted(index);
+
+            }else{
+                index = 0;
+                favouritePlaces.add(currentDestination);
+                initFavRecyclerView(view, favouritePlaces);
+            }
+
+            Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
+            updateFavouritePlacesToDB(favouritePlaces);
         }
-
-
-        Log.d("TAB2/addD", "Index: " + index + " currentDest: " + currentDestination + " favPlaces: " + favouritePlaces);
-        updateFavouritePlacesToDB(favouritePlaces);
 
     }
 

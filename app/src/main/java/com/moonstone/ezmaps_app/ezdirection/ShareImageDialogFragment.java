@@ -50,26 +50,25 @@ public class ShareImageDialogFragment extends BottomSheetDialogFragment implemen
     }
 
 
-
+    public int ALL_IMAGES = -1;
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.shareCurrentImage:
                 this.dismiss();
-                Log.d("ShareImageDialogFragment", "Share Current Image BUTTON CLICK");
-                currentIntent.putExtra("images", currentImageUrlsList);
-                currentIntent.putExtra("isShareAll", false);
-                currentIntent.putExtra("currentImage", currentCounter);
+                Log.d("ShareImageDialogFragment", "Share Current Image  ");
+                currentIntent.putStringArrayListExtra("currentImageUrlsList", currentImageUrlsList);
+                currentIntent.putExtra("fromChooseContacts", true);
+                currentIntent.putExtra("currentCounter", currentCounter);
                 startActivityForResult(currentIntent, REQUEST_CODE);
                 break;
 
             case R.id.shareAllImages:
                 this.dismiss();
-                Log.d("ShareImageDialogFragment", "Share All Image BUTTON CLICK");
-
-                currentIntent.putExtra("images", currentImageUrlsList);
-                currentIntent.putExtra("isShareAll", true);
-                currentIntent.putExtra("currentImage", currentCounter);
+                Log.d("ShareImageDialogFragment", "Share All Images ");
+                currentIntent.putStringArrayListExtra("currentImageUrlsList", currentImageUrlsList);
+                currentIntent.putExtra("fromChooseContacts", true);
+                currentIntent.putExtra("currentCounter", ALL_IMAGES);
                 startActivityForResult(currentIntent, REQUEST_CODE);
                 break;
 

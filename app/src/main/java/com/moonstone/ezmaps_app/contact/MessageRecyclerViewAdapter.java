@@ -42,14 +42,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<MessageRecy
         final String Uid = mAuth.getUid();
         if(textMessages.get(i).getFromUserId().equals(Uid)){
             Log.d("messages", "view holder 1 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitemself, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_self, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
             return holder;
         }
         else{
             Log.d("messages", "view holder 2 " + Integer.toString(i));
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.messagelistitem, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             holder.setIsRecyclable(false);
             return holder;

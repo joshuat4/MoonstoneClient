@@ -178,9 +178,9 @@ public class ChooseContactsActivity extends AppCompatActivity {
 
         Log.d("ChooseContactsActivity", "Initialise recycler view: " + names.toString());
 
-        adapter = new ChooseContactRecyclerViewAdapter(getApplicationContext(), names, profilePics, ids, emails, intent.getExtras());
+        adapter = new ChooseContactRecyclerViewAdapter(ChooseContactsActivity.this, names, profilePics, ids, emails, intent.getExtras());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(ChooseContactsActivity.this));
 
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);

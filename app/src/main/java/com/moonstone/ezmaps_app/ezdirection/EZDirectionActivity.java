@@ -402,6 +402,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     @Override
     public void finish() {
+        stopLocationUpdates();
         Intent returnIntent = new Intent();
         returnIntent.putExtra("ezdirection_to_tab2", isCurrentDestinationFavourited);
 

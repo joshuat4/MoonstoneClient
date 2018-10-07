@@ -75,6 +75,8 @@
             <EditText
                 android:id="@+id/textField"
                 android:hint="Enter message"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:background="@android:color/transparent"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"

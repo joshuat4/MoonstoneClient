@@ -240,6 +240,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 String name = contactNames.get(i);
                 Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtra("name", name);
+                i.putExtra("fromChooseContacts", false);
                 mContext.startActivity(i);
 
             }

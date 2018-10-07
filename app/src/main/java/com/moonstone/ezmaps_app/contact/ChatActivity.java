@@ -1,6 +1,5 @@
 package com.moonstone.ezmaps_app.contact;
 
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -77,29 +76,14 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        currentTime = Timestamp.now();
-        Log.d("time", "time: " + currentTime.toDate().toString());
-
-        //Get data passed through from ContactRecyclerViewAdapter
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            userName = extras.getString("name");
-        }
-
-        Log.d("HERE", "CHAT INITIALISED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
-
         textField = (EditText) findViewById(R.id.textField);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
         messagesLoading = findViewById(R.id.messagesLoading);
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
-        actionbar.setTitle(userName);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +93,45 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        currentTime = Timestamp.now();
+        Log.d("time", "time: " + currentTime.toDate().toString());
+
+
+        Bundle extras = getIntent().getExtras();
+        Boolean fromChooseContacts;
+        ArrayList<String> currentImageUrlsList;
+        int currentCounter;
+
+        if (extras != null) {
+            userName = extras.getString("name");
+
+            fromChooseContacts = extras.getBoolean("fromChooseContacts");
+
+            if(fromChooseContacts){
+                currentImageUrlsList = extras.getStringArrayList("currentImageUrlsList");
+                currentCounter = extras.getInt("currentCounter");
+
+                if(currentCounter == -1){
+                    sendImage(mAuth.getUid(),
+                            currentImageUrlsList, toUserID,
+                            Timestamp.now().toDate().toString());
+
+                }else{
+                    sendImage(mAuth.getUid(),
+                            currentImageUrlsList.get(currentCounter), toUserID,
+                            Timestamp.now().toDate().toString());
+                }
+
+            }
+        }
+
+        actionbar.setTitle(userName);
+
         //instantiate and update the chat
         handler.post(updateView);
-
 
         //SEND MESSAGE
         sendButton.setOnClickListener(new Button.OnClickListener(){
@@ -127,10 +147,13 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendImage(String from, ArrayList<String> imageUrl, int counter, String to, String time){
+    private void sendImage(String from, ArrayList<String> imageUrl, String to, String time){
 
 
-        final Map<String, Object> message = new HashMap<>();
+    }
+
+    private void sendImage(String from, String imageUrl, String to, String time){
+
 
     }
 

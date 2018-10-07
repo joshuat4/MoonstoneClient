@@ -38,7 +38,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
     public ChooseContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
                                       ArrayList<String> profilePics, ArrayList<String> ids,
                                       ArrayList<String> emails, Bundle shareImageBundle){
-        Log.d("HERE", "INITIALISED ");
+
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
@@ -46,6 +46,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
         this.emails = emails;
         this.mActivity = mActivity;
         this.shareImageBundle = shareImageBundle;
+
     }
 
     //Actually recycles the view holders
@@ -81,6 +82,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
                 ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
                 String name = contactNames.get(i);
                 Intent i = new Intent(mContext, ChatActivity.class);
+                i.putExtras(shareImageBundle);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
 
