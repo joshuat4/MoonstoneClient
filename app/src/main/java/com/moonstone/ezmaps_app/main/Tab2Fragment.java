@@ -299,9 +299,10 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
         Log.d("TAB2", "Result Code: " + resultCode);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            boolean ezdirection_to_tab2 = (boolean) data.getExtras().get("ezdirection_to_tab2");
+            boolean ezdirection_to_tab2 = data.getBooleanExtra("ezdirection_to_tab2", false);
 
             Log.d("TAB2", "Passed item received: " + ezdirection_to_tab2);
+
             if(ezdirection_to_tab2 && !isCurrentDestinationFavourited){
                 Log.d("TAB2", "Add current favourite place");
                 addCurrentDestinationToFavouritePlace();

@@ -62,8 +62,9 @@
         <activity android:name=".edit_profile.CameraUploadActivity" />
         <activity
             android:name=".main.QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe"></activity>
-        <activity android:name=".ezdirection.ChooseContactsActivity"></activity>
+            android:theme="@style/AppTheme.PopMe" />
+        <activity android:name=".ezdirection.ChooseContactsActivity" />
+        <activity android:name=".contact.ImageSendingActivity"></activity>
     </application>
 
 </manifest>

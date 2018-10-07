@@ -1,5 +1,6 @@
 package com.moonstone.ezmaps_app.contact;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -29,6 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.edit_profile.CameraUploadActivity;
+import com.moonstone.ezmaps_app.edit_profile.UploadActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -50,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private EditText textField;
     private ImageButton sendButton;
+    private ImageButton cameraButton;
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
@@ -76,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         toUserID = s;
     }
 
+    public int REQUEST_CODE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,8 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.chat_page);
         textField = (EditText) findViewById(R.id.textField);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
+        cameraButton = (ImageButton) findViewById(R.id.cameraButton);
+
         messagesLoading = findViewById(R.id.messagesLoading);
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -148,6 +155,36 @@ public class ChatActivity extends AppCompatActivity {
                 textField.setText("");
             }
         });
+
+        cameraButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("CHAT ACTIVITY", "CAMERA BUTTON");
+                startActivityForResult(new Intent(getApplicationContext(), ImageSendingActivity.class), REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TAB2", "Activity is returned");
+        Log.d("TAB2", "Request Code: " + requestCode);
+        Log.d("TAB2", "Result Code: " + resultCode);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            String imageUrl = data.getStringExtra("image");
+            if(imageUrl != null){
+                sendImage(mAuth.getUid(), imageUrl, toUserID,
+                        Timestamp.now().toDate().toString());
+
+                Toast.makeText(ChatActivity.this, "Sending Image Successful", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(ChatActivity.this, "Sending Image Unsuccessful", Toast.LENGTH_LONG).show();
+            }
+
+        }
     }
 
 
