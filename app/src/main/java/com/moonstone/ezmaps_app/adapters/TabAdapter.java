@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app.adapter;
+package com.moonstone.ezmaps_app.adapters;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +10,7 @@ import java.util.List;
 public class TabAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
-    TabAdapter(FragmentManager fm) {
+    public TabAdapter(FragmentManager fm) {
         super(fm);
     }
 

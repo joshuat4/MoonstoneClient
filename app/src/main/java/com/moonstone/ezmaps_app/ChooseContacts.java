@@ -1,6 +1,5 @@
 package com.moonstone.ezmaps_app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.moonstone.ezmaps_app.adapters.ChooseContactRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -33,7 +31,7 @@ public class ChooseContacts extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private View fragmentLayout;
-    private com.moonstone.ezmaps_app.ContactRecyclerViewAdapter adapter;
+    private ChooseContactRecyclerViewAdapter adapter;
     private boolean contactsAvailable = false;
 
     private EditText contactFilter;
@@ -44,6 +42,8 @@ public class ChooseContacts extends AppCompatActivity {
     private ArrayList<String> ids;
     private ArrayList<String> emails;
     private ArrayList<String> names;
+
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,9 @@ public class ChooseContacts extends AppCompatActivity {
         ids = new ArrayList<>();
         emails = new ArrayList<>();
         names = new ArrayList<>();
+
+        // Get Intent from EZ Direction
+        this.intent = getIntent();
 
         clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new Button.OnClickListener() {
@@ -110,12 +113,12 @@ public class ChooseContacts extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("TAB3", "Listen failed.", e);
+                    Log.w("ChooseContacts", "Listen failed.", e);
                     return;
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    Log.d("TAB3", "Current data: " + snapshot.getData());
+                    Log.d("ChooseContacts", "Current data: " + snapshot.getData());
 
                     names.clear();
                     emails.clear();
@@ -125,7 +128,7 @@ public class ChooseContacts extends AppCompatActivity {
                     try {
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
-                        Log.d("TAB3", "CONTACTS: " + contacts);
+                        Log.d("ChooseContacts", "CONTACTS: " + contacts);
 
                         if (!contacts.isEmpty()) {
                             for (String contact : contacts) {
@@ -139,9 +142,9 @@ public class ChooseContacts extends AppCompatActivity {
                                         ids.add(documentSnapshot.getId());
 
                                         if (names.size() == contacts.size()) {
-                                            Log.d("TAB3", "second list num: " + names.size());
-                                            Log.d("TAB3", "contacts size: " + contacts.size());
-                                            Log.d("TAB3", "contacts available: init recycler view: ");
+                                            Log.d("ChooseContacts", "second list num: " + names.size());
+                                            Log.d("ChooseContacts", "contacts size: " + contacts.size());
+                                            Log.d("ChooseContacts", "contacts available: init recycler view: ");
                                             initRecyclerView();
                                             contactsAvailable = true;
 
@@ -152,7 +155,7 @@ public class ChooseContacts extends AppCompatActivity {
 
                         } else {
                             contactsAvailable = false;
-                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                            Log.d("ChooseContacts", "contacts NOT available: init recycler view: ");
                             initRecyclerView();
                         }
 
@@ -162,7 +165,7 @@ public class ChooseContacts extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.d("TAB3", "Current data: null");
+                    Log.d("ChooseContacts", "Current data: null");
                 }
             }
         });
@@ -173,9 +176,9 @@ public class ChooseContacts extends AppCompatActivity {
 
         RecyclerView recyclerView = fragmentLayout.findViewById(R.id.contactRecyclerView);
 
-        Log.d("TAB3", "Initialise recycler view: " + names.toString());
+        Log.d("ChooseContacts", "Initialise recycler view: " + names.toString());
 
-        adapter = new com.moonstone.ezmaps_app.ContactRecyclerViewAdapter(getApplicationContext(), names, profilePics, ids, emails);
+        adapter = new ChooseContactRecyclerViewAdapter(getApplicationContext(), names, profilePics, ids, emails, intent.getExtras());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -206,30 +209,10 @@ public class ChooseContacts extends AppCompatActivity {
         try {
             adapter.filterList(fnames, fprofilePics, fids, femails);
         } catch (NullPointerException e) {
-            Log.d("TAB3", "Filter " + e.getMessage());
+            Log.d("ChooseContacts", "Filter " + e.getMessage());
         }
 
     }
-
-    private static final int RESULT_OK = -1;
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == RESULT_OK){
-            if(requestCode == ShareImageDialog.REQUEST_CODE_Current_Image){
-
-
-            }else if(requestCode == ShareImageDialog.REQUEST_CODE_All_Image){
-
-            }
-        }
-
-    }
-
-
 
 
 

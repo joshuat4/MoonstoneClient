@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app;
+package com.moonstone.ezmaps_app.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,9 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

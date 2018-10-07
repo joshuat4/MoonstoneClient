@@ -154,6 +154,7 @@ package com.moonstone.ezmaps_app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -179,7 +180,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
+    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+                                      ArrayList<String> profilePics, ArrayList<String> ids,
+                                      ArrayList<String> emails){
         Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;

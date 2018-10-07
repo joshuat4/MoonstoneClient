@@ -1,4 +1,4 @@
-package com.moonstone.ezmaps_app.adapter;
+package com.moonstone.ezmaps_app.adapters;
 
 /*
  * Copyright (C) 2015 Google Inc. All Rights Reserved.
@@ -43,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /**

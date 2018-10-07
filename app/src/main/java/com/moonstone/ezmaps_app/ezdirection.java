@@ -3,18 +3,12 @@ package com.moonstone.ezmaps_app;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.icu.text.DateFormat;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -23,7 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +24,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,11 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,21 +54,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.moonstone.ezmaps_app.RecyclerViewAdapter;
+import com.moonstone.ezmaps_app.adapters.EZCardRecyclerViewAdapter;
 
 
 public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
@@ -109,7 +90,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
     private View recyclerView;
-    private RecyclerViewAdapter adapter;
+    private EZCardRecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
     private TextView notFoundText;
     private TextView notFoundSubtext;
@@ -584,7 +565,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
+        adapter = new EZCardRecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
         numView = adapter.getItemCount();
         recyclerView.setAdapter(adapter);
         layoutManager.setSmoothScrollbarEnabled(false);

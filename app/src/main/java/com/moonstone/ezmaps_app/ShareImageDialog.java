@@ -19,27 +19,26 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
     private Button shareAllImages;
     private Button cancelButton;
 
-    private Bundle savedInstanceState;
+    private Bundle bundle;
     private ArrayList<String> currentImageUrlsList;
     private int currentCounter;
+    private Intent currentIntent;
 
+    private int REQUEST_CODE = 1;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_share_image, container, false);
 
-        this.savedInstanceState = savedInstanceState;
-        currentImageUrlsList = savedInstanceState.getStringArrayList("imageUrlsList");
-        currentCounter= savedInstanceState.getInt("counter");
-
-        Log.d("ShareImageDialog", "Share Current Image ONCREATEVIEW");
-        Log.d("ShareImageDialog", "Image List" + currentImageUrlsList);
-        Log.d("ShareImageDialog", "Counter" + currentCounter);
+        currentCounter = getArguments().getInt("counter");
+        currentImageUrlsList = getArguments().getStringArrayList("imageUrlsList");
 
         Button shareCurrentImage = view.findViewById(R.id.shareCurrentImage);
         Button shareAllImages = view.findViewById(R.id.shareAllImages);
         Button cancelButton = view.findViewById(R.id.cancelButton);
+
+        currentIntent = new Intent(getActivity(), ChooseContacts.class);
 
         shareCurrentImage.setOnClickListener(this);
         shareAllImages.setOnClickListener(this);
@@ -48,46 +47,28 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
         return view;
     }
 
-    public static int REQUEST_CODE_Current_Image = 1;
-    public static int REQUEST_CODE_All_Image = 2;
-    private static final int RESULT_OK = -1;
+
 
     @Override
     public void onClick(View v){
         switch (v.getId()){
             case R.id.shareCurrentImage:
                 this.dismiss();
-                currentImageUrlsList = savedInstanceState.getStringArrayList("imageUrlsList");
-                currentCounter= savedInstanceState.getInt("counter");
-
                 Log.d("ShareImageDialog", "Share Current Image BUTTON CLICK");
-                Log.d("ShareImageDialog", "Image List" + currentImageUrlsList);
-                Log.d("ShareImageDialog", "Counter" + currentCounter);
-
-                /*Intent shareCurrentImage = new Intent(getActivity(), ChooseContacts.class);
-                shareCurrentImage.putExtra("images", currentImageUrlsList);
-                shareCurrentImage.putExtra("currentImage", currentCounter);
-                startActivityForResult(shareCurrentImage, REQUEST_CODE_Current_Image);*/
-
+                currentIntent.putExtra("images", currentImageUrlsList);
+                currentIntent.putExtra("isShareAll", false);
+                currentIntent.putExtra("currentImage", currentCounter);
+                startActivityForResult(currentIntent, REQUEST_CODE);
                 break;
 
             case R.id.shareAllImages:
                 this.dismiss();
-                currentImageUrlsList = savedInstanceState.getStringArrayList("imageUrlsList");
-                currentCounter= savedInstanceState.getInt("counter");
+                Log.d("ShareImageDialog", "Share All Image BUTTON CLICK");
 
-                Log.d("ShareImageDialog", "Share Current Image BUTTON CLICK");
-                Log.d("ShareImageDialog", "Image List" + currentImageUrlsList);
-                Log.d("ShareImageDialog", "Counter" + currentCounter);
-
-
-
-
-                /*Intent shareAllImages = new Intent(getActivity(), ChooseContacts.class);
-                shareAllImages.putExtra("images", currentImageUrlsList);
-                shareAllImages.putExtra("currentImage", currentCounter);
-                startActivityForResult(shareAllImages, REQUEST_CODE_All_Image);
-*/
+                currentIntent.putExtra("images", currentImageUrlsList);
+                currentIntent.putExtra("isShareAll", true);
+                currentIntent.putExtra("currentImage", currentCounter);
+                startActivityForResult(currentIntent, REQUEST_CODE);
                 break;
 
             case R.id.cancelButton:

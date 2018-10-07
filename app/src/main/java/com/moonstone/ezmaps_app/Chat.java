@@ -28,17 +28,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
 
 //the activity wherein instant messaging takes place
 public class Chat extends AppCompatActivity {
@@ -95,6 +91,7 @@ public class Chat extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+
         textField = (EditText) findViewById(R.id.textField);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
         messagesLoading = findViewById(R.id.messagesLoading);
@@ -119,25 +116,33 @@ public class Chat extends AppCompatActivity {
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                currentTime = Timestamp.now();
-                final String Uid = mAuth.getUid();
-                // Add a new document with a generated id.
-                final Map<String, Object> message = new HashMap<>();
-
-                //Add to recycler view
-                message.put("toUserId", toUserID);
-                message.put("text", textField.getText().toString());
-                message.put("fromUserId", Uid);
-                message.put("time", currentTime.toDate().toString());
-
-                //Add to map for actual database
-                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(message);
-                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").add(message);
-                Log.d("messages", "Message written");
+                sendText(mAuth.getUid(),
+                        textField.getText().toString(),
+                        toUserID,
+                        Timestamp.now().toDate().toString());
 
                 textField.setText("");
             }
         });
+    }
+
+    private void sendImage(String from, ArrayList<String> imageUrl, int counter, String to, String time){
+
+
+        final Map<String, Object> message = new HashMap<>();
+
+    }
+
+    private void sendText(String from, String text, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
+        message.put("toUserId", to);
+        message.put("text", text);
+        message.put("fromUserId", from);
+        message.put("time", time);
+
+        db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+        db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+        Log.d("messages", "Message written");
     }
 
 
