@@ -55,6 +55,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     private TextView callerName;
     private String roomId;
 
+    private Boolean recieveMode = false;
+
 
 
     private IRtcEngineEventHandler myRtcEventHandler = new IRtcEngineEventHandler() {
@@ -124,11 +126,9 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         //Setup room id
         roomId = "MoonstoneCallRoom:" + Integer.toString(new Random().nextInt(100000) + 1);
 
-        notifyRecipient();
         localContainer = findViewById(R.id.frontCameraContainer);
         remoteContainer =  findViewById(R.id.remote_video_view_container);
         Log.d("callingmy", "initiallising");
-        initializeRtcEngine();
 
         switchCamera = findViewById(R.id.switch_camera);
         audioMode = findViewById(R.id.mic_button);
@@ -142,6 +142,16 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             callerName.setText(extras.getString("name"));
+            if(extras.getString("roomId")!=null){
+                roomId = extras.getString("roomId");
+                recieveMode= true;
+            }
+        }
+
+        initializeRtcEngine();
+
+        if(!recieveMode){
+            notifyRecipient();
         }
 
         switchCamera.setOnClickListener(new View.OnClickListener() {
@@ -212,6 +222,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
     private void joinRoom() {
         myRtcEngine.enableVideo();
+        Log.d("Alrighty", roomId);
         myRtcEngine.joinChannel(null, roomId, null, new Random().nextInt(100000)+1);
     }
 

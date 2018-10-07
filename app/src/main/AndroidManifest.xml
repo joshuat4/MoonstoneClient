@@ -73,7 +73,7 @@
         </activity>
 
         <activity android:name=".Calling"></activity>
-        <activity android:name=".incomingCall"></activity>
+        <activity android:name=".incomingCall" android:noHistory="true"></activity>
 
         <service
             android:name=".MyFirebaseMessagingService">
