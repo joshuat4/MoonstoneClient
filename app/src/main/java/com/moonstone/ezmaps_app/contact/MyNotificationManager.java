@@ -9,7 +9,11 @@ import android.support.v4.app.NotificationCompat;
 import com.moonstone.ezmaps_app.main.MainActivity;
 import com.moonstone.ezmaps_app.R;
 
-public class MyNotificationManager {
+import android.widget.Toast;
+
+
+
+public class MyNotificationManager  {
     private Context mCtx;
     private static MyNotificationManager mInstance;
 

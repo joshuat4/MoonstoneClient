@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     public static void setToUserID(String s) {
+        Log.d("testing", "user id set as" + s);
         toUserID = s;
     }
 
@@ -362,6 +364,10 @@ public class ChatActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
             Toast.makeText(ChatActivity.this, "Call pressed", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), Calling.class);
+            i.putExtra("name",userName );
+            i.putExtra("toUserId", toUserID);
+            startActivity(i);
             return true;
         }
 
