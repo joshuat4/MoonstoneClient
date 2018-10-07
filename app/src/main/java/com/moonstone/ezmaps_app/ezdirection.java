@@ -656,25 +656,34 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         switch(view.getId()){
             case R.id.rightButton:
-                if(counter < numView - 1){
-                    counter += 1;
-                }
-
-                layoutManager.scrollToPosition(counter);
-                invalidateOptionsMenu();
-                Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+                swipeRight();
                 break;
 
             case R.id.leftButton:
-                if(counter >= 1){
-                    counter -= 1;
-                }
-                layoutManager.scrollToPosition(counter);
-                invalidateOptionsMenu();
-                Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+                swipeLeft();
                 break;
         }
 
+    }
+
+    public void swipeRight(){
+        if(counter < numView - 1){
+            counter += 1;
+        }
+
+        layoutManager.scrollToPosition(counter);
+        invalidateOptionsMenu();
+        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+
+    }
+
+    public void swipeLeft(){
+        if(counter >= 1){
+            counter -= 1;
+        }
+        layoutManager.scrollToPosition(counter);
+        invalidateOptionsMenu();
+        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
 
     }
 

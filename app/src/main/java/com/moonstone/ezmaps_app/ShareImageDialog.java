@@ -38,7 +38,7 @@ public class ShareImageDialog extends BottomSheetDialogFragment implements View.
         switch (v.getId()){
             case R.id.shareCurrentImage:
                 this.dismiss();
-
+                startActivity(new Intent(getActivity(), ImageUpload.class));
                 break;
 
             case R.id.shareAllImages:

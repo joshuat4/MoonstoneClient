@@ -9,10 +9,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -22,16 +24,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".FrontPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,24 +50,21 @@
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
 
         <activity android:name=".ezmap" />
-        <activity android:name=".Chat"/>
+        <activity android:name=".Chat" />
         <activity
             android:name=".ezdirection"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".error"
             android:label="@string/title_activity_error"
             android:theme="@style/AppTheme" />
-
         <activity android:name=".ImageUpload" />
-
         <activity android:name=".CameraUpload" />
-
-        <activity android:name=".QRCode"
-            android:theme="@style/AppTheme.PopMe">
-        </activity>
+        <activity
+            android:name=".QRCode"
+            android:theme="@style/AppTheme.PopMe"></activity>
+        <activity android:name=".ChooseContacts"></activity>
     </application>
 
 </manifest>

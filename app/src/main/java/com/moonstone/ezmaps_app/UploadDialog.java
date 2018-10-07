@@ -40,14 +40,11 @@ public class UploadDialog extends BottomSheetDialogFragment implements OnClickLi
         switch (v.getId()){
             case R.id.choosePhoto:
                 this.dismiss();
-
-
                 startActivity(new Intent(getActivity(), ImageUpload.class));
                 break;
 
             case R.id.takePhoto:
                 this.dismiss();
-
                 startActivity(new Intent(getActivity(), CameraUpload.class));
                 break;
 
