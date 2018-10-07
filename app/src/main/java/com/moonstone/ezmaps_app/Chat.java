@@ -27,9 +27,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
@@ -196,10 +202,20 @@ public class Chat extends AppCompatActivity {
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
-                                    ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
-                                           dc.getDocument().getString("toUserId"),
-                                           dc.getDocument().getString("fromUserId"),
-                                           new Date(dc.getDocument().getString("time"))));
+                                    DateFormat dateFormat = new SimpleDateFormat(
+                                            "EEE MMM dd HH:mm:ss zzz yyyy", Locale.UK);
+
+                                    try {
+                                        Date date = dateFormat.parse(dc.getDocument().getString("time"));
+                                        ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
+                                                dc.getDocument().getString("toUserId"),
+                                                dc.getDocument().getString("fromUserId"),date));
+
+                                    } catch (ParseException e1) {
+                                        e1.printStackTrace();
+                                        Log.d("messages", "date failed");
+                                    }
+
                                    Log.d("messages", "new doc: " + dc.getDocument().getString("text"));
                                    newDocs++;
                                     break;

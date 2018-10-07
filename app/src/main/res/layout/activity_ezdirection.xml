@@ -64,13 +64,12 @@
         android:textSize="14sp"
         android:visibility="gone"
         android:textStyle="normal"
-        android:text="Please return to the main menu and try again. Or else you would be trying "/>
+        android:text="Please return to the main menu and try again."/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
-        android:layout_above="@+id/currentLocationButton"
         android:orientation= "horizontal"
         android:id = "@+id/recyclerView"/>
 
@@ -81,8 +80,8 @@
         android:layout_marginBottom="20dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:theme="@style/FrontButton"
-        android:text="Current Location"/>
+        android:theme="@style/AcceptButton"
+        android:text="My Next Stop"/>
 
     <ImageButton
         android:layout_width="50dp"

@@ -13,14 +13,14 @@
 |Profile Setup | **Completed** |
 |Image Upload | **Completed** |
 |EZMap        | **Completed** |
-|Automatic/ Manual Card Swiping | Not Completed |
+|Automatic/ Manual Card Swiping | In Progress |
 |Favourite Route List | **Completed** |
 |Contact List & Searching | **Completed** |
-|Voice Call | Not Completed |
-|Video Call | Not Completed |
+|Voice Call | In Progress  |
+|Video Call | In Progress |
 |Instant Messaging | **Completed** |
-|Image Sending | Not Completed |
-|QR Code Scanner | Not Completed |
+|Image Sending | In Progress  |
+|QR Code Scanner | In Progress  |
 
 ## Testing Login/ SignUp
 1) Download the repo and run the app in your IDE (Android Studio, etc) with an Emulator
@@ -72,11 +72,20 @@
 | ------------- |:-------------:| -----:|
 
 ### Testing EZMap
-1) Type in a place in to the search bar and hit enter or click on the search button on the right (try out queries like Yarra River, Bourke Street or Melbourne University, or even Melbourne City) at the Home page.
-2) A number of cards with images and text would appear (to navigate, swipe right or left or click on right edge of the screen or left edge of the screen).
+1) Before testing the EZMap, you would have to reset your emulator's current location by way of sending Latitude and Longitude to your own device. 
+   1) After starting up the app, click on the _More_ option next to your device and the Extended Controls will pop up.
+   2) Click on _Location_ on the side panel, and type in the longitude and latitude coordinates you wish to start from. Click [here](https://www.latlong.net) to get the coordinates of an area. WARNING: Keep the coordinates within Australia or else it would not work. 
+   3) Click _SEND_ and your device (emulator) will now be at that particular location.
 
-| ![screenshot_1538230644](https://user-images.githubusercontent.com/12033253/46247001-9584d500-c448-11e8-8e8e-6d887ef797c5.png) | ![screenshot_1538231694](https://user-images.githubusercontent.com/12033253/46247015-c402b000-c448-11e8-9241-1b3517b252f0.png)| ![screenshot_1538231141](https://user-images.githubusercontent.com/12033253/46247005-9e75a680-c448-11e8-965e-44ade9939b46.png)  |
+| ![screenshot 2018-10-05 at 21 42 59](https://user-images.githubusercontent.com/12033253/46533441-f0567a80-c8e7-11e8-9527-e7a6603f6701.png) | ![screenshot 2018-10-05 at 21 46 17](https://user-images.githubusercontent.com/12033253/46533597-825e8300-c8e8-11e8-95d3-2bca341063f6.png)  |
+| ------------- |:-------------:|
+
+2) At the _Home_ page, type in a query (Melbourne University, Yarra River, etc) into the search bar and an autocomplete suggestion will drop down. (It is preferable to follow the autocomplete to yield an accurate result).
+3) Click on _Search_ button on the side or _Enter_, and the EZMap will start loading. You can navigate it via scrolling horizontally or clicking on the left or right most side of the screen.
+
+|![screenshot_1538740710](https://user-images.githubusercontent.com/12033253/46535409-a9b84e80-c8ee-11e8-9e9c-bf35b2a0761a.png) | ![screenshot_1538739609](https://user-images.githubusercontent.com/12033253/46535408-a91fb800-c8ee-11e8-8696-d32b795b7baf.png) | ![screenshot_1538231141](https://user-images.githubusercontent.com/12033253/46247005-9e75a680-c448-11e8-965e-44ade9939b46.png)  |
 | ------------- |:-------------:| -----:|
+
 
 ### Testing Automatic/ Manual Card Swiping (TBA)
 
