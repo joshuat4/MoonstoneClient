@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pop_up"
-    tools:context=".QRCodeActivity">
+    tools:context=".main.QRCodeActivity">
 
 </android.support.constraint.ConstraintLayout>
