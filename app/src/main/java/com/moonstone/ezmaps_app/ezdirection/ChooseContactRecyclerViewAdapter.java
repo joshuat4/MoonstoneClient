@@ -55,6 +55,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
     @Override
     public ChooseContactRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contactlistitem, viewGroup, false);
+
         ChooseContactRecyclerViewAdapter.ViewHolder holder = new ChooseContactRecyclerViewAdapter.ViewHolder(view);
 
         holder.setIsRecyclable(false);
@@ -134,7 +135,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profilePic = itemView.findViewById(R.id.profilePic);
+            profilePic = itemView.findViewById(R.id.callerPic);
             contactName = itemView.findViewById(R.id.contactName);
             ContactParentLayout = itemView.findViewById(R.id.contactParentLayout);
 
