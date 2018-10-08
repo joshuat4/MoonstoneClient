@@ -9,17 +9,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-=======
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
->>>>>>> master
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -63,11 +60,6 @@
             android:name=".ezdirection.EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".error"
-            android:label="@string/title_activity_error"
-            android:theme="@style/AppTheme" />
-<<<<<<< HEAD
         <activity android:name=".edit_profile.ImageUploadActivity" />
         <activity android:name=".edit_profile.CameraUploadActivity" />
         <activity
@@ -75,27 +67,17 @@
             android:theme="@style/AppTheme.PopMe" />
         <activity android:name=".ezdirection.ChooseContactsActivity" />
         <activity android:name=".contact.ImageSendingActivity"></activity>
-=======
-
-        <activity android:name=".ImageUpload" />
-
-        <activity android:name=".CameraUpload" />
-
-        <activity android:name=".QRCode"
-            android:theme="@style/AppTheme.PopMe">
-        </activity>
 
         <activity android:name=".contact.Calling"></activity>
         <activity android:name=".contact.incomingCall" android:noHistory="true"></activity>
 
         <service
-            android:name=".MyFirebaseMessagingService">
+            android:name=".contact.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
->>>>>>> master
     </application>
 
 </manifest>
