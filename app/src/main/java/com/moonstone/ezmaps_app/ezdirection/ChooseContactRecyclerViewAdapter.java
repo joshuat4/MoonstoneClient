@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.moonstone.ezmaps_app.contact.ChatActivity;
 import com.moonstone.ezmaps_app.contact.MyFirebaseMessagingService;
 import com.moonstone.ezmaps_app.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -66,9 +67,27 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
         Log.d("HERE", Integer.toString(i));
 
         //Gets the image and puts it into the referenced imageView
-        Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
+
+        if(mContext != null){
+            Log.d("ChooseContactRecycler", "Context: " + mContext);
+        }
+
+        if(profilePics.get(i) != null){
+            Log.d("ChooseContactRecycler", "profile pic: " + profilePics.get(i));
+        }
+
+
+        Log.d("ChooseContactRecycler", "position: " + i );
+
+        Picasso.get().load(profilePics.get(i)).into(viewHolder.profilePic);
+
+        /*Glide.with(mContext)
+                .asBitmap()
+                .load(profilePics.get(i))
+                .into(viewHolder.profilePic);*/
 
         viewHolder.contactName.setText(contactNames.get(i));
+
 
         //Add onclicklistener to each list entry
         viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
