@@ -29,6 +29,7 @@ public class UploadDialogFragment extends BottomSheetDialogFragment implements O
         Button _takePhoto = view.findViewById(R.id.takePhoto);
         Button _cancelButton = view.findViewById(R.id.cancelButton);
 
+
         _choosePhoto.setOnClickListener(this);
         _takePhoto.setOnClickListener(this);
         _cancelButton.setOnClickListener(this);

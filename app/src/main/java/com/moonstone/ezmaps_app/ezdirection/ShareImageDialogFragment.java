@@ -40,6 +40,8 @@ public class ShareImageDialogFragment extends BottomSheetDialogFragment implemen
         Button shareAllImages = view.findViewById(R.id.shareAllImages);
         Button cancelButton = view.findViewById(R.id.cancelButton);
 
+        shareAllImages.setText("Share All Images " + "(" + currentImageUrlsList.size() + ")");
+
         currentIntent = new Intent(getActivity(), ChooseContactsActivity.class);
 
         shareCurrentImage.setOnClickListener(this);
