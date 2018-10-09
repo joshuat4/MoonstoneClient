@@ -105,7 +105,6 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
                 i.putExtras(shareImageBundle);
                 i.putExtra("name", name);
                 mContext.startActivity(i);
-
             }
         });
 

@@ -33,25 +33,50 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         Log.d("messages", textMessages.toString());
         this.textMessages = textMessages;
         this.mContext = context;
+        mAuth = FirebaseAuth.getInstance();
+
     }
 
-    private static final int LAYOUT_IMAGE= 0;
-    private static final int LAYOUT_TEXT= 1;
+    private static final int LAYOUT_IMAGE_SELF = 0;
+    private static final int LAYOUT_IMAGE_OTHERS = 1;
+    private static final int LAYOUT_TEXT_SELF = 2;
+    private static final int LAYOUT_TEXT_OTHERS = 3;
 
     @Override
     public int getItemViewType(int position) {
+        final String Uid = mAuth.getUid();
+        boolean isSelf;
 
-        if(textMessages.get(position).getTextType() == null){
-            return LAYOUT_TEXT;
+        if(textMessages.get(position).getFromUserId().equals(Uid)){
+            isSelf = true;
+
+        }else {
+            isSelf = false;
         }
 
+        switch (textMessages.get(position).getTextType()){
+            case "IMAGE":
+                if(isSelf){
+                    return LAYOUT_IMAGE_SELF;
+                }else{
+                    return LAYOUT_IMAGE_OTHERS;
+                }
 
-        if(textMessages.get(position).getTextType().equals("IMAGE")){
-            return LAYOUT_IMAGE;
+            case "TEXT":
+                if(isSelf){
+                    return LAYOUT_TEXT_SELF;
+                }else{
+                    return LAYOUT_TEXT_OTHERS;
+                }
 
-        }else{
-            return LAYOUT_TEXT;
+            default:
+                if(isSelf){
+                    return LAYOUT_TEXT_SELF;
+                }else{
+                    return LAYOUT_TEXT_OTHERS;
+                }
         }
+
     }
 
 
@@ -60,37 +85,36 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     //Actually recycles the view holders
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         mAuth = FirebaseAuth.getInstance();
         final String Uid = mAuth.getUid();
 
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
 
-        if(textMessages.get(i).getFromUserId().equals(Uid)){
-            if(i == LAYOUT_IMAGE){
+        switch (position) {
+            case LAYOUT_IMAGE_SELF:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image_self, viewGroup, false);
                 viewHolder = new ViewHolderImage(view);
+                break;
 
-            }else{
+            case LAYOUT_IMAGE_OTHERS:
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image_others, viewGroup, false);
+                viewHolder = new ViewHolderImage(view);
+                break;
+
+            case LAYOUT_TEXT_SELF:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_self, viewGroup, false);
                 viewHolder = new ViewHolderText(view);
+                break;
 
-            }
-
-
-        }else{
-            if(i == LAYOUT_IMAGE){
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image, viewGroup, false);
-                viewHolder = new ViewHolderImage(view);
-
-            }else{
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item, viewGroup, false);
+            case LAYOUT_TEXT_OTHERS:
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_others, viewGroup, false);
                 viewHolder = new ViewHolderText(view);
-
-            }
+                break;
 
         }
+
 
         viewHolder.setIsRecyclable(false);
         return viewHolder;
@@ -100,28 +124,38 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
 
-        if(viewHolder.getItemViewType()== LAYOUT_IMAGE) {
+        if(viewHolder instanceof ViewHolderText){
+            ViewHolderText holder = (ViewHolderText) viewHolder;
+            final int holderPos = holder.getAdapterPosition();
+
+            holder.messageText.setText(textMessages.get(holderPos).getText());
+
+            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext,textMessages.get(holderPos).getText(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        }else if (viewHolder instanceof ViewHolderImage){
             ViewHolderImage holder = (ViewHolderImage) viewHolder;
-            Picasso.get().load(textMessages.get(position).getText()).into(holder.messageText);
+            final int holderPos = holder.getAdapterPosition();
+
+            Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
+
             holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // when clicked zoom in to image
+                    Toast.makeText(mContext,textMessages.get(holderPos).getText(), Toast.LENGTH_SHORT).show();
+
                 }
             });
 
-
-        } else {
-            ViewHolderText holder = (ViewHolderText) viewHolder;
-            holder.messageText.setText(textMessages.get(position).getText());
-            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext,textMessages.get(position).getText(), Toast.LENGTH_SHORT).show();
-                }
-            });
 
         }
+
 
     }
 

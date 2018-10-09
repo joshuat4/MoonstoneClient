@@ -1,7 +1,11 @@
 package com.moonstone.ezmaps_app.contact;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -9,7 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,6 +29,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.edit_profile.CameraUploadActivity;
 import com.moonstone.ezmaps_app.edit_profile.UploadActivity;
 import com.squareup.picasso.Picasso;
 
@@ -33,10 +43,58 @@ public class ImageSendingActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
 
+    private ImageView mImageView;
+    private Button cancelButton;
+    private Button uploadButton;
+    private ProgressBar mProgressBar;
+
+    private static final int MY_REQUEST_CODE = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        openCamera();
+
+        setContentView(R.layout.activity_image_upload);
+        cancelButton = findViewById(R.id.cancelButton);
+        uploadButton = findViewById(R.id.uploadButton);
+        mImageView = findViewById(R.id.imageView);
+        mProgressBar = findViewById(R.id.progressBar);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Check if there is an upload happening currently, prevent Spamming
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    Toast.makeText(ImageSendingActivity.this, "UploadActivity in progress", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    uploadFile();
+
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        if (checkSelfPermission(Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    MY_REQUEST_CODE);
+
+        }else{
+            openCamera();
+        }
 
     }
 
@@ -48,6 +106,13 @@ public class ImageSendingActivity extends AppCompatActivity {
         }
 
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 
     Intent returnIntent;
 
@@ -70,34 +135,42 @@ public class ImageSendingActivity extends AppCompatActivity {
         Log.d("ImageSendingActivity", "DATA " + data);
         Log.d("ImageSendingActivity", "DATA.getDATA() " + data.getData());
 
-
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
 
             mImageUri = data.getData();
 
             Log.d("ImageSendingActivity", "DATA " + mImageUri);
-
-            uploadFile();
-
-            returnIntent = new Intent();
-            if(mImageUri != null){
-                Log.d("ImageSendingActivity", "Return Success");
-                setResult(RESULT_OK, returnIntent);
-
-            }else{
-                setResult(RESULT_CANCELED);
-                Log.d("ImageSendingActivity", "Return Failure");
-            }
+            Picasso.get().load(mImageUri).into(mImageView);
 
         }
 
+    }
+
+    public void setReturnSuccess(String imageUrl){
+        returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
+        returnIntent.putExtra("imageUrl", imageUrl);
+        finish();
+    }
+
+    public void setReturnFailure(){
+        returnIntent = new Intent();
+        setResult(RESULT_CANCELED, returnIntent);
+        finish();
     }
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     public void uploadFile() {
@@ -113,35 +186,50 @@ public class ImageSendingActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                            // Delay progress bar since it's too fast (5000 = 5sec)
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable () {
+                                @Override
+                                public void run(){
+                                    mProgressBar.setProgress(0);
+                                }
+                            }, 500);
+
                             // Get the download URL of the Image from Firebase Storage
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    returnIntent.putExtra("image", mImageUri);
-
-                                    Log.d("ImageSendingActivity", "Download Url received");
+                                    Log.d("ImageSendingActivity", "Download Url received: " + mImageUri);
+                                    setReturnSuccess(mImageUri.toString());
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
+
                                     Log.d("ImageSendingActivity", "Download Url NOT received");
+                                    setReturnFailure();
                                 }
                             });
 
-                            finish();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Log.d("ImageSendingActivity", "Download Url NOT received");
+                            setReturnFailure();
+
 
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            // Update the progress bar
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressBar.setProgress((int) progress);
 
                         }
                     });

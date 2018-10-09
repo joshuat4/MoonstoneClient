@@ -162,7 +162,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Log.d("CHAT ACTIVITY", "CAMERA BUTTON");
-                startActivityForResult(new Intent(getApplicationContext(), ImageSendingActivity.class), REQUEST_CODE);
+                startActivityForResult(new Intent(ChatActivity.this, ImageSendingActivity.class), REQUEST_CODE);
             }
         });
     }
@@ -170,13 +170,15 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("TAB2", "Activity is returned");
-        Log.d("TAB2", "Request Code: " + requestCode);
-        Log.d("TAB2", "Result Code: " + resultCode);
+        Log.d("ChatActivity", "Activity is returned");
+        Log.d("ChatActivity", "Request Code: " + requestCode + "/" + REQUEST_CODE);
+        Log.d("ChatActivity", "Result Code: " + resultCode + "/" + RESULT_OK);
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 
-            String imageUrl = data.getStringExtra("image");
+            String imageUrl = data.getStringExtra("imageUrl");
+            Log.d("ChatActivity", "IMAGE URL:" + imageUrl);
+
             if(imageUrl != null){
                 sendImage(mAuth.getUid(), imageUrl, toUserID,
                         Timestamp.now().toDate().toString());

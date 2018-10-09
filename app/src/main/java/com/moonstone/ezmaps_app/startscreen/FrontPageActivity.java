@@ -49,14 +49,14 @@ public class FrontPageActivity extends AppCompatActivity {
         _test1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("test@test.com","testing");
+                userLogin("kenny1@test.com","kenny1");
             }
         });
 
         _test2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("test2@test2.com","test2test2");
+                userLogin("kenny2@test.com","kenny2");
 
             }
         });

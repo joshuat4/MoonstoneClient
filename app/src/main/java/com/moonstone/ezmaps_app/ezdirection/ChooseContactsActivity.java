@@ -1,11 +1,14 @@
 package com.moonstone.ezmaps_app.ezdirection;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -43,6 +46,9 @@ public class ChooseContactsActivity extends AppCompatActivity {
     private ArrayList<String> emails;
     private ArrayList<String> names;
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
     private Intent intent;
 
     @Override
@@ -55,6 +61,7 @@ public class ChooseContactsActivity extends AppCompatActivity {
 
         contactFilter = findViewById(R.id.contactFilter);
         contactsLoading = findViewById(R.id.contactsLoading);
+        toolbar = findViewById(R.id.my_toolbar);
 
         profilePics = new ArrayList<>();
         ids = new ArrayList<>();
@@ -63,6 +70,18 @@ public class ChooseContactsActivity extends AppCompatActivity {
 
         // Get Intent from EZ Direction
         this.intent = getIntent();
+
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Sharing Image");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        });
+
 
         clearButton = (ImageButton) findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new Button.OnClickListener() {

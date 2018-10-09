@@ -18,7 +18,11 @@
 
     <uses-feature
         android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
         android:required="false" />
+
 
     <application
         android:allowBackup="true"
@@ -79,10 +83,10 @@
             android:name=".main.QRCodeActivity"
             android:theme="@style/AppTheme.PopMe" />
         <activity android:name=".ezdirection.ChooseContactsActivity" />
-        <activity android:name=".contact.ImageSendingActivity"></activity>
+        <activity android:name=".contact.ImageSendingActivity"/>
 
-        <activity android:name=".contact.Calling"></activity>
-        <activity android:name=".contact.incomingCall" android:noHistory="true"></activity>
+        <activity android:name=".contact.Calling"/>
+        <activity android:name=".contact.incomingCall" android:noHistory="true"/>
 
         <service
             android:name=".contact.MyFirebaseMessagingService">
