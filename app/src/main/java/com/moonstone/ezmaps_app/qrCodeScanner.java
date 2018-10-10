@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+
 public class qrCodeScanner extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
