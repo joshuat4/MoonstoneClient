@@ -89,7 +89,10 @@ dependencies {
     // dexter runtime permissions
     implementation 'com.karumi:dexter:5.0.0'
 
-
+    //Google Vision for QR
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.google.android.gms:play-services-vision:11.4.0'
 
 }
 
