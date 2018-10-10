@@ -14,7 +14,9 @@
     <!--Camera Permissions for QR Code reader-->
     <uses-permission android:name="android.permission.CAMERA"/>
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -29,11 +31,11 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".FrontPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -70,10 +72,13 @@
         <activity android:name=".ImageUpload" />
 
         <activity android:name=".CameraUpload" />
-
-        <activity android:name=".QRCode"
-            android:theme="@style/AppTheme.PopMe">
-        </activity>
+        <activity
+            android:name=".QRCode"
+            android:theme="@style/AppTheme.PopMe"></activity>
+        <activity
+            android:name=".qrCodeScanner"
+            android:label="@string/title_activity_qr_code_scanner"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
