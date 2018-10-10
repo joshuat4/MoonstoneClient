@@ -1,4 +1,4 @@
-# Welcome to EZMaps v0.7.0
+# Welcome to EZMaps v0.8.0
 
 ## Pre-requirements
 
@@ -19,7 +19,7 @@
 |Voice Call | In Progress  |
 |Video Call | In Progress |
 |Instant Messaging | **Completed** |
-|Image Sending | In Progress  |
+|Image Sending | **Completed**  |
 |QR Code Scanner | In Progress  |
 
 ## Testing Login/ SignUp
@@ -121,8 +121,22 @@
 | ------------- |:-------------:| -----:|
 
 
+### Testing Image Sharing and Sending
+1) To share an image, navigate to the EZMap session and click on the *More* options on the top right of the screen. 
+2) Click on the 2 options presented, to either send the image you are currently viewing or all of the images. 
+3) Choose a caretaker to share the image to, and you can chat with your caretaker as the image gets sent.
 
-### Testing Image Sending (TBA)
+| ![share_image_1](https://user-images.githubusercontent.com/12033253/46715701-eac4b000-ccac-11e8-8863-bf8f09792f67.png) | ![share_image_2](https://user-images.githubusercontent.com/12033253/46715702-eac4b000-ccac-11e8-9e28-0a9ca9b7dfd3.png) | ![share_image_3](https://user-images.githubusercontent.com/12033253/46715703-eb5d4680-ccac-11e8-9846-b8ee60b94a8b.png) | ![share_image_4](https://user-images.githubusercontent.com/12033253/46715704-eb5d4680-ccac-11e8-806d-bff5256970a5.png) |
+| ------------- |:-------------:| -----:| -----:|
+
+4) To send an image, navigate to your chat by clicking on a caretaker in contacts. 
+5) Click on the *Camera Button* and your phone would open up the camera allowing you to take a picture. 
+6) After taking a picture, you would be at the uploading dock. Hit the *Complete* session, and the image would be sent to the caretaker. 
+
+|![send_image_1](https://user-images.githubusercontent.com/12033253/46715697-ea2c1980-ccac-11e8-8025-8949d4df2b6a.png) | ![send_image_2](https://user-images.githubusercontent.com/12033253/46715698-ea2c1980-ccac-11e8-9275-bf33155f0e2f.png) | ![send_image_3](https://user-images.githubusercontent.com/12033253/46715699-ea2c1980-ccac-11e8-82bd-786775d2d71a.png) |![send_image_4](https://user-images.githubusercontent.com/12033253/46715700-eac4b000-ccac-11e8-889a-1a2f4107befa.png)|
+| ------------- |:-------------:| -----:| -----:|
+
+
 
 ### Testing QR Code Scanner (TBA)
 
