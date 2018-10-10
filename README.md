@@ -1,4 +1,5 @@
 # Welcome to EZMaps v0.8.0
+EZMaps is a frame-by-frame picture location service application that caters to the elderly population to navigate their way from one place to another. Along with a simple-to-use interface and straight-forward features, EZMaps tones down modern mapping technology relative to its contemporaries in order to comfortably aid the eldery people in getting to their destination. 
 
 ## Pre-requirements
 
