@@ -129,6 +129,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             final int holderPos = holder.getAdapterPosition();
 
             holder.messageText.setText(textMessages.get(holderPos).getText());
+            Log.d("MessageRecyclerView", "Text Set: " + textMessages.get(holderPos).getText());
 
             holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,6 +144,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             final int holderPos = holder.getAdapterPosition();
 
             Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
+            Log.d("MessageRecyclerView", "Image Load into: " + textMessages.get(holderPos).getText());
 
             holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
