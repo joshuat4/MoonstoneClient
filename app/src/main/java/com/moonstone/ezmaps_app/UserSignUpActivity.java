@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,6 +27,12 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,6 +47,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private String qrcodeURL;
 
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
@@ -59,6 +67,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
         _loginLink.setOnClickListener(this);
         _signUpButton.setOnClickListener(this);
         db = FirebaseFirestore.getInstance();
+
 
     }
 
@@ -122,6 +131,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    //Clears all activities currently active on the stack as the login stage is done now
                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+                   qrcodeURL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + email ;
 
                    final Map<String, Object> userMap = new HashMap<>();
                    final ArrayList<String> contacts = new ArrayList<>();
@@ -131,6 +141,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    userMap.put("profilePic", "https://source.unsplash.com/hchKfNuAblU/500x500");
                    userMap.put("name", name);
                    userMap.put("favouritePlaces", favouritePlaces);
+                   userMap.put("QRCode", qrcodeURL);
 
                    //This goes to Cloud Firestore
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -178,6 +189,9 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+
+
+
     }
 
     @Override
@@ -203,5 +217,27 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
+    private void updateQRImageToDB(String url){
+        final String Uid = mAuth.getUid();
+        DocumentReference docRef = db.collection("users").document(Uid);
+        docRef
+                .update("QRCode", url)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Log.d("UserSignUp", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("UserSignUp", "Error uploading QRCode", e);
+                    }
+                });
+
     }
 }
