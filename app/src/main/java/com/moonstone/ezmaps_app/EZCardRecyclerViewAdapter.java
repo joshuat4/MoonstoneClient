@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,15 +15,15 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private static final String TAG = "RecyclerViewAdapter";
+public class EZCardRecyclerViewAdapter extends RecyclerView.Adapter<EZCardRecyclerViewAdapter.ViewHolder> {
+    private static final String TAG = "EZCardRecyclerViewAdapter";
     //vars
     private ArrayList<String> textDirections = new ArrayList<>();
     private ArrayList<String> imageUrls = new ArrayList<>();
     private Context mContext;
 
 
-    public RecyclerViewAdapter(ArrayList<String> textDirections, ArrayList<String> imageUrls, Context mContext) {
+    public EZCardRecyclerViewAdapter(ArrayList<String> textDirections, ArrayList<String> imageUrls, Context mContext) {
         this.textDirections = textDirections;
         this.imageUrls = imageUrls;
         this.mContext = mContext;

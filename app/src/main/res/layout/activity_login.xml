@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="28dp"
-        tools:context=".UserLogin"
+        tools:context=".UserLoginActivity"
         android:id="@+id/fields"
         android:layout_below="@+id/intro">
 

@@ -1,20 +1,45 @@
 package com.moonstone.ezmaps_app;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.content.Intent;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.squareup.picasso.Picasso;
 
-public class CameraUpload extends Upload {
+public class CameraUploadActivity extends UploadActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int MY_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        openCamera();
+        if (checkSelfPermission(Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    MY_REQUEST_CODE);
+
+        }else{
+            openCamera();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                finish();
+            }
+        }
     }
 
     // Open Camera App

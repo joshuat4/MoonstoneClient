@@ -3,18 +3,12 @@ package com.moonstone.ezmaps_app;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.icu.text.DateFormat;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -23,7 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +24,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,11 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,24 +54,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.moonstone.ezmaps_app.RecyclerViewAdapter;
 
 
-public class ezdirection extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener, LocationListener {
+public class EZDirectionActivity extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
@@ -99,9 +79,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     private Boolean mRequestingLocationUpdates; // requesting location flag
 
-    private LocationManager locationManager;
-    private double latitude, longitude;
-
     /* Main Activity attributes */
     private Toolbar toolbar;
     private ActionBar actionbar;
@@ -112,7 +89,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
     private View recyclerView;
-    private RecyclerViewAdapter adapter;
+    private EZCardRecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
     private TextView notFoundText;
     private TextView notFoundSubtext;
@@ -122,20 +99,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
 
-    // Status
-    public static String CURRENT_STATUS;
-    public static String GPS_SUCCESS = "GPS SUCCESS";
-    public static String GPS_FAILURE = "GPS FAILURE";
-    public static String CARDS_FULLY_LOADED = "CARDS FULLY LOADED";
-    public static String CARDS_NOT_LOADED = "CARDS FULLY LOADED";
-
     /* Utilities */
     private int counter = 0;
     private int numView;
     private Map<String, Object> tab2_to_ezdirection; // Object received from Tab 2
     private boolean isCurrentDestinationFavourited;
     private String currentDestination; // Name of the current destination
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,24 +148,10 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView((RecyclerView) recyclerView);
 
-
-        /* Getting Current Locations's GPS Coordinates */
-        /*locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Log.d("EZDIRECTION", "PERMISSION TO ACCESS LOCATION SERVICE CHECKED");
-
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-        onLocationChanged(location);
-        Log.d("EZDIRECTION", "Location Object: " + location.toString());*/
-
         /* Getting Current Location's GPS Coordinates (FusedLocationProviderAPI) */
         initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
         startLocationUpdatesPermission(); // Initiate Request permission to access GPS
-
 
     }
 
@@ -242,7 +197,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         mLastUpdateTime = lastUpdateTime;
         mCurrentLocation = currentLocation;
-
 
         // If the cards are not loaded, and object has not been returned (regardless of validity)
         if(!isCardLoaded && !isLocationNotFound){
@@ -328,7 +282,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(ezdirection.this, REQUEST_CHECK_SETTINGS);
+                                    rae.startResolutionForResult(EZDirectionActivity.this, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
                                     Log.i("EZDIRECTION/LocUpFailure", "PendingIntent unable to execute request.");
                                 }
@@ -337,7 +291,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
                                 String errorMessage = "Location settings are inadequate, and cannot be " +
                                         "fixed here. Fix in Settings.";
                                 Log.e("EZDIRECTION/LocUpFailure", errorMessage);
-                                Toast.makeText(ezdirection.this, errorMessage, Toast.LENGTH_LONG).show();
+                                Toast.makeText(EZDirectionActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -414,9 +368,6 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
 
 
-
-
-
     /*********                  Methods Handling Activity's Life Cycle                *************/
     /* -------------------------------------------------------------------------------------------*/
     @Override
@@ -448,6 +399,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
     @Override
     public void finish() {
+        stopLocationUpdates();
         Intent returnIntent = new Intent();
         returnIntent.putExtra("ezdirection_to_tab2", isCurrentDestinationFavourited);
 
@@ -610,7 +562,7 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
+        adapter = new EZCardRecyclerViewAdapter(textDirectionsList, imageUrlsList, this);
         numView = adapter.getItemCount();
         recyclerView.setAdapter(adapter);
         layoutManager.setSmoothScrollbarEnabled(false);
@@ -656,25 +608,40 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
 
         switch(view.getId()){
             case R.id.rightButton:
-                if(counter < numView - 1){
-                    counter += 1;
+                if(isCardLoaded){
+                    swipeRight();
                 }
 
-                layoutManager.scrollToPosition(counter);
-                invalidateOptionsMenu();
-                Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
                 break;
 
             case R.id.leftButton:
-                if(counter >= 1){
-                    counter -= 1;
+                if(isCardLoaded){
+                    swipeLeft();
                 }
-                layoutManager.scrollToPosition(counter);
-                invalidateOptionsMenu();
-                Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+
                 break;
         }
 
+    }
+
+    public void swipeRight(){
+        if(counter < numView - 1){
+            counter += 1;
+        }
+
+        layoutManager.scrollToPosition(counter);
+        invalidateOptionsMenu();
+        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+
+    }
+
+    public void swipeLeft(){
+        if(counter >= 1){
+            counter -= 1;
+        }
+        layoutManager.scrollToPosition(counter);
+        invalidateOptionsMenu();
+        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
 
     }
 
@@ -726,8 +693,12 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
             }
 
             if(id == R.id.options){
-                ShareImageDialog bottomSheet = new ShareImageDialog();
-                bottomSheet.show(getSupportFragmentManager(), "ShareImageDialog");
+                ShareImageDialogFragment bottomSheet = new ShareImageDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("counter", counter);
+                bundle.putStringArrayList("imageUrlsList", imageUrlsList);
+                bottomSheet.setArguments(bundle);
+                bottomSheet.show(getSupportFragmentManager(), "ShareImageDialogFragment");
                 return true;
             }
         }
@@ -735,25 +706,5 @@ public class ezdirection extends AppCompatActivity implements RetrieveFeed.Async
         return super.onOptionsItemSelected(item);
     }
 
-    /* OLD Location Listener */
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-    }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 }

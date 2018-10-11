@@ -74,14 +74,14 @@
 //
 //                //-------------------------PLS HELP------------------------------
 //                // Need this to redirect to chat_page
-////                Intent intent = new Intent(, FrontPage.class);
+////                Intent intent = new Intent(, FrontPageActivity.class);
 ////                startActivity(intent);
 ////                overridePendingTransition(R.anim.enter, R.anim.exit);
-//                Chat.setToUserID(ids.get(i));
-//                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
+//                ChatActivity.setToUserID(ids.get(i));
+//                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
 //
 //
-//                mContext.startActivity(new Intent(mContext, Chat.class));
+//                mContext.startActivity(new Intent(mContext, ChatActivity.class));
 //
 //
 //            }
@@ -179,7 +179,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics, ArrayList<String> ids, ArrayList<String> emails){
+    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+                                      ArrayList<String> profilePics, ArrayList<String> ids,
+                                      ArrayList<String> emails){
         Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;
@@ -226,15 +228,16 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                 //-------------------------PLS HELP------------------------------
                 // Need this to redirect to chat_page
-//                Intent intent = new Intent(, FrontPage.class);
+//                Intent intent = new Intent(, FrontPageActivity.class);
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.enter, R.anim.exit);
 
-                Chat.setToUserID(ids.get(i));
-                Chat.setFromUserID(MyFirebaseMessagingService.fetchToken());
+                ChatActivity.setToUserID(ids.get(i));
+                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
                 String name = contactNames.get(i);
-                Intent i = new Intent(mContext, Chat.class);
+                Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtra("name", name);
+                i.putExtra("fromChooseContacts", false);
                 mContext.startActivity(i);
 
             }

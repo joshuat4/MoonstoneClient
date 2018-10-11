@@ -29,7 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-public class Upload extends AppCompatActivity {
+public class UploadActivity extends AppCompatActivity {
 
     private Button cancelButton;
     private Button uploadButton;
@@ -65,7 +65,7 @@ public class Upload extends AppCompatActivity {
 
                 // Check if there is an upload happening currently, prevent Spamming
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(Upload.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UploadActivity.this, "UploadActivity in progress", Toast.LENGTH_SHORT).show();
 
                 } else {
                     uploadFile();
@@ -111,13 +111,13 @@ public class Upload extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("Upload", "DocumentSnapshot successfully updated!");
+                        Log.d("UploadActivity", "DocumentSnapshot successfully updated!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Upload", "Error updating document", e);
+                        Log.w("UploadActivity", "Error updating document", e);
                     }
                 });
 
@@ -129,7 +129,7 @@ public class Upload extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    // Upload Image to Firebase Storage
+    // UploadActivity Image to Firebase Storage
     public void uploadFile() {
 
         if (mImageUri != null) {
@@ -158,7 +158,7 @@ public class Upload extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
 
-                                    Log.d("Upload", "Download Url received");
+                                    Log.d("UploadActivity", "Download Url received");
                                     editProfilePic(uri.toString());
 
                                 }
@@ -166,12 +166,12 @@ public class Upload extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
                                     // Handle any errors
-                                    Log.d("Upload", "Download Url NOT received");
+                                    Log.d("UploadActivity", "Download Url NOT received");
                                 }
                             });
 
 
-                            Toast.makeText(Upload.this, "Upload Successful", Toast.LENGTH_LONG).show();
+                            Toast.makeText(UploadActivity.this, "UploadActivity Successful", Toast.LENGTH_LONG).show();
                             finish();
 
                         }
@@ -179,7 +179,7 @@ public class Upload extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Upload.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     })

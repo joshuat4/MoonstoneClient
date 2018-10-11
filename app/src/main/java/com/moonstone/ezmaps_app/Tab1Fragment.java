@@ -89,11 +89,11 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
     public void onClick(View v){
         switch (v.getId()){
             case R.id.editProfileButton:
-                startActivity(new Intent(getActivity(), EditProfile.class));
+                startActivity(new Intent(getActivity(), EditProfileActivity.class));
                 break;
 
             case R.id.QRButton:
-                startActivity(new Intent(getActivity(), QRCode.class));
+                startActivity(new Intent(getActivity(), QRCodeActivity.class));
                 break;
         }
     }

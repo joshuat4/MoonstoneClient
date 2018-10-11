@@ -1,6 +1,5 @@
 package com.moonstone.ezmaps_app;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,10 +36,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.moonstone.ezmaps_app.adapter.MessageRecyclerViewAdapter;
-
 //the activity wherein instant messaging takes place
-public class Chat extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -53,6 +47,7 @@ public class Chat extends AppCompatActivity {
 
     private EditText textField;
     private ImageButton sendButton;
+    private ImageButton cameraButton;
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
@@ -80,31 +75,20 @@ public class Chat extends AppCompatActivity {
         toUserID = s;
     }
 
+    public int REQUEST_CODE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        currentTime = Timestamp.now();
-        Log.d("time", "time: " + currentTime.toDate().toString());
-
-        //Get data passed through from ContactRecyclerViewAdapter
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            userName = extras.getString("name");
-        }
-
-        Log.d("HERE", "CHAT INITIALISED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
         textField = (EditText) findViewById(R.id.textField);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
+        cameraButton = (ImageButton) findViewById(R.id.cameraButton);
+
         messagesLoading = findViewById(R.id.messagesLoading);
         toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
-        actionbar.setTitle(userName);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,35 +98,139 @@ public class Chat extends AppCompatActivity {
             }
         });
 
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        currentTime = Timestamp.now();
+        Log.d("time", "time: " + currentTime.toDate().toString());
+
+
+        Bundle extras = getIntent().getExtras();
+        Boolean fromChooseContacts;
+        ArrayList<String> currentImageUrlsList;
+        int currentCounter;
+
+        if (extras != null) {
+            userName = extras.getString("name");
+
+            fromChooseContacts = extras.getBoolean("fromChooseContacts");
+
+            if(fromChooseContacts){
+                currentImageUrlsList = extras.getStringArrayList("currentImageUrlsList");
+                currentCounter = extras.getInt("currentCounter");
+
+                if(currentCounter == -1){
+                    sendImage(mAuth.getUid(),
+                            currentImageUrlsList, toUserID,
+                            Timestamp.now().toDate().toString());
+
+                }else{
+                    sendImage(mAuth.getUid(),
+                            currentImageUrlsList.get(currentCounter), toUserID,
+                            Timestamp.now().toDate().toString());
+                }
+
+            }
+        }
+
+        actionbar.setTitle(userName);
+
         //instantiate and update the chat
         handler.post(updateView);
-
 
         //SEND MESSAGE
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                currentTime = Timestamp.now();
-                final String Uid = mAuth.getUid();
-                // Add a new document with a generated id.
-                final Map<String, Object> message = new HashMap<>();
-
-                //Add to recycler view
-                message.put("toUserId", toUserID);
-                message.put("text", textField.getText().toString());
-                message.put("fromUserId", Uid);
-                message.put("time", currentTime.toDate().toString());
-
-                //Add to map for actual database
-                db.collection("users").document(Uid).collection("contacts").document(toUserID).collection("messages").add(message);
-                db.collection("users").document(toUserID).collection("contacts").document(Uid).collection("messages").add(message);
-                Log.d("messages", "Message written");
+                sendText(mAuth.getUid(),
+                        textField.getText().toString(),
+                        toUserID,
+                        Timestamp.now().toDate().toString());
 
                 textField.setText("");
             }
         });
+
+        cameraButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("CHAT ACTIVITY", "CAMERA BUTTON");
+                startActivityForResult(new Intent(ChatActivity.this, ImageSendingActivity.class), REQUEST_CODE);
+            }
+        });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("ChatActivity", "Activity is returned");
+        Log.d("ChatActivity", "Request Code: " + requestCode + "/" + REQUEST_CODE);
+        Log.d("ChatActivity", "Result Code: " + resultCode + "/" + RESULT_OK);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            String imageUrl = data.getStringExtra("imageUrl");
+            Log.d("ChatActivity", "IMAGE URL:" + imageUrl);
+
+            if(imageUrl != null){
+                sendImage(mAuth.getUid(), imageUrl, toUserID,
+                        Timestamp.now().toDate().toString());
+
+                Toast.makeText(ChatActivity.this, "Sending Image Successful", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(ChatActivity.this, "Sending Image Unsuccessful", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+
+    private void sendImage(String from, ArrayList<String> imageUrlList, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
+
+        for(String imageUrl : imageUrlList){
+            message.put("toUserId", to);
+            message.put("text", imageUrl);
+            message.put("fromUserId", from);
+            message.put("time", time);
+            message.put("textType", "IMAGE");
+
+            db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+            db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+
+        }
+
+        Log.d("messages", "Image Sent");
+
+    }
+
+    private void sendImage(String from, String imageUrl, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
+
+        message.put("toUserId", to);
+        message.put("text", imageUrl);
+        message.put("fromUserId", from);
+        message.put("time", time);
+        message.put("textType", "IMAGE");
+
+        db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+        db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+
+        Log.d("messages", "Image Sent");
+    }
+
+    private void sendText(String from, String text, String to, String time){
+        final Map<String, Object> message = new HashMap<>();
+        message.put("toUserId", to);
+        message.put("text", text);
+        message.put("fromUserId", from);
+        message.put("time", time);
+        message.put("textType", "TEXT");
+
+        db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
+        db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
+        Log.d("messages", "Message written: " + text);
+    }
 
 
     //Sets up the recycler view
@@ -212,7 +300,8 @@ public class Chat extends AppCompatActivity {
                                         Date date = dateFormat.parse(dc.getDocument().getString("time"));
                                         ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
                                                 dc.getDocument().getString("toUserId"),
-                                                dc.getDocument().getString("fromUserId"),date));
+                                                dc.getDocument().getString("fromUserId"),date,
+                                                dc.getDocument().getString("textType")));
 
                                     } catch (ParseException e1) {
                                         e1.printStackTrace();
@@ -269,6 +358,7 @@ public class Chat extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
+            Toast.makeText(ChatActivity.this, "Call pressed", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), Calling.class);
             i.putExtra("name",userName );
             i.putExtra("toUserId", toUserID);

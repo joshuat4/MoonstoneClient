@@ -25,7 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +36,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UserSignUp extends AppCompatActivity implements View.OnClickListener{
+public class UserSignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -69,7 +68,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
         super.onStart();
 
         if(mAuth.getCurrentUser() != null){
-            Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+            Intent intent = new Intent(UserSignUpActivity.this, MainActivity.class);
             startActivity(intent);
         }
     }
@@ -119,7 +118,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                if (task.isSuccessful()) {
                    Toast.makeText(getApplicationContext(), "User Register Successful", Toast.LENGTH_SHORT).show();
                    //Switch to main app
-                   final Intent intent = new Intent(UserSignUp.this, MainActivity.class);
+                   final Intent intent = new Intent(UserSignUpActivity.this, MainActivity.class);
                    //Clears all activities currently active on the stack as the login stage is done now
                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -189,7 +188,7 @@ public class UserSignUp extends AppCompatActivity implements View.OnClickListene
                 registerUser();
                 break;
             case R.id.textViewLogin:
-                startActivity(new Intent(this, UserLogin.class));
+                startActivity(new Intent(this, UserLoginActivity.class));
                 break;
         }
     }

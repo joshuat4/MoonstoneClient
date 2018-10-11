@@ -20,10 +20,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+
 import butterknife.ButterKnife;
 import butterknife.BindView;
 
-public class UserLogin extends AppCompatActivity implements View.OnClickListener{
+public class UserLoginActivity extends AppCompatActivity implements View.OnClickListener{
 
 
 
@@ -64,7 +65,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
                 userID = mAuth.getUid();
                 Log.d("DEBUGGERUserLogin", "UID = "+ userID);
                 Log.d("DEBUGGERUserLogin", "DeviceToken = " +MyFirebaseMessagingService.fetchToken());
-                Intent intent = new Intent(UserLogin.this, MainActivity.class);
+                Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);
 
@@ -90,7 +91,7 @@ public class UserLogin extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view){
         switch(view.getId()){
             case R.id.textViewSignUp:
-                startActivity(new Intent(this, UserSignUp.class));
+                startActivity(new Intent(this, UserSignUpActivity.class));
                 break;
 
             case R.id.loginButton:

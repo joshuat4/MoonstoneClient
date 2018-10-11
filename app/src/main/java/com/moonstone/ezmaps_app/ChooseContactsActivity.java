@@ -1,19 +1,22 @@
 package com.moonstone.ezmaps_app;
 
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,43 +32,63 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
-public class Tab3Fragment extends Fragment {
+public class ChooseContactsActivity extends AppCompatActivity {
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private View fragmentLayout;
-    private ContactRecyclerViewAdapter adapter;
+    private ChooseContactRecyclerViewAdapter adapter;
     private boolean contactsAvailable = false;
 
     private EditText contactFilter;
-    private Button newContactButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
 
-    //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
     private ArrayList<String> ids;
     private ArrayList<String> emails;
     private ArrayList<String> names;
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
+    private Intent intent;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_choose_contacts);
+
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
-        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
-        contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+        contactFilter = findViewById(R.id.contactFilter);
+        contactsLoading = findViewById(R.id.contactsLoading);
+        toolbar = findViewById(R.id.my_toolbar);
 
-        profilePics = new ArrayList<>() ;
+        profilePics = new ArrayList<>();
         ids = new ArrayList<>();
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
-        clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
-        clearButton.setOnClickListener(new Button.OnClickListener(){
+        // Get Intent from EZ Direction
+        this.intent = getIntent();
+
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Sharing Image");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        });
+
+
+        clearButton = (ImageButton) findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 contactFilter.getText().clear();
                 clearButton.setVisibility(View.GONE);
             }
@@ -89,31 +112,19 @@ public class Tab3Fragment extends Fragment {
                 clearButton.setVisibility(View.VISIBLE);
 
                 // Check if there is contacts available before filtering
-                if(contactsAvailable){
+                if (contactsAvailable) {
                     filter(s.toString());
                 }
 
             }
         });
 
-
-        //Set up add new contacts button
-        newContactButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                newContact();
-            }
-        });
-
         loadContactsFromDB();
-
         contactFilter.setSelected(false);
 
-        return fragmentLayout;
     }
 
-
-    private void loadContactsFromDB(){
+    private void loadContactsFromDB() {
 
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
@@ -123,25 +134,25 @@ public class Tab3Fragment extends Fragment {
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w("TAB3", "Listen failed.", e);
+                    Log.w("ChooseContactsActivity", "Listen failed.", e);
                     return;
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    Log.d("TAB3", "Current data: " + snapshot.getData());
+                    Log.d("ChooseContactsActivity", "Current data: " + snapshot.getData());
 
                     names.clear();
                     emails.clear();
                     ids.clear();
                     profilePics.clear();
 
-                    try{
+                    try {
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
 
-                        Log.d("TAB3", "CONTACTS: " + contacts);
+                        Log.d("ChooseContactsActivity", "CONTACTS: " + contacts);
 
-                        if(!contacts.isEmpty()){
-                            for (String contact : contacts){
+                        if (!contacts.isEmpty()) {
+                            for (String contact : contacts) {
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -151,10 +162,10 @@ public class Tab3Fragment extends Fragment {
                                         names.add(documentSnapshot.get("name").toString());
                                         ids.add(documentSnapshot.getId());
 
-                                        if(names.size() == contacts.size()){
-                                            Log.d("TAB3", "second list num: " + names.size());
-                                            Log.d("TAB3", "contacts size: " + contacts.size());
-                                            Log.d("TAB3", "contacts available: init recycler view: ");
+                                        if (names.size() == contacts.size()) {
+                                            Log.d("ChooseContactsActivity", "second list num: " + names.size());
+                                            Log.d("ChooseContactsActivity", "contacts size: " + contacts.size());
+                                            Log.d("ChooseContactsActivity", "contacts available: init recycler view: ");
                                             initRecyclerView();
                                             contactsAvailable = true;
 
@@ -163,51 +174,51 @@ public class Tab3Fragment extends Fragment {
                                 });
                             }
 
-                        }else{
+                        } else {
                             contactsAvailable = false;
-                            Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                            Log.d("ChooseContactsActivity", "contacts NOT available: init recycler view: ");
                             initRecyclerView();
                         }
 
-                    } catch (NullPointerException n){
+                    } catch (NullPointerException n) {
                         contactsAvailable = false;
 
                     }
 
                 } else {
-                    Log.d("TAB3", "Current data: null");
+                    Log.d("ChooseContactsActivity", "Current data: null");
                 }
             }
         });
     }
 
     //Sets up the recycler view
-    private void initRecyclerView(){
+    private void initRecyclerView() {
 
-        RecyclerView recyclerView =  fragmentLayout.findViewById(R.id.contactRecyclerView);
+        RecyclerView recyclerView = findViewById(R.id.contactRecyclerView);
 
-        Log.d("TAB3", "Initialise recycler view: " + names.toString());
+        Log.d("ChooseContactsActivity", "Initialise recycler view: " + names.toString());
 
-        adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
-        recyclerView.setAdapter(adapter) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new ChooseContactRecyclerViewAdapter(ChooseContactsActivity.this, names, profilePics, ids, emails, intent.getExtras());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ChooseContactsActivity.this));
 
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
     }
 
-    private void filter(String text){
+    private void filter(String text) {
 
         //Filtered arrays
-        ArrayList<String> fprofilePics = new ArrayList<>() ;
+        ArrayList<String> fprofilePics = new ArrayList<>();
         ArrayList<String> fids = new ArrayList<>();
         ArrayList<String> femails = new ArrayList<>();
         ArrayList<String> fnames = new ArrayList<>();
 
         int counter = 0;
 
-        for(String name : names){
-            if(name.toLowerCase().contains(text.toLowerCase())){
+        for (String name : names) {
+            if (name.toLowerCase().contains(text.toLowerCase())) {
                 fprofilePics.add(profilePics.get(counter));
                 fids.add(ids.get(counter));
                 femails.add(emails.get(counter));
@@ -218,52 +229,29 @@ public class Tab3Fragment extends Fragment {
 
         try {
             adapter.filterList(fnames, fprofilePics, fids, femails);
-        }catch (NullPointerException e){
-            Log.d("TAB3", "Filter " + e.getMessage());
-        }
-
-    }
-
-    private void newContact(){
-        Intent intent = new Intent(getActivity(), NewContactSearchActivity.class);
-        startActivityForResult(intent, 3);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(adapter != null){
-            adapter.notifyDataSetChanged();
+        } catch (NullPointerException e) {
+            Log.d("ChooseContactsActivity", "Filter " + e.getMessage());
         }
 
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }
-
-   @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == 3) && (resultCode == Activity.RESULT_OK)){
-            refreshFragment();
-
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
         }
+        return super.dispatchTouchEvent( event );
     }
 
-    public void refreshFragment(){
-        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-    }
 
-    /*
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            refresh();
-        }
-    }
-    */
+
 }

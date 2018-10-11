@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 
 
-public class FrontPage extends AppCompatActivity {
+public class FrontPageActivity extends AppCompatActivity {
 
     @BindView(R.id.loginButton) Button _loginButton;
     @BindView(R.id.signUpButton) Button _signupButton;
@@ -48,14 +47,14 @@ public class FrontPage extends AppCompatActivity {
         _test1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("test@test.com","testing");
+                userLogin("kenny1@test.com","kenny1");
             }
         });
 
         _test2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("test2@test2.com","test2test2");
+                userLogin("kenny2@test.com","kenny2");
 
             }
         });
@@ -64,7 +63,7 @@ public class FrontPage extends AppCompatActivity {
         _signupButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FrontPage.this, UserSignUp.class);
+                Intent intent = new Intent(FrontPageActivity.this, UserSignUpActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
@@ -73,7 +72,7 @@ public class FrontPage extends AppCompatActivity {
         _loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FrontPage.this, UserLogin.class);
+                Intent intent = new Intent(FrontPageActivity.this, UserLoginActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
@@ -89,7 +88,7 @@ public class FrontPage extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Intent intent = new Intent(FrontPage.this, MainActivity.class);
+                            Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
 

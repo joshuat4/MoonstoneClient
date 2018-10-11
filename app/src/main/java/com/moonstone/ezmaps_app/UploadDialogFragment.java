@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.view.View.OnClickListener;
 
 
-public class UploadDialog extends BottomSheetDialogFragment implements OnClickListener {
+public class UploadDialogFragment extends BottomSheetDialogFragment implements OnClickListener {
 
     private Button _choosePhote;
     private Button _takePhoto;
@@ -27,6 +27,7 @@ public class UploadDialog extends BottomSheetDialogFragment implements OnClickLi
         Button _takePhoto = view.findViewById(R.id.takePhoto);
         Button _cancelButton = view.findViewById(R.id.cancelButton);
 
+
         _choosePhoto.setOnClickListener(this);
         _takePhoto.setOnClickListener(this);
         _cancelButton.setOnClickListener(this);
@@ -40,15 +41,12 @@ public class UploadDialog extends BottomSheetDialogFragment implements OnClickLi
         switch (v.getId()){
             case R.id.choosePhoto:
                 this.dismiss();
-
-
-                startActivity(new Intent(getActivity(), ImageUpload.class));
+                startActivity(new Intent(getActivity(), ImageUploadActivity.class));
                 break;
 
             case R.id.takePhoto:
                 this.dismiss();
-
-                startActivity(new Intent(getActivity(), CameraUpload.class));
+                startActivity(new Intent(getActivity(), CameraUploadActivity.class));
                 break;
 
             case R.id.cancelButton:
