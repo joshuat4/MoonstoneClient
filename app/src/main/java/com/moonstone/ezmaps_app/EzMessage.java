@@ -1,7 +1,6 @@
 package com.moonstone.ezmaps_app;
 
 import android.support.annotation.NonNull;
-import com.google.firebase.Timestamp;
 
 import java.util.Date;
 
@@ -13,12 +12,14 @@ public class EzMessage implements Comparable<EzMessage>{
     private String fromUserId;
     private Date time;
     private String attachmentUrl;
+    private String textType;
 
-    public EzMessage(String text, String toUserId, String fromUserId, Date time){
+    public EzMessage(String text, String toUserId, String fromUserId, Date time, String textType){
         this.text = text;
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
         this.time = time;
+        this.textType = textType;
     }
 
     public String getMessageId() {
@@ -37,6 +38,10 @@ public class EzMessage implements Comparable<EzMessage>{
 
     public String getFromUserId() {
         return fromUserId;
+    }
+
+    public String getTextType(){
+        return textType;
     }
 
     public String getText() {

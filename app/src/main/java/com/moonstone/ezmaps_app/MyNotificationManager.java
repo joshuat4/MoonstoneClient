@@ -5,9 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import com.moonstone.ezmaps_app.Constants;
 
-public class MyNotificationManager {
+
+public class MyNotificationManager  {
     private Context mCtx;
     private static MyNotificationManager mInstance;
 
