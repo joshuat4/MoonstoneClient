@@ -16,13 +16,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
-
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -32,38 +26,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".main.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".startscreen.FrontPageActivity">
-            <intent-filter android:label="front_page_activity">
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
-                <!-- Starting Page -->
+        <activity android:name=".FrontPageActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
-                <!-- Deep linking from google search -->
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "http://www.ezmaps.com/gizmos” -->
-                <data android:scheme="http"
-                    android:host="www.ezmaps.com"
-                    android:pathPrefix="/frontpage" />
-                <!-- note that the leading "/" is required for pathPrefix-->
-                <!-- Accepts URIs that begin with "example://gizmos”
-                <data android:scheme="example"
-                      android:host="gizmos" />
-                -->
             </intent-filter>
         </activity>
-        <activity android:name=".startscreen.UserSignUpActivity" />
-        <activity android:name=".startscreen.UserLoginActivity" />
-        <activity android:name=".contact.NewContactSearchActivity" />
+        <activity android:name=".UserSignUpActivity" />
+        <activity android:name=".UserLoginActivity" />
+        <activity android:name=".NewContactSearchActivity" />
         <activity
-            android:name=".edit_profile.EditProfileActivity"
+            android:name=".EditProfileActivity"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme"
             android:title="Edit Profile" />
@@ -72,24 +52,25 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
 
-        <activity android:name=".contact.ChatActivity" />
+        <activity android:name=".ChatActivity"/>
         <activity
-            android:name=".ezdirection.EZDirectionActivity"
+            android:name=".EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
-        <activity android:name=".edit_profile.ImageUploadActivity" />
-        <activity android:name=".edit_profile.CameraUploadActivity" />
-        <activity
-            android:name=".main.QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe" />
-        <activity android:name=".ezdirection.ChooseContactsActivity" />
-        <activity android:name=".contact.ImageSendingActivity"/>
 
-        <activity android:name=".contact.Calling"/>
-        <activity android:name=".contact.incomingCall" android:noHistory="true"/>
+        <activity android:name=".ImageUploadActivity" />
+
+        <activity android:name=".CameraUploadActivity" />
+
+        <activity android:name=".QRCodeActivity"
+            android:theme="@style/AppTheme.PopMe">
+        </activity>
+
+        <activity android:name=".Calling"></activity>
+        <activity android:name=".incomingCall" android:noHistory="true"></activity>
 
         <service
-            android:name=".contact.MyFirebaseMessagingService">
+            android:name=".MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
