@@ -115,5 +115,13 @@
         android:layout_marginBottom="117dp"
         android:text="Add QR" />
 
+    <TextView
+        android:id="@+id/barcode_result"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/AddQR"
+        android:layout_marginTop="-117dp" />
+
 
 </RelativeLayout>

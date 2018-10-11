@@ -47,6 +47,7 @@ public class NewContactSearch extends AppCompatActivity{
     private Toolbar toolbar;
     private ActionBar actionbar;
     private Button searchButton;
+    private Button addQRButton;
 
     private ImageButton clearButton;
 
@@ -66,6 +67,7 @@ public class NewContactSearch extends AppCompatActivity{
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
         toolbar = findViewById(R.id.my_toolbar);
+        addQRButton = findViewById(R.id.AddQR);
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
@@ -92,6 +94,15 @@ public class NewContactSearch extends AppCompatActivity{
                 Log.d("Add Contacts","search button initiated");
                 findContactsLoading.setVisibility(View.VISIBLE);
                 searchForContacts(filterSearch.getText().toString().trim());
+            }
+        });
+
+        addQRButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Add Contacts through qr","qr scan cam initiated");
+                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 

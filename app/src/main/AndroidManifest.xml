@@ -65,14 +65,12 @@
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".error"
-            android:label="@string/title_activity_error"
-            android:theme="@style/AppTheme" />
 
         <activity android:name=".ImageUpload" />
 
         <activity android:name=".CameraUpload" />
+
+        <!--QR Dev-->
         <activity
             android:name=".QRCode"
             android:theme="@style/AppTheme.PopMe"></activity>
@@ -80,6 +78,17 @@
             android:name=".qrCodeScanner"
             android:label="@string/title_activity_qr_code_scanner"
             android:theme="@style/AppTheme"></activity>
+        <activity android:name=".QRReader"
+            android:label="Barcode Reader">
+            <intent-filter>
+                <action android:name="android.intent.action.QR_READER"></action>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ScanBarcodeActivity"
+            android:label="Scan Barcode"/>
+
     </application>
 
 </manifest>
