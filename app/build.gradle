@@ -91,6 +91,9 @@ dependencies {
     // dexter runtime permissions
     implementation 'com.karumi:dexter:5.0.0'
 
+    //Pulse library
+    implementation 'pl.bclogic:pulsator4droid:1.0.3'
+
 
 }
 

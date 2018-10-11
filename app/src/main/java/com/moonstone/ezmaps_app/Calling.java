@@ -1,5 +1,7 @@
 package com.moonstone.ezmaps_app;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +24,7 @@ import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.Constants;
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResponse{
 
@@ -39,6 +42,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     private CircleImageView callerPic;
     private TextView callerName;
     private String roomId;
+    private PulsatorLayout pulsator;
+    private MediaPlayer mMediaPlayer;
 
     private Boolean recieveMode = false;
 
@@ -61,6 +66,12 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
                 @Override
                 public void run() {
                     setupRemoteVideo(uid);
+                    mMediaPlayer.stop();
+                    localContainer.setVisibility(View.VISIBLE);
+                    remoteContainer.setVisibility(View.VISIBLE);
+                    pulsator.stop();
+                    callerPic.setVisibility(View.INVISIBLE);
+                    callerName.setVisibility(View.INVISIBLE);
                 }
             });
         }
@@ -119,9 +130,9 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         audioMode = findViewById(R.id.mic_button);
         audioMode.setTag("audio");
         endCall = findViewById(R.id.end_call);
-
         callerName = findViewById(R.id.callerName);
         callerPic = findViewById(R.id.callerPic);
+        pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
 
         //Get data passed through from ContactRecyclerViewAdapter
         Bundle extras = getIntent().getExtras();
@@ -136,8 +147,17 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         initializeRtcEngine();
 
         if(!recieveMode){
+            //Starting a new call from contacts
+            localContainer.setVisibility(View.INVISIBLE);
+            remoteContainer.setVisibility(View.INVISIBLE);
+            callerPic.setVisibility(View.VISIBLE);
+            callerName.setVisibility(View.VISIBLE);
+            //The current device is the calling device
             notifyRecipient();
+            pulsator.start();
+            playSound();
         }
+
 
         switchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,6 +177,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             @Override
             public void onClick(View v) {
                 Log.d("ok", audioMode.getTag().toString());
+                //Go to video mode
                 if (audioMode.getTag().toString().equals("video_cam")) {
                     myRtcEngine.enableVideo();
                     localContainer.setVisibility(View.VISIBLE);
@@ -167,6 +188,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
                     audioMode.setImageResource(R.drawable.microphone);
                     audioMode.setTag("audio");
                 }
+                //Go to audio mode
                 else{
                     myRtcEngine.disableVideo();
                     localContainer.setVisibility(View.INVISIBLE);
@@ -224,6 +246,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     @Override
     public void onDestroy() {
         myRtcEngine.leaveChannel();
+        mMediaPlayer.stop();
         super.onDestroy();
     }
 
@@ -231,6 +254,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     @Override
     public void onBackPressed() {
         myRtcEngine.leaveChannel();
+        mMediaPlayer.stop();
         super.onBackPressed();
     }
 
@@ -239,6 +263,15 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     @Override
     public void processFinish(JSONArray output){
 
+    }
+
+
+    private void playSound(){
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.setLooping(true);
+        mMediaPlayer.start();
     }
 }
 
