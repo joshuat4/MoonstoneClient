@@ -33,12 +33,20 @@ android {
         }
     }
 }
+repositories {
+    google()
+    jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
+}
 
 dependencies {
 
     // Google
-    implementation 'com.google.android.gms:play-services-location:15.0.1';
-    implementation 'com.google.android.gms:play-services-places:15.0.1';
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-places:15.0.1'
+//    implementation 'com.google.android.gms:play-services:15.0.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -91,6 +99,10 @@ dependencies {
     // dexter runtime permissions
     implementation 'com.karumi:dexter:5.0.0'
 
+    //Google Vision for QR
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.google.android.gms:play-services-vision:11.4.0'
 
 }
 
