@@ -88,6 +88,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     /* Recycler View Attributes */
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
+    private ArrayList<Coordinate> coordinatesList;
     private View recyclerView;
     private EZCardRecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -483,11 +484,19 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         if (output != null) {
             imageUrlsList = new ArrayList<>();
             textDirectionsList = new ArrayList<>();
+            coordinatesList = new ArrayList<>();
+
             for (int i = 0; i < output.length(); i++) {
                 try {
+
                     JSONObject object = output.getJSONObject(i);
+                    JSONObject object_coord = output.getJSONObject(i).getJSONObject("coord");
+
                     imageUrlsList.add(object.getString("imageURL"));
                     textDirectionsList.add(object.getString("description"));
+                    coordinatesList.add(new Coordinate(object_coord.getDouble("lat"),
+                            object_coord.getDouble("lng")));
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
