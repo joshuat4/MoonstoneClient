@@ -1,11 +1,14 @@
 package com.moonstone.ezmaps_app;
 
+import android.app.Activity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -44,6 +47,9 @@ public class UploadActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +60,18 @@ public class UploadActivity extends AppCompatActivity {
         uploadButton = findViewById(R.id.uploadButton);
         mImageView = findViewById(R.id.imageView);
         mProgressBar = findViewById(R.id.progressBar);
+        toolbar = findViewById(R.id.my_toolbar);
+
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Image Sharing");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();

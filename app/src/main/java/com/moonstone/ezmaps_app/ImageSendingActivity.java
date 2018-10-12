@@ -1,6 +1,7 @@
 package com.moonstone.ezmaps_app;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,8 +9,10 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -43,6 +46,10 @@ public class ImageSendingActivity extends AppCompatActivity {
     private Button uploadButton;
     private ProgressBar mProgressBar;
 
+    private Toolbar toolbar;
+    private ActionBar actionbar;
+
+
     private static final int MY_REQUEST_CODE = 2;
 
     @Override
@@ -54,6 +61,18 @@ public class ImageSendingActivity extends AppCompatActivity {
         uploadButton = findViewById(R.id.uploadButton);
         mImageView = findViewById(R.id.imageView);
         mProgressBar = findViewById(R.id.progressBar);
+        toolbar = findViewById(R.id.my_toolbar);
+
+        setSupportActionBar(toolbar);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle("Image Sending");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
