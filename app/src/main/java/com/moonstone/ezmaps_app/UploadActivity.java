@@ -158,7 +158,7 @@ public class UploadActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
 
-                                    Log.d("UploadActivity", "Download Url received");
+                                    Log.d("UploadActivity", "Download Url received: " + uri);
                                     editProfilePic(uri.toString());
 
                                 }

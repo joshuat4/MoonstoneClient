@@ -194,8 +194,8 @@ public class ImageSendingActivity extends AppCompatActivity {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Log.d("ImageSendingActivity", "Download Url received: " + mImageUri);
-                                    setReturnSuccess(mImageUri.toString());
+                                    Log.d("ImageSendingActivity", "Download Url received: " + uri);
+                                    setReturnSuccess(uri.toString());
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
