@@ -53,6 +53,9 @@
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
 
         <activity android:name=".ChatActivity"/>
+
+        <activity android:name=".ChooseContactsActivity"/>
+
         <activity
             android:name=".EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
