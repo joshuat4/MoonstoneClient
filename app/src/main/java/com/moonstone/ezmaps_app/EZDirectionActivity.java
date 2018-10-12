@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -84,6 +85,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private ActionBar actionbar;
     private ImageButton leftButton;
     private ImageButton rightButton;
+    private Button nextStopButton;
 
     /* Recycler View Attributes */
     private ArrayList<String> imageUrlsList;
@@ -118,6 +120,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
         progressBar = findViewById(R.id.progressBar);
+        nextStopButton = findViewById(R.id.nextStopButton);
 
         notFoundText = findViewById(R.id.notFoundText);
         notFoundSubtext = findViewById(R.id.notFoundSubtext);
@@ -126,6 +129,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         /* Listen on for Left and Right clicks */
         leftButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
+        nextStopButton.setOnClickListener(this);
 
         /* Set Up Action Bar */
         setSupportActionBar(toolbar);
@@ -478,8 +482,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     /* Wait to receive Object initiated by executeURL */
     @Override
     public void processFinish(JSONArray output){
-        //Here you will receive the result fired from async class
-        //of onPostExecute(result) method.;
 
         if (output != null) {
             imageUrlsList = new ArrayList<>();
@@ -496,7 +498,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                     textDirectionsList.add(object.getString("description"));
                     coordinatesList.add(new Coordinate(object_coord.getDouble("lat"),
                             object_coord.getDouble("lng")));
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -629,8 +630,18 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 }
 
                 break;
+
+            case R.id.nextStopButton:
+                if(isCardLoaded){
+                    swipeToNextStop();
+                }
         }
 
+    }
+
+    public void swipeToNextStop(){
+
+        
     }
 
     public void swipeRight(){
