@@ -18,4 +18,9 @@ public class Coordinate {
         return lng;
     }
 
+    @Override
+    public String toString() {
+        return "Lat: " + lat + ", Lng: " + lng;
+    }
+
 }

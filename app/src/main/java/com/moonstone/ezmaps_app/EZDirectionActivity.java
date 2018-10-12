@@ -67,9 +67,11 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000; // location updates interval (10s)
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // 5s
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // location fastest updates interval (5s)
     private static final int REQUEST_CHECK_SETTINGS = 100;
+
+    private static final double BUFFER_ZONE = 0.0005;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -91,6 +93,9 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private ArrayList<String> imageUrlsList;
     private ArrayList<String> textDirectionsList;
     private ArrayList<Coordinate> coordinatesList;
+    private Coordinate nextStopCoordinate;
+    private int nextStopCounter = 0;
+
     private View recyclerView;
     private EZCardRecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -101,6 +106,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private int progressStatus = 0;
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
+
 
     /* Utilities */
     private int counter = 0;
@@ -203,13 +209,55 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         mLastUpdateTime = lastUpdateTime;
         mCurrentLocation = currentLocation;
 
+
         // If the cards are not loaded, and object has not been returned (regardless of validity)
         if(!isCardLoaded && !isLocationNotFound){
             executeURL();
             Log.d("EZDIRECTION/StatusCheck", "URL Executed");
         }
 
+        if(isCardLoaded){
+            checkIfArrivedAtNextStop(mCurrentLocation);
+        }
 
+    }
+
+    private boolean checkIfArrivedAtNextStop(Location location){
+        Log.d("EZD", "**********************************");
+        if(nextStopCoordinate == null){
+            nextStopCoordinate = coordinatesList.get(nextStopCounter);
+            Log.d("EZD", "Next Stop is Null");
+            Log.d("EZD", "Next Stop Coordinate: " + nextStopCounter);
+            Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
+            return false;
+        }
+
+        double currentLat = location.getLatitude();
+        double currentLng = location.getLongitude();
+
+        for(Coordinate coord : coordinatesList){
+            if(((currentLat <= (coord.getLat() + BUFFER_ZONE)) && (currentLat >= coord.getLat() - BUFFER_ZONE))
+                    && ((currentLng <= (coord.getLng() + BUFFER_ZONE)) && (currentLng >= coord.getLng() - BUFFER_ZONE))){
+
+                nextStopCounter = coordinatesList.indexOf(coord) + 1;
+                if(nextStopCounter < coordinatesList.size()){
+                    nextStopCoordinate = coordinatesList.get(nextStopCounter);
+                    Log.d("EZD", "Current Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
+                    Log.d("EZD", "Next Stop is not null");
+                    Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
+                    Log.d("EZD", "Next Stop Coordinate: " + nextStopCoordinate);
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "You have arrived at your destination!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                return true;
+            }
+
+        }
+
+        return false;
     }
 
     /* Restoring values from saved instance state */
@@ -430,7 +478,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                     case Activity.RESULT_OK:
                         Log.e("EZDIRECTION/Result", "User agreed to make required location settings changes.");
 
-
                         // AFTER GETTING PERMISSION
                         this.recreate();
 
@@ -503,6 +550,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                     e.printStackTrace();
                 }
             }
+
+            Log.d("EZD", "COORDINATES Received: " + coordinatesList);
 
             initRecyclerView();
             isCardLoaded = true;
@@ -633,15 +682,16 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
             case R.id.nextStopButton:
                 if(isCardLoaded){
-                    swipeToNextStop();
+                    swipeTo(nextStopCounter);
                 }
         }
 
     }
 
-    public void swipeToNextStop(){
+    public void swipeTo(int counter){
 
-        
+        Toast.makeText(getApplicationContext(), "Swipe to " + counter, Toast.LENGTH_SHORT).show();
+
     }
 
     public void swipeRight(){
