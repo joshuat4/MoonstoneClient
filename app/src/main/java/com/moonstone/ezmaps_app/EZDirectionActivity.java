@@ -67,7 +67,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // 5s
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // 5s
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // location fastest updates interval (5s)
     private static final int REQUEST_CHECK_SETTINGS = 100;
 
@@ -690,6 +690,13 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     public void swipeTo(int counter){
 
+        if(counter >= 1){
+            this.counter = counter;
+        }
+
+        layoutManager.scrollToPosition(counter);
+        invalidateOptionsMenu();
+        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
         Toast.makeText(getApplicationContext(), "Swipe to " + counter, Toast.LENGTH_SHORT).show();
 
     }
