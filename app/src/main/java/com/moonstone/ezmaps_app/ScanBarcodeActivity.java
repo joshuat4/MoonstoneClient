@@ -204,7 +204,8 @@ public class ScanBarcodeActivity extends Activity {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     Log.d("DEBUG_SCANBARCODEACTIVITY", "addSelfToUid = " + targetUid);
-                    db.collection("users").document(targetUid).update("requests", selfUid);
+                    db.collection("users").document(targetUid).update("requests", FieldValue.arrayUnion(selfUid));
+//                            update("requests", selfUid);
                     Log.d(TAG, "addSelfToUid: SUCCESSFULLY ADDED " + selfUid + " to " + targetUid );
                 }
             });
