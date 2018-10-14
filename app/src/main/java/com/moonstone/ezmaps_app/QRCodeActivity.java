@@ -67,8 +67,9 @@ public class QRCodeActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
-                        Log.i("LOGGER","QRCode URL: "+document.getString("QRCode"));
+//                        Log.i("LOGGER","QRCode URL: "+document.getString("QRCode"));
                         QRURL = document.getString("QRCode");
+                        Picasso.get().load(QRURL).into(QRCode);
 
                     } else {
                         Log.d("LOGGER", "No such document");
@@ -79,7 +80,6 @@ public class QRCodeActivity extends AppCompatActivity {
             }
         });
 
-        Picasso.get().load("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=surely@test.com").into(QRCode);
 
         }
 }
