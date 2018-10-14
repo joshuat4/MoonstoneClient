@@ -2,6 +2,7 @@ package com.moonstone.ezmaps_app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,6 +45,8 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private Toolbar toolbar;
     private ActionBar actionbar;
     private Button searchButton;
+    private Button addQRButton;
+    private Button friendRequestButton;
 
     private ImageButton clearButton;
 
@@ -63,6 +66,12 @@ public class NewContactSearchActivity extends AppCompatActivity{
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
         toolbar = findViewById(R.id.my_toolbar);
+
+
+        //temporary buttons WILL NEED TO MOVE
+        addQRButton = findViewById(R.id.addQR);
+        friendRequestButton = findViewById(R.id.FriendRequests);
+        ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
@@ -91,6 +100,33 @@ public class NewContactSearchActivity extends AppCompatActivity{
                 searchForContacts(filterSearch.getText().toString().trim());
             }
         });
+
+        ////TEMPORARY///////////
+        addQRButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Add Contacts through qr","qr scan cam initiated");
+                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        friendRequestButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Button pressed at Contact search","access friend request list");
+                Intent intent = new Intent(v.getContext() , FriendRequestActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
+
+
+
+
+
+        //////////////////////////////////////////////
 
         filterSearch.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {

@@ -24,6 +24,10 @@ android {
         repositories {
             google()
             jcenter()
+            mavenCentral()
+            maven {
+                url "https://maven.google.com"
+            }
         }
     }
     sourceSets {
@@ -34,8 +38,9 @@ android {
     }
 }
 repositories {
-    google()
+//    google()
     jcenter()
+    mavenCentral()
     maven {
         url "https://maven.google.com"
     }
@@ -102,7 +107,7 @@ dependencies {
  //Google Vision for QR
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
-    implementation 'com.google.android.gms:play-services-vision:11.4.0'
+    implementation 'com.google.android.gms:play-services-vision:15.0.1'
 
     //Pulse library
     implementation 'pl.bclogic:pulsator4droid:1.0.3'
