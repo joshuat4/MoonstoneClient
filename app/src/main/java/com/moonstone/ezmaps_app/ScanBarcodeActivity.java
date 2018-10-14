@@ -6,24 +6,39 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.util.SparseArray;
 
 
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.gms.vision.CameraSource;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.io.IOException;
+import java.util.List;
 
 public class ScanBarcodeActivity extends Activity {
     SurfaceView cameraPreview;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    String TAG = "DEBUGSCANBARCODEACTIVITY";
+    String targetUid1 = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +47,12 @@ public class ScanBarcodeActivity extends Activity {
 
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         createCameraSource();
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
+
+
 
     private void createCameraSource() {
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).build();
@@ -72,6 +92,7 @@ public class ScanBarcodeActivity extends Activity {
             }
         });
 
+
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
@@ -85,11 +106,108 @@ public class ScanBarcodeActivity extends Activity {
                     Intent intent = new Intent();
                     intent.putExtra("barcode", (Parcelable) barcodes.valueAt(0)); //get last barcode added to array.
                     setResult(CommonStatusCodes.SUCCESS, intent);
-                    System.out.println("FINDME" + barcodes.valueAt(0).displayValue);
+                    String barcodeResult = barcodes.valueAt(0).displayValue;
+                    System.out.println("FINDME" + barcodeResult);
+
+                    addContact(barcodeResult);
+//                    Log.d("DEBUG_SCANBARCODEACTIVITY", "addSuccess: " + );
                     finish();
                 }
             }
         });
+    }
+
+    public String findUid(final String targetEmail){
+        Log.d(TAG, "findUid: " + targetEmail);
+
+        final String Uid = mAuth.getUid();
+        final String[] targetUid = new String[1];
+        targetUid[0]= null;
+        Log.d(TAG, "findUid: This Uid "+ Uid);
+
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
+                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+
+                for (DocumentSnapshot doc : list) { //for each document in list,
+                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
+                        // String match.
+                        String email = doc.get("email").toString();
+
+                        if (compareContacts(targetEmail, email)) {
+                            targetUid[0] = doc.getId();
+                            Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            addContactFromUid(targetUid[0]);
+
+                        }
+
+                    }
+                }
+                Log.d(TAG, "onComplete1: "+ targetUid[0]);
+                targetUid1 = targetUid[0];
+                Log.d(TAG, "onComplete1.1: "+ targetUid1);
+
+            }
+        });
+        Log.d(TAG, "onComplete2: "+ targetUid[0]);
+        return targetUid[0];
+    }
+
+    public void addContact(String targetEmail){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmail);
+
+        final String Uid = mAuth.getUid();
+        findUid(targetEmail);
+
+    }
+
+
+    public boolean addContactFromUid(String targetUidInput) {
+        final String targetUid = targetUidInput;
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "addContact: line162 " + targetUid);
+
+        if (targetUid != null) {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "targetUid = " + targetUid);
+
+            //
+            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    db.collection("users").document(Uid).update("contacts", FieldValue.arrayUnion(targetUid));
+                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + targetUid);
+                }
+            });
+
+
+
+        } else {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: COULD NOT FIND CONTACT");
+            return false;
+        }
+        return false;
+    }
+
+
+
+
+    private boolean compareContacts(String text, String against){
+
+        if(against.toUpperCase().contains(text.toUpperCase())){
+
+            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
+
+            return true;
+        }
+
+
+        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
+
+        return false;
     }
 
 }
