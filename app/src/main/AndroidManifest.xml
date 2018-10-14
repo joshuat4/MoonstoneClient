@@ -67,12 +67,27 @@
         <activity
             android:name=".QRCodeActivity"
             android:theme="@style/AppTheme.PopMe"></activity>
-        <activity android:name=".Calling" />
+        <activity android:name=".
+                                " />
         <activity
             android:name=".incomingCall"
             android:noHistory="true" />
 
+        <activity android:name =".ImageSendingActivity"/>
+
+        <activity android:name=".QRCodeActivity"
+            android:theme="@style/AppTheme.PopMe">
+        </activity>
+
+        <activity android:name=".Calling"
+            android:launchMode="singleInstance"></activity>
+        <activity android:name=".incomingCall" android:noHistory="true"></activity>
+
+        <service
+            android:name=".MyFirebaseMessagingService">
+
         <service android:name=".MyFirebaseMessagingService">
+
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

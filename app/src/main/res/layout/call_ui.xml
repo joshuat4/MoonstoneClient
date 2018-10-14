@@ -6,27 +6,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/callerPic"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/ic_launcher"
-        android:visibility="invisible" />
+        <ImageButton
+            android:id="@+id/minimiseCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:visibility="gone"
+            app:srcCompat="@drawable/minimise_call" />
+    </LinearLayout>
+
+    <pl.bclogic.pulsator4droid.library.PulsatorLayout
+        android:id="@+id/pulsator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:pulse_color="@color/grey"
+        app:pulse_count="4"
+        app:pulse_duration="700"
+        app:pulse_interpolator="Linear"
+        app:pulse_repeat="0"
+        app:pulse_startFromScratch="false">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/callerPic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_launcher"
+            android:visibility="visible" />
+
+
+    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
 
     <TextView
         android:id="@+id/callerName"
         android:layout_width="match_parent"
-        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/callerPic"
-        android:layout_marginTop="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="218dp"
+        android:gravity="center_horizontal"
         android:text="Testing Name "
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
         android:textSize="22sp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 
     <FrameLayout
@@ -100,6 +130,7 @@
                 android:background="@null"
                 app:srcCompat="@drawable/switchcamera" />
         </LinearLayout>
+
 
 
     </LinearLayout>
