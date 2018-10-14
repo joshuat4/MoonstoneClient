@@ -51,8 +51,6 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     private Boolean recieveMode = false;
     public static Boolean inCall = false;
 
-
-
     private IRtcEngineEventHandler myRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {

@@ -32,11 +32,13 @@
         app:layout_constraintTop_toBottomOf="@id/my_toolbar">
     </android.support.v7.widget.RecyclerView>
 
+
     <View
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="@color/colorBackground"
         android:layout_marginBottom="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/chatBox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

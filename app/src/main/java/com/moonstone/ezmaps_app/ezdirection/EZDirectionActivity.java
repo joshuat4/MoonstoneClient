@@ -73,7 +73,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // location fastest updates interval (5s)
     private static final int REQUEST_CHECK_SETTINGS = 100;
 
-    private static final double BUFFER_ZONE = 0.0005;
+    private static final double BUFFER_ZONE = 0.0001;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -709,10 +709,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     }
 
-    public void swipeTo(int counter){
+    public void swipeTo(int num){
 
-        if(counter >= 1){
-            this.counter = counter;
+        if(num >= 1){
+            counter = num;
         }
 
         layoutManager.scrollToPosition(counter);
