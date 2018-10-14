@@ -112,7 +112,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
             }
         });
 
-       /* friendRequestButton.setOnClickListener(new Button.OnClickListener(){
+       friendRequestButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.d("Button pressed at Contact search","access friend request list");
@@ -120,7 +120,6 @@ public class NewContactSearchActivity extends AppCompatActivity{
                 startActivityForResult(intent, 1);
             }
         });
-*/
 
 
 
