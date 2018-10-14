@@ -58,6 +58,8 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
         this.emails = emails;
         this.mActivity = mActivity;
         this.shareImageBundle = shareImageBundle;
+        this.db = db;
+        this.mAuth = mAuth;
 
     }
 
@@ -106,16 +108,13 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
             @Override
             public void onClick(View view){
 
-                Log.d("ChooseContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
+                final String currentUser = mAuth.getUid();
+                final String target = ids.get(i);
                 Log.d("ChooseContactRecyclerView", "onClick: " + ids.get(i));
+                addContact(target, currentUser);
+                deleteSelf(currentUser, target);
 
-                ChatActivity.setToUserID(ids.get(i));
-                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
-                String name = contactNames.get(i);
-                Intent i = new Intent(mContext, ChatActivity.class);
-//                i.putExtras(shareImageBundle);
-                i.putExtra("name", name);
-                mContext.startActivity(i);
+
             }
         });
 
@@ -179,91 +178,84 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
     }
 
 
-    public void addContact(String targetEmailInput){
-        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
-
-        final String Uid = mAuth.getUid();
-        Log.d(TAG, "findUid: " + targetEmailInput);
-        final String targetEmail = targetEmailInput;
-
-        final String[] targetUid = new String[1];
-        targetUid[0]= null;
+    public void addContact(final String currentUser, final String contactToBeAdded){
+        final String UIDFrom = currentUser;
 
         //Start of search portion of method.
-        Log.d(TAG, "findUid: This Uid "+ Uid);
-        Task<QuerySnapshot> d = db.collection("users").get();
-        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
-                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+        Log.d(TAG, "findUid: This Uid "+ UIDFrom);
 
-                for (DocumentSnapshot doc : list) { //for each document in list,
-                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
-                        // String match.
-                        String email = doc.get("email").toString();
+        if(contactToBeAdded != null){
 
-                        if (compareContacts(targetEmail, email)) {
-                            targetUid[0] = doc.getId();
-                            Log.d(TAG, "onComplete: "+ targetUid[0]);
-                            // If found, call the add method.
-                            addContactFromUid(targetUid[0]);
-
-                        }
-
-                    }
-                }
-                Log.d(TAG, "onComplete1: "+ targetUid[0]);
-
-            }
-        });
-    }
-
-
-
-    public boolean addContactFromUid(String targetUidInput) {
-        final String targetUid = targetUidInput;
-        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
-
-        final String Uid = mAuth.getUid();
-        Log.d(TAG, "addContact: line162 " + targetUid);
-
-        if (targetUid != null) {
-            Log.d("DEBUG_SCANBARCODEACTIVITY", "targetUid = " + targetUid);
-
-            //
-            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            db.collection("users").document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    db.collection("users").document(Uid).update("contacts", FieldValue.arrayUnion(targetUid));
-                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + targetUid);
+                    db.collection("users").document(currentUser).update("contacts", FieldValue.arrayUnion(contactToBeAdded));
+                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + contactToBeAdded);
                 }
             });
 
-
-
-        } else {
-            Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: COULD NOT FIND CONTACT");
-            return false;
         }
-        return false;
+
+        else{
+            Log.d(TAG, "addContact: COULD NOT FIND CONTACT");
+        }
+    }
+
+    public void deleteSelf(final String currentUser, final String contactToBeDeleted){
+
+        if(contactToBeDeleted != null){
+
+            db.collection("users").document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    db.collection("users").document(currentUser).update("requests", FieldValue.arrayRemove(contactToBeDeleted));
+                    Log.d(TAG, "SUCCESSFULLY DELETED: " + contactToBeDeleted);
+                }
+            });
+
+        }
     }
 
 
 
+//    public boolean addContactFromUid(String targetUidInput) {
+//        final String targetUid = targetUidInput;
+//        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
+//
+//        final String Uid = mAuth.getUid();
+//        Log.d(TAG, "addContact: line162 " + targetUid);
+//
+//        if (targetUid != null) {
+//            Log.d("DEBUG_SCANBARCODEACTIVITY", "targetUid = " + targetUid);
+//
+//            //
+//
+//
+//
+//
+//        } else {
+//            Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: COULD NOT FIND CONTACT");
+//            return false;
+//        }
+//        return false;
+//    }
 
-    private boolean compareContacts(String text, String against){
-
-        if(against.toUpperCase().contains(text.toUpperCase())){
-
-            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
-
-            return true;
-        }
 
 
-        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
-
-        return false;
-    }
+//
+//    private boolean compareContacts(String text, String against){
+//
+//        if(against.toUpperCase().contains(text.toUpperCase())){
+//
+//            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
+//
+//            return true;
+//        }
+//
+//
+//        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
+//
+//        return false;
+//    }
 
 }
