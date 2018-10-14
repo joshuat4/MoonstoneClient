@@ -46,6 +46,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private ActionBar actionbar;
     private Button searchButton;
     private Button addQRButton;
+    private Button friendRequestButton;
 
     private ImageButton clearButton;
 
@@ -65,7 +66,12 @@ public class NewContactSearchActivity extends AppCompatActivity{
         searchButton = findViewById(R.id.searchButton);
         clearButton = findViewById(R.id.clearButton);
         toolbar = findViewById(R.id.my_toolbar);
-        addQRButton = findViewById(R.id.AddQR);
+
+
+        //temporary buttons WILL NEED TO MOVE
+        addQRButton = findViewById(R.id.FriendRequests);
+        friendRequestButton = findViewById(R.id.FriendRequests);
+        ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
@@ -95,6 +101,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
             }
         });
 
+        ////TEMPORARY///////////
         addQRButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -103,6 +110,23 @@ public class NewContactSearchActivity extends AppCompatActivity{
                 startActivityForResult(intent, 1);
             }
         });
+
+        friendRequestButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Button pressed at Contact search","access friend request list");
+                Intent intent = new Intent(v.getContext() , FriendRequestActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
+
+
+
+
+
+        //////////////////////////////////////////////
 
         filterSearch.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {

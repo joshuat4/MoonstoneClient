@@ -43,5 +43,6 @@
     <string name="title_activity_qr_code_scanner">qrCodeScanner</string>
 
     <string name="agora_app_id">2727db53b5e846cf864a9676dce38211</string>
+    <string name="title_activity_friend_request">FriendRequestActivity</string>
 
 </resources>
