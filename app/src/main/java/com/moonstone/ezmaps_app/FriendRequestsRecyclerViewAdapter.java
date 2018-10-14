@@ -49,7 +49,7 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
 
     public FriendRequestsRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
                                              ArrayList<String> profilePics, ArrayList<String> ids,
-                                             ArrayList<String> emails){
+                                             ArrayList<String> emails, FirebaseFirestore db, FirebaseAuth mAuth){
 
         this.contactNames = contactNames;
         this.profilePics = profilePics;

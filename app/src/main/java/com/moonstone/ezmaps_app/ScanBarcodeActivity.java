@@ -115,8 +115,8 @@ public class ScanBarcodeActivity extends Activity {
         });
     }
 
-    public void addContact(String targetEmailInput){
-        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
+    public void sendFriendRequest(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "sendFriendRequest: " + targetEmailInput);
 
         final String Uid = mAuth.getUid();
         Log.d(TAG, "findUid: " + targetEmailInput);
@@ -155,6 +155,66 @@ public class ScanBarcodeActivity extends Activity {
     }
 
 
+
+    public void addContact(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "findUid: " + targetEmailInput);
+        final String targetEmail = targetEmailInput;
+
+        final String[] targetUid = new String[1];
+        targetUid[0]= null;
+
+        //Start of search portion of method.
+        Log.d(TAG, "findUid: This Uid "+ Uid);
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
+                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+
+                for (DocumentSnapshot doc : list) { //for each document in list,
+                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
+                        // String match.
+                        String email = doc.get("email").toString();
+
+                        if (compareContacts(targetEmail, email)) {
+                            targetUid[0] = doc.getId();
+                            Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            // If found, call the add method.
+                            addSelfToUid(targetUid[0]);
+//                            addContactFromUid(targetUid[0]);
+
+                        }
+
+                    }
+                }
+                Log.d(TAG, "onComplete1: "+ targetUid[0]);
+
+            }
+        });
+    }
+
+    public void addSelfToUid(String targetUidInput){
+        final String targetUid = targetUidInput;
+        final String selfUid = mAuth.getUid();
+        if(targetUid!=null){
+            db.collection("users").document(targetUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Log.d("DEBUG_SCANBARCODEACTIVITY", "addSelfToUid = " + targetUid);
+                    db.collection("users").document(targetUid).update("requests", selfUid);
+                    Log.d(TAG, "addSelfToUid: SUCCESSFULLY ADDED " + selfUid + " to " + targetUid );
+                }
+            });
+        } else {
+            Log.d(TAG, "addSelfToUid: FAILED");
+
+        }
+
+
+    }
 
     public boolean addContactFromUid(String targetUidInput) {
         final String targetUid = targetUidInput;
