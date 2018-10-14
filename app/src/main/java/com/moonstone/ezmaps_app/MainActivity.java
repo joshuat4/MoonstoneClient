@@ -90,16 +90,16 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent( event );
     }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(Calling.inCall){
-            returnToCall.setVisibility(View.VISIBLE);
-        }
-        else{
-            returnToCall.setVisibility(View.GONE);
-        }
-    }
+//    @SuppressLint("RestrictedApi")
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//        if(Calling.inCall){
+//            returnToCall.setVisibility(View.VISIBLE);
+//        }
+//        else{
+//            returnToCall.setVisibility(View.GONE);
+//        }
+//    }
 
 }
