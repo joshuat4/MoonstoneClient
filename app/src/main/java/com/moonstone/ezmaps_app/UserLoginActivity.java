@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
+import com.moonstone.ezmaps_app.main.MainActivity;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -64,7 +66,7 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
             if(task.isSuccessful()){
                 userID = mAuth.getUid();
                 Log.d("DEBUGGERUserLogin", "UID = "+ userID);
-                Log.d("DEBUGGERUserLogin", "DeviceToken = " +MyFirebaseMessagingService.fetchToken());
+                Log.d("DEBUGGERUserLogin", "DeviceToken = " + MyFirebaseMessagingService.fetchToken());
                 Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);

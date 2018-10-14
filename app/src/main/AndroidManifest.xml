@@ -28,77 +28,90 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
+
+
+        <!-- Main Activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".FrontPageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserSignUpActivity" />
-        <activity android:name=".UserLoginActivity" />
-        <activity android:name=".NewContactSearchActivity" />
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".UserSignUpActivity" />
+        <activity
+            android:name=".UserLoginActivity" />
+
+
+        <!-- Contacts -->
+        <activity
+            android:name=".contact.NewContactSearchActivity" />
+        <activity
+            android:name=".contact.ChooseContactsActivity" />
+        <activity
+            android:name=".contact.FriendRequestActivity"
+            android:label="@string/title_activity_friend_request"
+            android:theme="@style/AppTheme"/>
+
+
+        <!-- Profile -->
+        <activity
+            android:name=".ezprofile.EditProfileActivity"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme"
             android:title="Edit Profile" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
-
-        <activity android:name=".ChatActivity"/>
-
-        <activity android:name=".ChooseContactsActivity"/>
-
         <activity
-            android:name=".EZDirectionActivity"
+            android:name=".ezprofile.ImageUploadActivity" />
+        <activity
+            android:name=".ezprofile.CameraUploadActivity" />
+
+        <!-- Chat -->
+        <activity
+            android:name=".ezchat.ChatActivity" />
+        <activity
+            android:name=".ezchat.ImageSendingActivity" />
+        <activity
+            android:name=".ezchat.incomingCall"
+            android:noHistory="true" />
+        <activity
+            android:name=".ezchat.Calling"
+            android:launchMode="singleInstance"/>
+
+
+        <!-- EZ Direction -->
+        <activity
+            android:name=".ezdirection.EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ImageUploadActivity" />
-        <activity android:name=".CameraUploadActivity" />
-        <activity android:name=".ImageSendingActivity" />
-        <activity
-            android:name=".QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe"></activity>
-        <activity android:name=".
-                                " />
-        <activity
-            android:name=".incomingCall"
-            android:noHistory="true" />
 
-        <activity android:name =".ImageSendingActivity"/>
 
-        <activity android:name=".QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe">
-        </activity>
-
-        <activity android:name=".Calling"
-            android:launchMode="singleInstance"></activity>
-        <activity android:name=".incomingCall" android:noHistory="true"></activity>
-
+        <!-- Utilities -->
         <service
-            android:name=".MyFirebaseMessagingService">
-
-        <service android:name=".MyFirebaseMessagingService">
-
+            android:name=".ezchat.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <!-- QR Dev -->
+        <!-- QR Code -->
         <activity
-            android:name=".QRCode"
+            android:name=".qrcode.QRCodeActivity"
+            android:theme="@style/AppTheme.PopMe"/>
+        <activity
+            android:name=".qrcode.QRCode"
             android:theme="@style/AppTheme.PopMe" />
         <activity
-            android:name=".qrCodeScanner"
+            android:name=".qrcode.qrCodeScanner"
             android:label="@string/title_activity_qr_code_scanner"
             android:theme="@style/AppTheme" />
         <activity
@@ -106,17 +119,13 @@
             android:label="Barcode Reader">
             <intent-filter>
                 <action android:name="android.intent.action.QR_READER" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScanBarcodeActivity"
+            android:name=".qrcode.ScanBarcodeActivity"
             android:label="Scan Barcode" />
-        <activity
-            android:name=".FriendRequestActivity"
-            android:label="@string/title_activity_friend_request"
-            android:theme="@style/AppTheme"></activity>
+
     </application>
 
 </manifest>
