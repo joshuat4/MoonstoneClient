@@ -1,8 +1,11 @@
 package com.moonstone.ezmaps_app;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private FloatingActionButton returnToCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        returnToCall = findViewById(R.id.returnToCall);
 
         adapter = new TabAdapter(getSupportFragmentManager());
 
@@ -53,6 +58,18 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
+
+
+        returnToCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Calling.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -72,4 +89,17 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent( event );
     }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(Calling.inCall){
+            returnToCall.setVisibility(View.VISIBLE);
+        }
+        else{
+            returnToCall.setVisibility(View.GONE);
+        }
+    }
+
 }

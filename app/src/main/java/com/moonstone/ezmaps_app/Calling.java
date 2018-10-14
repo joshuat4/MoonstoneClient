@@ -38,6 +38,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     private ImageButton switchCamera;
     private ImageButton audioMode;
     private ImageButton endCall;
+    private ImageButton minimiseCall;
 
     private CircleImageView callerPic;
     private TextView callerName;
@@ -46,6 +47,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     private MediaPlayer mMediaPlayer;
 
     private Boolean recieveMode = false;
+    public static Boolean inCall = false;
 
 
 
@@ -119,6 +121,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         setContentView(R.layout.call_ui);
         mAuth = FirebaseAuth.getInstance();
 
+        inCall = true;
+
         //Setup room id
         roomId = "MoonstoneCallRoom:" + Integer.toString(new Random().nextInt(100000) + 1);
 
@@ -132,6 +136,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         endCall = findViewById(R.id.end_call);
         callerName = findViewById(R.id.callerName);
         callerPic = findViewById(R.id.callerPic);
+        minimiseCall = findViewById(R.id.minimiseCall);
         pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
 
         //Get data passed through from ContactRecyclerViewAdapter
@@ -167,6 +172,17 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         });
 
         endCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRtcEngine.leaveChannel();
+                mMediaPlayer.stop();
+                inCall = false;
+                finish();
+            }
+        });
+
+        //Background the call
+        minimiseCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -229,7 +245,6 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
     private void joinRoom() {
         myRtcEngine.enableVideo();
-        Log.d("Alrighty", roomId);
         myRtcEngine.joinChannel(null, roomId, null, new Random().nextInt(100000)+1);
     }
 
@@ -245,8 +260,6 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
     @Override
     public void onDestroy() {
-        myRtcEngine.leaveChannel();
-        mMediaPlayer.stop();
         super.onDestroy();
     }
 
@@ -255,6 +268,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     public void onBackPressed() {
         myRtcEngine.leaveChannel();
         mMediaPlayer.stop();
+        inCall = false;
         super.onBackPressed();
     }
 
