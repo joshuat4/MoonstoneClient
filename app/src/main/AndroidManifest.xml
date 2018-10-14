@@ -62,6 +62,8 @@
 
         <activity android:name=".CameraUploadActivity" />
 
+        <activity android:name =".ImageSendingActivity"/>
+
         <activity android:name=".QRCodeActivity"
             android:theme="@style/AppTheme.PopMe">
         </activity>
