@@ -69,7 +69,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
 
         //temporary buttons WILL NEED TO MOVE
-        addQRButton = findViewById(R.id.FriendRequests);
+        addQRButton = findViewById(R.id.addQR);
         friendRequestButton = findViewById(R.id.FriendRequests);
         ////////////////////////////////////////////////
 
