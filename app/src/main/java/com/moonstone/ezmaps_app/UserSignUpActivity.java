@@ -136,12 +136,16 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    final Map<String, Object> userMap = new HashMap<>();
                    final ArrayList<String> contacts = new ArrayList<>();
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
+                   final ArrayList<String> friendRequests = new ArrayList<>();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
+                   userMap.put("requests", friendRequests);
                    userMap.put("profilePic", "https://source.unsplash.com/hchKfNuAblU/500x500");
                    userMap.put("name", name);
                    userMap.put("favouritePlaces", favouritePlaces);
                    userMap.put("QRCode", qrcodeURL);
+
+
 
                    //This goes to Cloud Firestore
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
