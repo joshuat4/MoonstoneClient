@@ -22,63 +22,64 @@
         app:navigationContentDescription="Navigation button description"/>
 
     <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/topBar"
-        android:layout_below="@id/my_toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="56dp"
         android:background="@drawable/dynamic_border"
-        android:layout_marginBottom="1dp"
         android:gravity="center"
         android:weightSum="2">
+        android:layout_alignTop="@+id/my_toolbar"
 
         <LinearLayout
+            android:id="@+id/left"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:id="@+id/left"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="2"
             android:background="@drawable/tab3_search"
-            android:weightSum="1"
-            android:layout_weight="2">
+            android:weightSum="1">
 
             <EditText
                 android:id="@+id/filterAllContacts"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:hint="Search for a name"
-                android:layout_marginTop="6dp"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
-                android:paddingStart="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:inputType="textPersonName" />
+                android:hint="Search for a name"
+                android:inputType="textPersonName"
+                android:paddingStart="8dp" />
 
             <ImageButton
                 android:id="@+id/clearButton"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
-                android:visibility="gone"
                 android:layout_marginEnd="6dp"
                 android:layout_marginStart="6dp"
+                android:background="@drawable/circle_shape"
                 android:src="@drawable/clear"
-                android:background="@drawable/circle_shape">
-            </ImageButton>
+                android:visibility="gone"></ImageButton>
 
 
         </LinearLayout>
 
         <Button
             android:id="@+id/searchButton"
-            android:theme="@style/AcceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="Search"
+            android:theme="@style/AcceptButton"
             app:layout_constraintBottom_toTopOf="@id/contactRecyclerView"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
@@ -107,13 +108,26 @@
         android:layout_centerInParent="true" />
 
     <Button
-        android:id="@+id/AddQR"
+        android:id="@+id/FriendRequests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="117dp"
-        android:text="Add QR" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="71dp"
+        android:layout_marginStart="54dp"
+        android:text="FriendRequests"
+        android:theme="@style/AcceptButton" />
+
+    <Button
+        android:id="@+id/addQR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/FriendRequests"
+        android:layout_marginEnd="69dp"
+        android:text="Add QR"
+        android:theme="@style/AcceptButton" />
+
 
 
 </RelativeLayout>

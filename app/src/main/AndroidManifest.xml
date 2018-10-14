@@ -9,14 +9,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -26,16 +28,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".FrontPageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -60,27 +61,47 @@
             android:name=".EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
-
         <activity android:name=".ImageUploadActivity" />
-
         <activity android:name=".CameraUploadActivity" />
+        <activity android:name=".ImageSendingActivity" />
+        <activity
+            android:name=".QRCodeActivity"
+            android:theme="@style/AppTheme.PopMe"></activity>
+        <activity android:name=".Calling" />
+        <activity
+            android:name=".incomingCall"
+            android:noHistory="true" />
 
-        <activity android:name =".ImageSendingActivity"/>
-
-        <activity android:name=".QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe">
-        </activity>
-
-        <activity android:name=".Calling"></activity>
-        <activity android:name=".incomingCall" android:noHistory="true"></activity>
-
-        <service
-            android:name=".MyFirebaseMessagingService">
+        <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
+        <!-- QR Dev -->
+        <activity
+            android:name=".QRCode"
+            android:theme="@style/AppTheme.PopMe" />
+        <activity
+            android:name=".qrCodeScanner"
+            android:label="@string/title_activity_qr_code_scanner"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".QRReader"
+            android:label="Barcode Reader">
+            <intent-filter>
+                <action android:name="android.intent.action.QR_READER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ScanBarcodeActivity"
+            android:label="Scan Barcode" />
+        <activity
+            android:name=".FriendRequestActivity"
+            android:label="@string/title_activity_friend_request"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
