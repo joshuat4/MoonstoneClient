@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<gpx version="1.1" creator="GPS Visualizer http://www.gpsvisualizer.com/" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<wpt lat="-37.8037462" lon="144.9554507">
+  <name>Queensberry St, Melbourne VIC</name>
+</wpt>
+<wpt lat="-37.7963689" lon="144.9611738">
+  <name>University of Melbourne, Parkville VIC 3010, Australia</name>
+</wpt>
+<trk>
+  <name>Queensberry St, Melbourne VIC - University of Melbourne, Parkville VIC 3010, Australia</name>
+  <desc>1.3 km, 0:17</desc>
+  <trkseg>
+    <trkpt lat="-37.80375" lon="144.95545"></trkpt>
+    <trkpt lat="-37.80366" lon="144.95547"></trkpt>
+    <trkpt lat="-37.80366" lon="144.95547"></trkpt>
+    <trkpt lat="-37.80367" lon="144.95561"></trkpt>
+    <trkpt lat="-37.80371" lon="144.95588"></trkpt>
+    <trkpt lat="-37.80374" lon="144.95617"></trkpt>
+    <trkpt lat="-37.80375" lon="144.95625"></trkpt>
+    <trkpt lat="-37.80377" lon="144.95647"></trkpt>
+    <trkpt lat="-37.80377" lon="144.95647"></trkpt>
+    <trkpt lat="-37.8033" lon="144.95655"></trkpt>
+    <trkpt lat="-37.80307" lon="144.95657"></trkpt>
+    <trkpt lat="-37.80243" lon="144.95672"></trkpt>
+    <trkpt lat="-37.80186" lon="144.9568"></trkpt>
+    <trkpt lat="-37.80183" lon="144.95683"></trkpt>
+    <trkpt lat="-37.80182" lon="144.95685"></trkpt>
+    <trkpt lat="-37.80176" lon="144.95696"></trkpt>
+    <trkpt lat="-37.80176" lon="144.95696"></trkpt>
+    <trkpt lat="-37.8018" lon="144.95702"></trkpt>
+    <trkpt lat="-37.80182" lon="144.95707"></trkpt>
+    <trkpt lat="-37.80183" lon="144.95712"></trkpt>
+    <trkpt lat="-37.80183" lon="144.95716"></trkpt>
+    <trkpt lat="-37.80183" lon="144.95725"></trkpt>
+    <trkpt lat="-37.80181" lon="144.95731"></trkpt>
+    <trkpt lat="-37.8018" lon="144.95735"></trkpt>
+    <trkpt lat="-37.80179" lon="144.95738"></trkpt>
+    <trkpt lat="-37.80177" lon="144.95741"></trkpt>
+    <trkpt lat="-37.80175" lon="144.95743"></trkpt>
+    <trkpt lat="-37.80174" lon="144.95745"></trkpt>
+    <trkpt lat="-37.80173" lon="144.95746"></trkpt>
+    <trkpt lat="-37.80171" lon="144.95747"></trkpt>
+    <trkpt lat="-37.80169" lon="144.95748"></trkpt>
+    <trkpt lat="-37.80164" lon="144.9575"></trkpt>
+    <trkpt lat="-37.80161" lon="144.95752"></trkpt>
+    <trkpt lat="-37.80097" lon="144.9576"></trkpt>
+    <trkpt lat="-37.80091" lon="144.9576"></trkpt>
+    <trkpt lat="-37.80058" lon="144.95764"></trkpt>
+    <trkpt lat="-37.80009" lon="144.95771"></trkpt>
+    <trkpt lat="-37.79976" lon="144.95775"></trkpt>
+    <trkpt lat="-37.79945" lon="144.95778"></trkpt>
+    <trkpt lat="-37.79902" lon="144.95782"></trkpt>
+    <trkpt lat="-37.79891" lon="144.95784"></trkpt>
+    <trkpt lat="-37.79881" lon="144.95785"></trkpt>
+    <trkpt lat="-37.79873" lon="144.95785"></trkpt>
+    <trkpt lat="-37.79799" lon="144.95795"></trkpt>
+    <trkpt lat="-37.79771" lon="144.95798"></trkpt>
+    <trkpt lat="-37.79743" lon="144.95802"></trkpt>
+    <trkpt lat="-37.79721" lon="144.95804"></trkpt>
+    <trkpt lat="-37.79702" lon="144.95807"></trkpt>
+    <trkpt lat="-37.79667" lon="144.95811"></trkpt>
+    <trkpt lat="-37.79599" lon="144.95819"></trkpt>
+    <trkpt lat="-37.79599" lon="144.95819"></trkpt>
+    <trkpt lat="-37.79602" lon="144.95834"></trkpt>
+    <trkpt lat="-37.79619" lon="144.9602"></trkpt>
+    <trkpt lat="-37.7962" lon="144.96028"></trkpt>
+    <trkpt lat="-37.79621" lon="144.96034"></trkpt>
+    <trkpt lat="-37.7962" lon="144.9604"></trkpt>
+    <trkpt lat="-37.7962" lon="144.96041"></trkpt>
+    <trkpt lat="-37.7962" lon="144.96048"></trkpt>
+    <trkpt lat="-37.79619" lon="144.96055"></trkpt>
+    <trkpt lat="-37.7962" lon="144.96066"></trkpt>
+    <trkpt lat="-37.79623" lon="144.96094"></trkpt>
+    <trkpt lat="-37.79625" lon="144.96111"></trkpt>
+    <trkpt lat="-37.79625" lon="144.96111"></trkpt>
+    <trkpt lat="-37.79636" lon="144.96109"></trkpt>
+  </trkseg>
+</trk>
+</gpx>
