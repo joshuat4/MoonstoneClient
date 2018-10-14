@@ -142,10 +142,13 @@ public class ChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                sendText(mAuth.getUid(),
-                        textField.getText().toString(),
-                        toUserID,
-                        Timestamp.now().toDate().toString());
+                if(textField.getText().toString().length() > 1){
+                    sendText(mAuth.getUid(),
+                            textField.getText().toString(),
+                            toUserID,
+                            Timestamp.now().toDate().toString());
+
+                }
 
                 textField.setText("");
             }

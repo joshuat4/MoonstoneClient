@@ -10,18 +10,18 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 |Requirement Document| EZMaps |
 |---------------|----------|
-|Login/SignUp | **Completed** |
-|Profile Setup | **Completed** |
-|Image Upload | **Completed** |
-|EZMap        | **Completed** |
+|Login/SignUp | **Live** |
+|Profile Setup | **Live** |
+|Image Upload | **Live** |
+|EZMap        | **Live** |
 |Automatic/ Manual Card Swiping | In Progress |
-|Favourite Route List | **Completed** |
-|Contact List & Searching | **Completed** |
-|Voice Call | In Progress  |
-|Video Call | In Progress |
-|Instant Messaging | **Completed** |
-|Image Sending | **Completed**  |
-|QR Code Scanner | In Progress  |
+|Favourite Route List | **Live** |
+|Contact List & Searching | **Live** |
+|Voice Call | **Live**   |
+|Video Call | **Live**  |
+|Instant Messaging | **Live**  |
+|Image Sending | **Live**  |
+|QR Code Scanner | **Live**   |
 
 ## Testing Login/ SignUp
 1) Download the repo and run the app in your IDE (Android Studio, etc) with an Emulator

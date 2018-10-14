@@ -88,6 +88,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private ImageButton leftButton;
     private ImageButton rightButton;
     private Button nextStopButton;
+    private Button refreshButton;
 
     /* Recycler View Attributes */
     private ArrayList<String> imageUrlsList;
@@ -107,17 +108,19 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
 
-
     /* Utilities */
+    private int REQUEST_CODE = 1;
     private int counter = 0;
     private int numView;
-    private Map<String, Object> tab2_to_ezdirection; // Object received from Tab 2
+    private HashMap<String, Object> tab2_to_ezdirection; // Object received from Tab 2
     private boolean isCurrentDestinationFavourited;
     private String currentDestination; // Name of the current destination
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("EZD", "STARTING EZD---------");
 
         /* Set up the activity's layout */
         setContentView(R.layout.activity_ezdirection);
@@ -127,6 +130,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         rightButton = findViewById(R.id.rightButton);
         progressBar = findViewById(R.id.progressBar);
         nextStopButton = findViewById(R.id.nextStopButton);
+        refreshButton = findViewById(R.id.refreshButton);
 
         notFoundText = findViewById(R.id.notFoundText);
         notFoundSubtext = findViewById(R.id.notFoundSubtext);
@@ -136,6 +140,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         leftButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
         nextStopButton.setOnClickListener(this);
+        refreshButton.setOnClickListener(this);
 
         /* Set Up Action Bar */
         setSupportActionBar(toolbar);
@@ -556,14 +561,14 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             initRecyclerView();
             isCardLoaded = true;
             isLocationNotFound = false;
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.INVISIBLE);
             setLeftRightButtonVisibility("VISIBILE");
             invalidateOptionsMenu();
 
         }else{
             isCardLoaded = false;
             isLocationNotFound = true;
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.GONE);
             setNotFoundVisibility("VISIBLE");
             setLeftRightButtonVisibility("GONE");
@@ -684,7 +689,21 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 if(isCardLoaded){
                     swipeTo(nextStopCounter);
                 }
+
+            case R.id.refreshButton:
+                if(isCardLoaded || isLocationNotFound){
+                    refresh();
+                }
         }
+
+    }
+
+    public void refresh(){
+        isCardLoaded = false;
+        isLocationNotFound = false;
+        progressBar.setVisibility(View.VISIBLE);
+
+        executeURL();
 
     }
 
@@ -696,7 +715,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
         layoutManager.scrollToPosition(counter);
         invalidateOptionsMenu();
-        Log.d("EZDIRECTION/Click", "SCROLL TO: " + counter + "/" + numView);
+        Log.d("EZDIRECTION/Swipe", "SCROLL TO: " + counter + "/" + numView);
         Toast.makeText(getApplicationContext(), "Swipe to " + counter, Toast.LENGTH_SHORT).show();
 
     }
