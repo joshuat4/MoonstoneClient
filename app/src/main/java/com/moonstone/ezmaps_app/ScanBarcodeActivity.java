@@ -110,21 +110,24 @@ public class ScanBarcodeActivity extends Activity {
                     System.out.println("FINDME" + barcodeResult);
 
                     addContact(barcodeResult);
-//                    Log.d("DEBUG_SCANBARCODEACTIVITY", "addSuccess: " + );
                     finish();
                 }
             }
         });
     }
 
-    public String findUid(final String targetEmail){
-        Log.d(TAG, "findUid: " + targetEmail);
+    public void addContact(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
 
         final String Uid = mAuth.getUid();
+        Log.d(TAG, "findUid: " + targetEmailInput);
+        final String targetEmail = targetEmailInput;
+
         final String[] targetUid = new String[1];
         targetUid[0]= null;
-        Log.d(TAG, "findUid: This Uid "+ Uid);
 
+        //Start of search portion of method.
+        Log.d(TAG, "findUid: This Uid "+ Uid);
         Task<QuerySnapshot> d = db.collection("users").get();
         d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -139,6 +142,7 @@ public class ScanBarcodeActivity extends Activity {
                         if (compareContacts(targetEmail, email)) {
                             targetUid[0] = doc.getId();
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            // If found, call the add method.
                             addContactFromUid(targetUid[0]);
 
                         }
@@ -151,17 +155,8 @@ public class ScanBarcodeActivity extends Activity {
 
             }
         });
-        Log.d(TAG, "onComplete2: "+ targetUid[0]);
-        return targetUid[0];
     }
 
-    public void addContact(String targetEmail){
-        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmail);
-
-        final String Uid = mAuth.getUid();
-        findUid(targetEmail);
-
-    }
 
 
     public boolean addContactFromUid(String targetUidInput) {
