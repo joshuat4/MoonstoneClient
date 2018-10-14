@@ -13,9 +13,18 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +40,12 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
     private ArrayList<String> emails = new ArrayList<>();
 
     private Bundle shareImageBundle;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    String TAG = "DEBUGFriendRequestsRecyclerViewAdapter";
+
+
 
     public FriendRequestsRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
                                              ArrayList<String> profilePics, ArrayList<String> ids,
@@ -162,4 +177,93 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
             notifyItemRangeRemoved(0, size);
         }
     }
+
+
+    public void addContact(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "findUid: " + targetEmailInput);
+        final String targetEmail = targetEmailInput;
+
+        final String[] targetUid = new String[1];
+        targetUid[0]= null;
+
+        //Start of search portion of method.
+        Log.d(TAG, "findUid: This Uid "+ Uid);
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
+                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+
+                for (DocumentSnapshot doc : list) { //for each document in list,
+                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
+                        // String match.
+                        String email = doc.get("email").toString();
+
+                        if (compareContacts(targetEmail, email)) {
+                            targetUid[0] = doc.getId();
+                            Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            // If found, call the add method.
+                            addContactFromUid(targetUid[0]);
+
+                        }
+
+                    }
+                }
+                Log.d(TAG, "onComplete1: "+ targetUid[0]);
+
+            }
+        });
+    }
+
+
+
+    public boolean addContactFromUid(String targetUidInput) {
+        final String targetUid = targetUidInput;
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "addContact: line162 " + targetUid);
+
+        if (targetUid != null) {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "targetUid = " + targetUid);
+
+            //
+            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    db.collection("users").document(Uid).update("contacts", FieldValue.arrayUnion(targetUid));
+                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + targetUid);
+                }
+            });
+
+
+
+        } else {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: COULD NOT FIND CONTACT");
+            return false;
+        }
+        return false;
+    }
+
+
+
+
+    private boolean compareContacts(String text, String against){
+
+        if(against.toUpperCase().contains(text.toUpperCase())){
+
+            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
+
+            return true;
+        }
+
+
+        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
+
+        return false;
+    }
+
 }

@@ -37,7 +37,6 @@ public class ScanBarcodeActivity extends Activity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     String TAG = "DEBUGSCANBARCODEACTIVITY";
-    String targetUid1 = null;
 
 
     @Override
@@ -150,8 +149,6 @@ public class ScanBarcodeActivity extends Activity {
                     }
                 }
                 Log.d(TAG, "onComplete1: "+ targetUid[0]);
-                targetUid1 = targetUid[0];
-                Log.d(TAG, "onComplete1.1: "+ targetUid1);
 
             }
         });
