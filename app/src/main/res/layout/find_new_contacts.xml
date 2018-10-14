@@ -27,9 +27,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="56dp"
         android:background="@drawable/dynamic_border"
         android:gravity="center"
         android:weightSum="2">
+        android:layout_alignTop="@+id/my_toolbar"
 
         <LinearLayout
             android:id="@+id/left"
@@ -46,7 +48,7 @@
             <EditText
                 android:id="@+id/filterAllContacts"
                 android:layout_width="205dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:layout_marginTop="6dp"
                 android:layout_weight="1"
