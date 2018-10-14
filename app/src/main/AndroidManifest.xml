@@ -78,8 +78,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".CameraUpload" />
-
         <!--QR Dev-->
         <activity
             android:name=".QRCode"
