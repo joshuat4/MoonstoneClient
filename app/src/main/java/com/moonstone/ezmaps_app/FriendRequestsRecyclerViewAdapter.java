@@ -111,9 +111,13 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
                 final String currentUser = mAuth.getUid();
                 final String target = ids.get(i);
                 Log.d("ChooseContactRecyclerView", "onClick: " + ids.get(i));
+                //add contact
                 addContact(target, currentUser);
                 addContact(currentUser, target);
+                //delete requests on current user because added.
                 deleteSelf(currentUser, target);
+
+                refreshData();
 
 
             }
