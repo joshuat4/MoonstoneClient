@@ -112,6 +112,7 @@ public class FriendRequestsRecyclerViewAdapter extends RecyclerView.Adapter<Frie
                 final String target = ids.get(i);
                 Log.d("ChooseContactRecyclerView", "onClick: " + ids.get(i));
                 addContact(target, currentUser);
+                addContact(currentUser, target);
                 deleteSelf(currentUser, target);
 
 
