@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +46,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private Toolbar toolbar;
     private ActionBar actionbar;
     private Button searchButton;
-    private Button addQRButton;
+    private FloatingActionButton addQRButton;
     private Button friendRequestButton;
 
     private ImageButton clearButton;
@@ -60,7 +61,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.find_new_contacts);
+        setContentView(R.layout.activity_find_new_contacts);
         filterSearch = findViewById(R.id.filterAllContacts);
         findContactsLoading = findViewById(R.id.findContactsLoading);
         searchButton = findViewById(R.id.searchButton);
@@ -70,7 +71,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
         //temporary buttons WILL NEED TO MOVE
         addQRButton = findViewById(R.id.addQR);
-        friendRequestButton = findViewById(R.id.FriendRequests);
+        /*friendRequestButton = findViewById(R.id.FriendRequests);*/
         ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
@@ -111,7 +112,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
             }
         });
 
-        friendRequestButton.setOnClickListener(new Button.OnClickListener(){
+       /* friendRequestButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.d("Button pressed at Contact search","access friend request list");
@@ -119,7 +120,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
                 startActivityForResult(intent, 1);
             }
         });
-
+*/
 
 
 

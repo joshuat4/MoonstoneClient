@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.util.SparseArray;
+import android.view.View;
+import android.widget.Button;
 
 
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -38,11 +40,26 @@ public class ScanBarcodeActivity extends Activity {
     private FirebaseFirestore db;
     String TAG = "DEBUGSCANBARCODEACTIVITY";
 
+    private Button exitButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
+        exitButton = findViewById(R.id.exitButton);
+
+        exitButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Scan Barcode","Exit");
+                finish();
+            }
+        });
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
 
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         createCameraSource();

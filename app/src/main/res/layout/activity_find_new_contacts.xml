@@ -31,7 +31,6 @@
         android:background="@drawable/dynamic_border"
         android:gravity="center"
         android:weightSum="2">
-        android:layout_alignTop="@+id/my_toolbar"
 
         <LinearLayout
             android:id="@+id/left"
@@ -66,8 +65,7 @@
                 android:layout_marginStart="6dp"
                 android:background="@drawable/circle_shape"
                 android:src="@drawable/clear"
-                android:visibility="gone"></ImageButton>
-
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -107,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <Button
+    <!--<Button
         android:id="@+id/FriendRequests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,17 +114,19 @@
         android:layout_marginBottom="71dp"
         android:layout_marginStart="54dp"
         android:text="FriendRequests"
-        android:theme="@style/AcceptButton" />
+        android:theme="@style/AcceptButton" />-->
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/addQR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:rippleColor="@color/lightGreen"
+        app:fabSize="normal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/FriendRequests"
-        android:layout_marginEnd="69dp"
-        android:text="Add QR"
-        android:theme="@style/AcceptButton" />
+        android:src="@drawable/qr_camera" />
 
 
 

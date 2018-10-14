@@ -39,8 +39,6 @@ public class FriendRequestActivity extends AppCompatActivity {
     private Intent intent;
     private boolean requestsAvailable = false;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +46,6 @@ public class FriendRequestActivity extends AppCompatActivity {
 
         requestsLoading = findViewById(R.id.requestLoading);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
