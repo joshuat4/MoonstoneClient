@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -24,6 +25,7 @@ import butterknife.BindView;
 
 
 public class FrontPageActivity extends AppCompatActivity {
+    final String TAG = "FrontPageActivity";
 
     @BindView(R.id.loginButton) Button _loginButton;
     @BindView(R.id.signUpButton) Button _signupButton;
@@ -32,8 +34,15 @@ public class FrontPageActivity extends AppCompatActivity {
     @BindView(R.id.test1) Button _test1;
     @BindView(R.id.test2) Button _test2;
     private FirebaseAuth mAuth;
-    /* DELETE HERE AFTER TESTING */
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
+    /* DELETE HERE AFTER TESTING */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +50,20 @@ public class FrontPageActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_front_page);
         ButterKnife.bind(this);
+        Log.d(TAG, "CreatedFrontPage");
+        mAuthListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                if(firebaseAuth.getCurrentUser() != null){ //if null, user hasn't logged in.
+                    Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser().getDisplayName());
+                    Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else {
+                    Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser());
+                }
+            }
+        };
 
 
         /* DELETE HERE AFTER TESTING */
@@ -82,13 +105,13 @@ public class FrontPageActivity extends AppCompatActivity {
     }
 
     private void userLogin(String email, String password){
-
         // Authenticate the user
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+
                             Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
