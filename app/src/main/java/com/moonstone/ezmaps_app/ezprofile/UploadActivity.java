@@ -65,6 +65,8 @@ public class UploadActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionbar.setTitle("Image Sharing");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
