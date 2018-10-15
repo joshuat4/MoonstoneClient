@@ -131,7 +131,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
         progressBar = findViewById(R.id.progressBar);
-        nextStopButton = findViewById(R.id.nextStopButton);
+        //nextStopButton = findViewById(R.id.nextStopButton);
         refreshButton = findViewById(R.id.refreshButton);
 
         notFoundText = findViewById(R.id.notFoundText);
@@ -141,7 +141,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         /* Listen on for Left and Right clicks */
         leftButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
-        nextStopButton.setOnClickListener(this);
+        //nextStopButton.setOnClickListener(this);
         refreshButton.setOnClickListener(this);
 
         /* Set Up Action Bar */
@@ -655,6 +655,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             }
         });
 
+        swipeTo(0);
+
     }
 
 
@@ -687,10 +689,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
                 break;
 
-            case R.id.nextStopButton:
+            /*case R.id.nextStopButton:
                 if(isCardLoaded){
                     swipeTo(nextStopCounter);
-                }
+                }*/
 
             case R.id.refreshButton:
                 if(isCardLoaded || isLocationNotFound){
@@ -701,10 +703,9 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     }
 
     public void refresh(){
+        progressBar.setVisibility(View.VISIBLE);
         isCardLoaded = false;
         isLocationNotFound = false;
-        progressBar.setVisibility(View.VISIBLE);
-
         executeURL();
 
     }
