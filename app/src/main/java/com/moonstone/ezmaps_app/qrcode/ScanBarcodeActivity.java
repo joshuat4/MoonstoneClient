@@ -243,7 +243,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
                             targetUid[0] = doc.getId();
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
                             // If found, call the add method.
-                            addContactFromUid(targetUid[0]);
+                            addSelfToUid(targetUid[0]);
 
                         }
 
