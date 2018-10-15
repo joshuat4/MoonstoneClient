@@ -92,6 +92,8 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         // Toolbar
         setSupportActionBar(_toolbar);
         actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle("Edit Profile");
         _toolbar.setNavigationOnClickListener(new View.OnClickListener() {

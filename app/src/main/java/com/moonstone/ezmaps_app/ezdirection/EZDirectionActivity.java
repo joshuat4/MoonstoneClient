@@ -147,6 +147,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         /* Set Up Action Bar */
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionbar.setTitle("EZMap");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

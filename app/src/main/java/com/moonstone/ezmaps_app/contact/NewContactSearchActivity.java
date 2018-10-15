@@ -73,11 +73,13 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
         //temporary buttons WILL NEED TO MOVE
         addQRButton = findViewById(R.id.addQR);
-        /*friendRequestButton = findViewById(R.id.FriendRequests);*/
+        friendRequestButton = findViewById(R.id.FriendRequests);
         ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionbar.setTitle("Add New Contacts");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
