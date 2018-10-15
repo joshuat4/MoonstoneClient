@@ -105,15 +105,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <Button
-        android:id="@+id/FriendRequests"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:text="Test Request"
-        android:theme="@style/AcceptButton" />
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addQR"
         android:layout_width="80dp"

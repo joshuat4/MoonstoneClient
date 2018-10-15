@@ -49,7 +49,6 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private ActionBar actionbar;
     private Button searchButton;
     private FloatingActionButton addQRButton;
-    private Button friendRequestButton;
 
     private ImageButton clearButton;
 
@@ -73,7 +72,6 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
         //temporary buttons WILL NEED TO MOVE
         addQRButton = findViewById(R.id.addQR);
-        friendRequestButton = findViewById(R.id.FriendRequests);
         ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
@@ -106,7 +104,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
             }
         });
 
-        ////TEMPORARY///////////
+
         addQRButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -116,21 +114,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
             }
         });
 
-       friendRequestButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("Button pressed at Contact search","access friend request list");
-                Intent intent = new Intent(v.getContext() , FriendRequestActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
 
-
-
-
-
-
-        //////////////////////////////////////////////
 
         filterSearch.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -211,6 +195,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
                 for (DocumentSnapshot doc : list) {
                     if(!doc.getId().equals(mAuth.getUid())){
+                        Log.d("AAAA", doc.getId());
                         // Check for name
                         String name = doc.get("name").toString();
                         String email = doc.get("email").toString();

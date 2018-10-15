@@ -121,7 +121,6 @@
 
         <!-- QR Code -->
         <activity
-            android:screenOrientation="portrait"
             android:name=".qrcode.QRCodeActivity"
             android:theme="@style/AppTheme.PopMe"/>
         <activity
