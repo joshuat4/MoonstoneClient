@@ -83,6 +83,9 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
 
         viewHolder.contactName.setText(contactNames.get(i));
 
+        acceptButton = viewHolder.itemView.findViewById(R.id.acceptReq);
+        declineButton = viewHolder.itemView.findViewById(R.id.declineReq);
+
 
         //Add onclicklistener to each list entry
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -90,21 +93,30 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
             public void onClick(View v) {
                 final String currentUser = mAuth.getUid();
                 final String target = ids.get(i);
-                Log.d("ChooseContactRecyclerView", "onClick: " + ids.get(i));
+                Log.d("ChooseContactRecyclerView", "Accepted");
                 //add contact
                 addContact(target, currentUser);
                 addContact(currentUser, target);
                 //delete requests on current user because added.
                 deleteSelf(currentUser, target);
+                contactNames.remove(i);
+                profilePics.remove(i);
+                ids.remove(i);
+                refreshData();
             }
         });
 
-        acceptButton.setOnClickListener(new View.OnClickListener() {
+        declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("ChooseContactRecyclerView", "Declined");
                 final String currentUser = mAuth.getUid();
                 final String target = ids.get(i);
                 deleteSelf(currentUser, target);
+                contactNames.remove(i);
+                profilePics.remove(i);
+                ids.remove(i);
+                refreshData();
             }
         });
 
@@ -131,8 +143,6 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
             profilePic = itemView.findViewById(R.id.reqCallerPic);
             contactName = itemView.findViewById(R.id.reqContactName);
             ContactParentLayout = itemView.findViewById(R.id.contactParentLayout);
-            acceptButton = itemView.findViewById(R.id.acceptReq);
-            declineButton = itemView.findViewById(R.id.declineCall);
 
         }
     }

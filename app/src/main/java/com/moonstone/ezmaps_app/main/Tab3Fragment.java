@@ -72,6 +72,10 @@ public class Tab3Fragment extends Fragment {
         emails = new ArrayList<>();
         names = new ArrayList<>();
 
+        reqNames = new ArrayList<>();
+        reqIds = new ArrayList<>();
+        reqProfilePics = new ArrayList<>();
+
         clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -150,9 +154,9 @@ public class Tab3Fragment extends Fragment {
                         final ArrayList<String> requests = (ArrayList<String>) snapshot.get("requests");
                         Log.d("TAB3", "CONTACTS: " + contacts);
 
-                        if(!contacts.isEmpty()){
+                        if(!requests.isEmpty()) {
 
-                            for(String request : requests){
+                            for (String request : requests) {
                                 db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -161,10 +165,17 @@ public class Tab3Fragment extends Fragment {
                                         reqNames.add(documentSnapshot.get("name").toString());
                                         reqIds.add(documentSnapshot.getId());
 
+                                        Log.d("qqqqq", reqNames.toString());
+
                                         //Might cause a race condition
+                                        if (reqNames.size() == requests.size()) {
+                                            initRequestsRecyclerView();
+                                        }
                                     }
                                 });
                             }
+                        }
+                        if(!contacts.isEmpty()){
 
                             for (String contact : contacts){
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -217,16 +228,20 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //contact requests recycler view
-        RecyclerView requestRecyclerView = fragmentLayout.findViewById(R.id.requestRecyclerView);
-
-        requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds);
-        requestRecyclerView.setAdapter(requestAdapter);
-        requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
 
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
+    }
+
+    private void initRequestsRecyclerView(){
+        //contact requests recycler view
+        RecyclerView requestRecyclerView = fragmentLayout.findViewById(R.id.requestRecyclerView);
+
+        Log.d("aaaaa", "is this here");
+
+        requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
+        requestRecyclerView.setAdapter(requestAdapter);
+        requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void filter(String text){
