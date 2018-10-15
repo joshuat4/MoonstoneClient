@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contactParentLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dynamic_border">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reqCallerPic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="20dp"/>
+
+    <TextView
+        android:id="@+id/reqContactName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/reqCallerPic"
+        android:text="First Name Last"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"
+        android:layout_gravity="center"/>
+
+    <ImageButton
+        android:id="@+id/declineReq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="100dp"
+        app:srcCompat="@drawable/ic_cancel_black_24dp"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/acceptReq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="40dp"
+        app:srcCompat="@drawable/ic_check_circle_black_24dp"
+        android:background="@null"/>
+
+</RelativeLayout>

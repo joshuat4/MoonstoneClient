@@ -29,7 +29,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
+import com.moonstone.ezmaps_app.contact.requestsRecyclerViewAdapter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Tab3Fragment extends Fragment {
@@ -37,6 +39,7 @@ public class Tab3Fragment extends Fragment {
     private FirebaseFirestore db;
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
+    private requestsRecyclerViewAdapter requestAdapter;
     private boolean contactsAvailable = false;
 
     private EditText contactFilter;
@@ -49,6 +52,10 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> ids;
     private ArrayList<String> emails;
     private ArrayList<String> names;
+
+    private ArrayList<String> reqProfilePics;
+    private ArrayList<String> reqNames;
+    private ArrayList<String> reqIds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -140,10 +147,25 @@ public class Tab3Fragment extends Fragment {
 
                     try{
                         final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
-
+                        final ArrayList<String> requests = (ArrayList<String>) snapshot.get("requests");
                         Log.d("TAB3", "CONTACTS: " + contacts);
 
                         if(!contacts.isEmpty()){
+
+                            for(String request : requests){
+                                db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                                        reqProfilePics.add(documentSnapshot.get("profilePic").toString());
+                                        reqNames.add(documentSnapshot.get("name").toString());
+                                        reqIds.add(documentSnapshot.getId());
+
+                                        //Might cause a race condition
+                                    }
+                                });
+                            }
+
                             for (String contact : contacts){
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
@@ -194,6 +216,14 @@ public class Tab3Fragment extends Fragment {
         adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //contact requests recycler view
+        RecyclerView requestRecyclerView = fragmentLayout.findViewById(R.id.requestRecyclerView);
+
+        requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds);
+        requestRecyclerView.setAdapter(requestAdapter);
+        requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
