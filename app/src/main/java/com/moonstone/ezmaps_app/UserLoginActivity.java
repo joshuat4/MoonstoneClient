@@ -62,6 +62,10 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
         String email = _emailField.getText().toString().trim();
         String password = _passwordField.getText().toString().trim();
 
+        if(email.isEmpty() || password.isEmpty()){
+            return;
+        }
+
         // Authenticate the user
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(
                 new OnCompleteListener<AuthResult>() {
@@ -92,7 +96,6 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
 
 
             } else {
-
                 _progressBar.setVisibility(View.GONE);
                 if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(getApplicationContext(), "Invalid login. Please try again.",
@@ -106,6 +109,12 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
         }
 
     });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.back_enter, R.anim.back_exit);
     }
 
     @Override

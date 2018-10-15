@@ -35,7 +35,7 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
 
     private Bundle shareImageBundle;
 
-    public ChooseContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+    public ChooseContactRecyclerViewAdapter(Context context, Activity mActivity, ArrayList<String> contactNames,
                                       ArrayList<String> profilePics, ArrayList<String> ids,
                                       ArrayList<String> emails, Bundle shareImageBundle){
 
@@ -103,7 +103,9 @@ public class ChooseContactRecyclerViewAdapter extends RecyclerView.Adapter<Choos
                 Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtras(shareImageBundle);
                 i.putExtra("name", name);
-                mContext.startActivity(i);
+
+                mActivity.startActivity(i);
+                mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
 

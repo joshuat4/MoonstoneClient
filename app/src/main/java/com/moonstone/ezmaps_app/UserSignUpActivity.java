@@ -79,6 +79,12 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
     }
     */
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.back_enter, R.anim.back_exit);
+    }
+
     private void registerUser(){
         final String name = _nameField.getText().toString().trim();
         final String email = _emailField.getText().toString().trim();

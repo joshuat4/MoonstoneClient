@@ -74,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private static final boolean shouldAllowBack = false;
+    @Override
+    public void onBackPressed() {
+        if (!shouldAllowBack) {
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {

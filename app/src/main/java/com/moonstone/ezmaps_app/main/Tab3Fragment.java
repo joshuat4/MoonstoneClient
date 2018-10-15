@@ -191,7 +191,7 @@ public class Tab3Fragment extends Fragment {
 
         Log.d("TAB3", "Initialise recycler view: " + names.toString());
 
-        adapter = new ContactRecyclerViewAdapter(getActivity(), names, profilePics, ids, emails);
+        adapter = new ContactRecyclerViewAdapter(getActivity(), getActivity(), names, profilePics, ids, emails);
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
