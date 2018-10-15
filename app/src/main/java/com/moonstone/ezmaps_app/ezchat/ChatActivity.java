@@ -95,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.back_enter, R.anim.back_exit);
 
             }
         });
@@ -162,6 +163,12 @@ public class ChatActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(ChatActivity.this, ImageSendingActivity.class), REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.back_enter, R.anim.back_exit);
     }
 
     @Override

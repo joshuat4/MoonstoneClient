@@ -76,6 +76,8 @@ public class ChooseContactsActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionbar.setTitle("Sharing Image");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +202,7 @@ public class ChooseContactsActivity extends AppCompatActivity {
 
         Log.d("ChooseContactsActivity", "Initialise recycler view: " + names.toString());
 
-        adapter = new ChooseContactRecyclerViewAdapter(ChooseContactsActivity.this, names, profilePics, ids, emails, intent.getExtras());
+        adapter = new ChooseContactRecyclerViewAdapter(ChooseContactsActivity.this,this, names, profilePics, ids, emails, intent.getExtras());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(ChooseContactsActivity.this));
 

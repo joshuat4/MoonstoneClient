@@ -66,6 +66,8 @@ public class ImageSendingActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
         actionbar.setTitle("Image Sending");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

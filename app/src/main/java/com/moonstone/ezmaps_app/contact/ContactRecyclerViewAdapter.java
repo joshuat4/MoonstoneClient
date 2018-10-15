@@ -182,7 +182,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+    public ContactRecyclerViewAdapter(Context context, Activity mActivity, ArrayList<String> contactNames,
                                       ArrayList<String> profilePics, ArrayList<String> ids,
                                       ArrayList<String> emails){
         Log.d("HERE", "INITIALISED ");
@@ -241,7 +241,8 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 Intent i = new Intent(mContext, ChatActivity.class);
                 i.putExtra("name", name);
                 i.putExtra("fromChooseContacts", false);
-                mContext.startActivity(i);
+                mActivity.startActivity(i);
+                mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
 
             }
         });
