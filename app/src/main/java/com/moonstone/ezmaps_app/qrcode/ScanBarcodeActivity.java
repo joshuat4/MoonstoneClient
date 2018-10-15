@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,11 +39,12 @@ import com.moonstone.ezmaps_app.R;
 import java.io.IOException;
 import java.util.List;
 
-public class ScanBarcodeActivity extends Activity {
+public class ScanBarcodeActivity extends FragmentActivity {
     SurfaceView cameraPreview;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     String TAG = "DEBUGSCANBARCODEACTIVITY";
+    private static boolean trigger = false;
 
     private Button exitButton;
 
@@ -48,6 +53,7 @@ public class ScanBarcodeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
+        trigger = false;
         exitButton = findViewById(R.id.exitButton);
 
         exitButton.setOnClickListener(new Button.OnClickListener(){
@@ -119,20 +125,26 @@ public class ScanBarcodeActivity extends Activity {
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-                if(barcodes.size()>0){
+                if(barcodes.size()>0 && trigger == false){
+                    DialogFragment d = new alertBox();
                     Intent intent = new Intent();
                     intent.putExtra("barcode", (Parcelable) barcodes.valueAt(0)); //get last barcode added to array.
                     setResult(CommonStatusCodes.SUCCESS, intent);
                     String barcodeResult = barcodes.valueAt(0).displayValue;
                     System.out.println("FINDME" + barcodeResult);
-
-
+                    trigger = true;
                     sendFriendRequest(barcodeResult);
-//                    addContact(barcodeResult);
-                    finish();
+                    initiatePopup(d);
+
                 }
+
             }
         });
+
+    }
+
+    public void initiatePopup(DialogFragment d) {
+        d.show(getSupportFragmentManager(), "alertBox");
     }
 
 // Depricated.
@@ -178,6 +190,47 @@ public class ScanBarcodeActivity extends Activity {
 
 
     public void sendFriendRequest(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "sendFriendRequest: " + targetEmailInput);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "findUid: " + targetEmailInput);
+        final String targetEmail = targetEmailInput;
+
+        final String[] targetUid = new String[1];
+        targetUid[0]= null;
+
+        //Start of search portion of method.
+        Log.d(TAG, "findUid: This Uid "+ Uid);
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
+                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+
+                for (DocumentSnapshot doc : list) { //for each document in list,
+                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
+                        // String match.
+                        String email = doc.get("email").toString();
+
+                        if (compareContacts(targetEmail, email)) {
+                            targetUid[0] = doc.getId();
+                            Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            // If found, call the add method.
+                            addContactFromUid(targetUid[0]);
+
+                        }
+
+                    }
+                }
+                Log.d(TAG, "onComplete1: "+ targetUid[0]);
+
+            }
+        });
+    }
+
+
+
+    public void addContact(String targetEmailInput){
         Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
 
         final String Uid = mAuth.getUid();

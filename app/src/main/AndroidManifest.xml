@@ -40,25 +40,33 @@
             android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".FrontPageActivity">
+        <activity
+            android:name=".FrontPageActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserSignUpActivity" />
+            android:name=".UserSignUpActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".UserLoginActivity" />
+            android:name=".UserLoginActivity"
+            android:screenOrientation="portrait" />
 
 
         <!-- Contacts -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".contact.NewContactSearchActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".contact.ChooseContactsActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".contact.FriendRequestActivity"
             android:label="@string/title_activity_friend_request"
             android:theme="@style/AppTheme"/>
@@ -66,30 +74,38 @@
 
         <!-- Profile -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezprofile.EditProfileActivity"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme"
             android:title="Edit Profile" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezprofile.ImageUploadActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezprofile.CameraUploadActivity" />
 
         <!-- Chat -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezchat.ChatActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezchat.ImageSendingActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezchat.incomingCall"
             android:noHistory="true" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezchat.Calling"
             android:launchMode="singleInstance"/>
 
 
         <!-- EZ Direction -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".ezdirection.EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
             android:theme="@style/AppTheme" />
@@ -105,24 +121,20 @@
 
         <!-- QR Code -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".qrcode.QRCodeActivity"
             android:theme="@style/AppTheme.PopMe"/>
         <activity
+            android:screenOrientation="portrait"
             android:name=".qrcode.QRCode"
             android:theme="@style/AppTheme.PopMe" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".qrcode.qrCodeScanner"
             android:label="@string/title_activity_qr_code_scanner"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".QRReader"
-            android:label="Barcode Reader">
-            <intent-filter>
-                <action android:name="android.intent.action.QR_READER" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
+            android:screenOrientation="portrait"
             android:name=".qrcode.ScanBarcodeActivity"
             android:label="Scan Barcode" />
 
