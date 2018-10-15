@@ -16,10 +16,14 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
 import com.moonstone.ezmaps_app.main.MainActivity;
 
@@ -27,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 
 public class UserLoginActivity extends AppCompatActivity implements View.OnClickListener{
+    String TAG = "UserLoginActiviy";
 
 
 
@@ -65,8 +70,22 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
             _progressBar.setVisibility(View.GONE);
             if(task.isSuccessful()){
                 userID = mAuth.getUid();
+                final String deviceToken = MyFirebaseMessagingService.fetchToken();
                 Log.d("DEBUGGERUserLogin", "UID = "+ userID);
-                Log.d("DEBUGGERUserLogin", "DeviceToken = " + MyFirebaseMessagingService.fetchToken());
+                Log.d("DEBUGGERUserLogin", "DeviceToken = " + deviceToken);
+
+                final FirebaseFirestore db;
+                db = FirebaseFirestore.getInstance();
+                db.collection("users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>(){
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        db.collection("users").document(userID).update("deviceToken", deviceToken);
+                        Log.d(TAG, "userLogin: SUCCESSFULLY UPDATED deviceToken to " + deviceToken);
+                    }
+                });
+
+
+
                 Intent intent = new Intent(UserLoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    // clear all activity on stack
                 startActivity(intent);
@@ -123,4 +142,7 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+
+
 }
