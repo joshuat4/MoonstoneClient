@@ -14,14 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,6 +42,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    final String TAG = "FindRecyclerViewAdaptor";
 
     public FindRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics,
                                    ArrayList<String> ids, ArrayList<String> emails, ArrayList<String> contacts){
@@ -95,7 +101,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                 switch (check.toUpperCase()){
                     case "ADD":
                         Log.d("FINDRECYCLER", "ADD CONTACT: " + viewHolder.id);
-                        addContact(viewHolder);
+                        sendFriendRequest(viewHolder.email);
+//                        addContact(viewHolder);
                         changeToRemoveButton(butt);
                         break;
 
@@ -179,6 +186,111 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         this.ids = ids;
         this.emails = emails;
         notifyDataSetChanged();
+    }
+
+    public void sendFriendRequest(String targetEmailInput){
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "sendFriendRequest: " + targetEmailInput);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "findUid: " + targetEmailInput);
+        final String targetEmail = targetEmailInput;
+
+        final String[] targetUid = new String[1];
+        targetUid[0]= null;
+
+        //Start of search portion of method.
+        Log.d(TAG, "findUid: This Uid "+ Uid);
+        Task<QuerySnapshot> d = db.collection("users").get();
+        d.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) { //Once list of users is retrieved,
+                List<DocumentSnapshot> list = task.getResult().getDocuments(); //put into a list of users
+
+                for (DocumentSnapshot doc : list) { //for each document in list,
+                    if (!doc.getId().equals(Uid)) { //only check if not checking this user.
+                        // String match.
+                        String email = doc.get("email").toString();
+
+                        if (compareContacts(targetEmail, email)) {
+                            targetUid[0] = doc.getId();
+                            Log.d(TAG, "onComplete: "+ targetUid[0]);
+                            // If found, call the add method.
+//                            addContactFromUid(targetUid[0]);
+                            addSelfToUid(targetUid[0]);
+
+
+                        }
+
+                    }
+                }
+                Log.d(TAG, "onComplete1: "+ targetUid[0]);
+
+            }
+        });
+    }
+
+    public void addSelfToUid(String targetUidInput){
+        final String targetUid = targetUidInput;
+        final String selfUid = mAuth.getUid();
+        if(targetUid!=null){
+            db.collection("users").document(targetUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Log.d("DEBUG_SCANBARCODEACTIVITY", "addSelfToUid = " + targetUid);
+                    db.collection("users").document(targetUid).update("requests", FieldValue.arrayUnion(selfUid));
+//                            update("requests", selfUid);
+                    Log.d(TAG, "addSelfToUid: SUCCESSFULLY ADDED " + selfUid + " to " + targetUid );
+                }
+            });
+        } else {
+            Log.d(TAG, "addSelfToUid: FAILED");
+
+        }
+
+
+    }
+
+    public boolean addContactFromUid(String targetUidInput) {
+        final String targetUid = targetUidInput;
+        Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
+
+        final String Uid = mAuth.getUid();
+        Log.d(TAG, "addContact: line162 " + targetUid);
+
+        if (targetUid != null) {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "targetUid = " + targetUid);
+
+            //
+            db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    db.collection("users").document(Uid).update("contacts", FieldValue.arrayUnion(targetUid));
+                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + targetUid);
+                }
+            });
+
+
+
+        } else {
+            Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: COULD NOT FIND CONTACT");
+            return false;
+        }
+        return false;
+    }
+
+    private boolean compareContacts(String text, String against){
+
+        if(against.toUpperCase().contains(text.toUpperCase())){
+
+            Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " SUCCESS");
+
+            return true;
+        }
+
+
+        Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
+
+        return false;
     }
 
     public void refreshData(){
