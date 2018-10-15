@@ -1,4 +1,4 @@
-# Welcome to EZMaps v0.8.0
+# Welcome to EZMaps v0.11.0
 EZMaps is a frame-by-frame picture location service application that caters to the elderly population to navigate their way from one place to another. Along with a simple-to-use interface and straight-forward features, EZMaps tones down modern mapping technology relative to its contemporaries in order to comfortably aid the eldery people in getting to their destination. 
 
 ## Pre-requirements
@@ -10,18 +10,18 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 |Requirement Document| EZMaps |
 |---------------|----------|
-|Login/SignUp | **Completed** |
-|Profile Setup | **Completed** |
-|Image Upload | **Completed** |
-|EZMap        | **Completed** |
+|Login/SignUp | **Live** |
+|Profile Setup | **Live** |
+|Image Upload | **Live** |
+|EZMap        | **Live** |
 |Automatic/ Manual Card Swiping | In Progress |
-|Favourite Route List | **Completed** |
-|Contact List & Searching | **Completed** |
-|Voice Call | In Progress  |
-|Video Call | In Progress |
-|Instant Messaging | **Completed** |
-|Image Sending | **Completed**  |
-|QR Code Scanner | In Progress  |
+|Favourite Route List | **Live** |
+|Contact List & Searching | **Live** |
+|Voice Call | **Live**   |
+|Video Call | **Live**  |
+|Instant Messaging | **Live**  |
+|Image Sending | **Live**  |
+|QR Code Scanner | **Live**   |
 
 ## Testing Login/ SignUp
 1) Download the repo and run the app in your IDE (Android Studio, etc) with an Emulator
@@ -142,4 +142,28 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 ### Testing QR Code Scanner (TBA)
 
 
-## Unit Testing (TBA)
+## Unit Testing 
+
+### Stimulate Travelling (Android Emulator)
+Before starting to unit test EZMaps, we first need to stimulate our device as if it was travelling from one place to another. We can do this by downloading a GPX file that lists down our preferred route into a textual form.
+*  In order to do so, we first have to lookup our desired route at [google maps](https://www.google.com.au/maps). Put in both the starting and ending destination, such as Queensberry Street and University of Melbourne, and click on a preferred route such as via Tin Alley. Also, remember to click on the mode of transport such as walking to get the timing right.
+*  After handling all the settings, click on the url and copy it.
+*  Head over to [GPS Visualizer](http://www.gpsvisualizer.com/convert_input?convert_format=gpx) to convert the link into a GPX file. 
+    *  Make sure to click on the option GPX.
+    *  Put in the Google Maps link to URL field.
+    *  Put in this Google API Key [AIzaSyCBl0nwslLllTYtEK-O_NM9_dvAaBs7AyE].
+* Click on the download link at the top, to download the GPX file.
+
+| <img width="1098" alt="1" src="https://user-images.githubusercontent.com/12033253/46915766-e9242080-cffb-11e8-8cf5-84a7c7e9a9bd.png">  | <img width="1101" alt="2" src="https://user-images.githubusercontent.com/12033253/46915767-e9242080-cffb-11e8-8da4-cd5d62d632d5.png">  | 
+| ------------- |:-------------:|
+
+| <img width="1099" alt="3" src="https://user-images.githubusercontent.com/12033253/46915768-e9bcb700-cffb-11e8-8c7c-05320a5c0279.png">  | <img width="1094" alt="4" src="https://user-images.githubusercontent.com/12033253/46915809-b0387b80-cffc-11e8-8ad5-038bfe914e36.png"> | 
+| ------------- |:-------------:|
+
+* Open up the emulator device and click on the *More* option. 
+* In Extended Controls, click on *Load GPX/KML* and choose the GPX file that you had just downloaded.
+* Once it's loaded, you can click the play button at any point in time to stimulate the device travelling. You could also adjust the speed to your liking.
+
+| <img width="389" alt="em" src="https://user-images.githubusercontent.com/12033253/46915870-c1ce5300-cffd-11e8-9439-3674fa63a469.png">   | <img width="820" alt="screen shot 2018-10-14 at 10 06 12 pm" src="https://user-images.githubusercontent.com/12033253/46915871-c1ce5300-cffd-11e8-80dd-5b6a8b072f2e.png">  | 
+| ------------- |:-------------:|
+

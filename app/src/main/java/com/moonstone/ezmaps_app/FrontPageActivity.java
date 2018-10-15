@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.moonstone.ezmaps_app.main.MainActivity;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -47,14 +48,14 @@ public class FrontPageActivity extends AppCompatActivity {
         _test1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("kenny1@test.com","kenny1");
+                userLogin("test4@test4.com","test4test4");
             }
         });
 
         _test2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin("kenny2@test.com","kenny2");
+                userLogin("test5@test5.com","test5test5");
 
             }
         });

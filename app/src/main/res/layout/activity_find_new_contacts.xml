@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusableInTouchMode="true">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorForeground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="Search Contacts"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:navigationContentDescription="Navigation button description"/>
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/dynamic_border"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/left"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/tab3_search"
+            android:weightSum="1">
+
+            <EditText
+                android:id="@+id/filterAllContacts"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Search for a name"
+                android:inputType="textPersonName"
+                android:paddingStart="8dp" />
+
+            <ImageButton
+                android:id="@+id/clearButton"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="6dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/circle_shape"
+                android:src="@drawable/clear"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Search"
+            android:theme="@style/AcceptButton"
+            app:layout_constraintBottom_toTopOf="@id/contactRecyclerView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topBar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/findRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:visibility="visible" />
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/findContactsLoading"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/FriendRequests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:text="Test Request"
+        android:theme="@style/AcceptButton" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addQR"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:rippleColor="@color/textBlue"
+        app:fabSize="normal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/qr_camera" />
+
+
+
+</RelativeLayout>
