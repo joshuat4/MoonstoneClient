@@ -711,13 +711,15 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     public void swipeTo(int num){
 
-        if(num >= 1){
+        Log.d("EZDIRECTION/SwipeTo", "NEXT STOP: " + num + " COunter: "+ counter);
+
+        if(num >= 0){
             counter = num;
         }
 
         layoutManager.scrollToPosition(counter);
         invalidateOptionsMenu();
-        Log.d("EZDIRECTION/Swipe", "SCROLL TO: " + counter + "/" + numView);
+        Log.d("EZDIRECTION/SwipeTo", "SCROLL TO: " + counter + "/" + numView);
         Toast.makeText(getApplicationContext(), "Swipe to " + counter, Toast.LENGTH_SHORT).show();
 
     }
