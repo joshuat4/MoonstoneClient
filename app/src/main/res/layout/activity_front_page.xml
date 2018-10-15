@@ -46,21 +46,6 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Button
-                android:theme="@style/AnotherButton"
-                android:id="@+id/test1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="LOGIN 1"/>
-
-            <Button
-                android:theme="@style/AnotherButton"
-                android:id="@+id/test2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="LOGIN 2"/>
         </LinearLayout>
 
         <Button

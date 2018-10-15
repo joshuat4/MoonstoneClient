@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -45,6 +46,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
     private FirebaseFirestore db;
     String TAG = "DEBUGSCANBARCODEACTIVITY";
     private static boolean trigger = false;
+    private static boolean trigger2 = false;
 
     private Button exitButton;
 
@@ -55,6 +57,10 @@ public class ScanBarcodeActivity extends FragmentActivity {
         setContentView(R.layout.activity_scan_barcode);
         trigger = false;
         exitButton = findViewById(R.id.exitButton);
+
+        if (!checkIfAlreadyhavePermission()) {
+            requestForSpecificPermission();
+        }
 
         exitButton.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -73,6 +79,27 @@ public class ScanBarcodeActivity extends FragmentActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //granted
+                    Log.d(TAG, "XXXXXXXXXX");
+                    trigger2 = true;
+                    finish();
+                    startActivity(getIntent());
+
+                } else {
+                    finish();
+                    //not granted
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
 
@@ -335,6 +362,20 @@ public class ScanBarcodeActivity extends FragmentActivity {
         Log.d("Add Contacts", "Comparing string1: " + text + " in string2: " + against + " FAILED");
 
         return false;
+    }
+
+    //permissions
+    private boolean checkIfAlreadyhavePermission() {
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestForSpecificPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
     }
 
 }
