@@ -1,8 +1,12 @@
 package com.moonstone.ezmaps_app.ezchat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -121,6 +125,10 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         setContentView(R.layout.call_ui);
         mAuth = FirebaseAuth.getInstance();
 
+        if (!checkIfAlreadyhavePermission()) {
+            requestForSpecificPermission();
+        }
+
         inCall = true;
 
         //Setup room id
@@ -220,6 +228,41 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             }
         });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //granted
+
+                } else {
+                    myRtcEngine.leaveChannel();
+                    mMediaPlayer.stop();
+                    inCall = false;
+                    finish();
+                    //not granted
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    //permissions
+    private boolean checkIfAlreadyhavePermission() {
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int result1 = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        if (result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestForSpecificPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 101);
     }
 
     private void setupVideoProfile() {

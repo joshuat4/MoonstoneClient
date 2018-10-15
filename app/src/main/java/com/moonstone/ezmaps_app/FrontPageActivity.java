@@ -30,19 +30,11 @@ public class FrontPageActivity extends AppCompatActivity {
     @BindView(R.id.loginButton) Button _loginButton;
     @BindView(R.id.signUpButton) Button _signupButton;
 
-    /* DELETE HERE AFTER TESTING */
-    @BindView(R.id.test1) Button _test1;
-    @BindView(R.id.test2) Button _test2;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    /* DELETE HERE AFTER TESTING */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
 
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,23 +58,7 @@ public class FrontPageActivity extends AppCompatActivity {
         };
 
 
-        /* DELETE HERE AFTER TESTING */
-        mAuth = FirebaseAuth.getInstance();
-        _test1.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userLogin("test4@test4.com","test4test4");
-            }
-        });
 
-        _test2.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userLogin("test5@test5.com","test5test5");
-
-            }
-        });
-        /* DELETE HERE AFTER TESTING */
 
         _signupButton.setOnClickListener(new OnClickListener() {
             @Override
