@@ -1,5 +1,6 @@
 package com.moonstone.ezmaps_app.qrcode;
 
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
