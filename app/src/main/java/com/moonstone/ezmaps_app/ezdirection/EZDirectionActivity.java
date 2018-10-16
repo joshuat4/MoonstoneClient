@@ -160,9 +160,13 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         /* Retrieve Object from Tab 2 */
         Intent intent = getIntent();
         tab2_to_ezdirection = (HashMap<String, Object>) intent.getSerializableExtra("tab2_to_ezdirection");
-        isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
-        currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
-        Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
+        if(tab2_to_ezdirection != null){
+            isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
+            currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
+            Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
+        }
+
+
 
         /* Attach Snapper to Recycler View */
         SnapHelper helper = new LinearSnapHelper();
@@ -268,6 +272,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
         return false;
     }
+
+
 
     /* Restoring values from saved instance state */
     private void restoreValuesFromBundle(Bundle savedInstanceState) {
@@ -398,6 +404,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                         Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public Location getLastKnownLocation(){
+        return mCurrentLocation;
     }
 
 
