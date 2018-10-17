@@ -92,6 +92,9 @@
             android:name=".ezchat.ChatActivity" />
         <activity
             android:screenOrientation="portrait"
+            android:name=".ezchat.GroupchatActivity" />
+        <activity
+            android:screenOrientation="portrait"
             android:name=".ezchat.ImageSendingActivity" />
         <activity
             android:screenOrientation="portrait"

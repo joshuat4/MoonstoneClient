@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 
 public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<GroupchatRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> groupchatNames = new ArrayList<>();
+    private ArrayList<ArrayList<String>> groupchatNames = new ArrayList<>();
+    private ArrayList<ArrayList<String>> groupchatUserIds = new ArrayList<>();
     private ArrayList<Boolean> unread = new ArrayList<>();
     private ArrayList<String> groupchatOrder = new ArrayList<>();
     private ArrayList<String> unreadGroupchatOrder = new ArrayList<>();
@@ -40,18 +42,15 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    public GroupchatRecyclerViewAdapter(Context context, ArrayList<String> groupchatNames,
-                                        ArrayList<String> groupchats, ArrayList<Boolean> unread,
-                                        ArrayList<String> groupchatOrder,
-                                        ArrayList<String> unreadGroupchatOrder,
-                                        FirebaseFirestore db, FirebaseAuth mAuth){
+    public GroupchatRecyclerViewAdapter(Context context, ArrayList<String> groupchatIds, ArrayList<ArrayList<String>> groupchatNames, ArrayList<ArrayList<String>> groupchatUserIds, FirebaseFirestore db, FirebaseAuth mAuth){
         Log.d("groupchat", "INITIALISED ");
         this.groupchatNames = groupchatNames;
         this.mContext = context;
-        this.groupchats = groupchats;
-        this.unread = unread;
-        this.groupchatOrder = groupchatOrder;
-        this.unreadGroupchatOrder = unreadGroupchatOrder;
+        this.groupchats = groupchatIds;
+        this.groupchatUserIds = groupchatUserIds;
+//        this.unread = unread;
+//        this.groupchatOrder = groupchatOrder;
+//        this.unreadGroupchatOrder = unreadGroupchatOrder;
         this.db = db;
         this.mAuth = mAuth;
     }
@@ -72,28 +71,44 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
         Log.d("HERE", Integer.toString(i));
 
         viewHolder.GroupchatParentLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        viewHolder.groupchatName.setText(groupchatNames.get(i));
-        Log.d("groupchat", "groupchat Names: " + groupchatNames.toString());
+
+        //format the list of names into a printable manner
+        String editString = new String();
+        Log.d("groupchat", "onbndvwhldr groupchat names: " + groupchatNames.size());
+        Log.d("groupchat", "onbndvwhldr groupchat names: " + groupchatNames.toString());
+
+        for(int step = 0; step<groupchatNames.get(i).size(); step++){
+            if(step != (groupchatNames.get(i).size() - 1)){
+                Log.d("groupchat", "i rn: "+i);
+                editString = editString.concat(groupchatNames.get(i).get(step)+", ");
+                Log.d("groupchat", "name appended: "+ groupchatNames.get(i).get(step));
+            } else {
+                editString = editString.concat(groupchatNames.get(i).get(step));
+            }
+        }
+        Log.d("groupchat", "edited string name: " + editString);
+
+        viewHolder.groupchatName.setText(editString);
 
         //set unread message notification visibility
-        if(unread.size() > 0){
-            if(unreadGroupchatOrder.contains(groupchatOrder.get(i))){
-                if(unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))){
-                    Log.d("groupchat", "unreadGroupchatOrder: " + unreadGroupchatOrder.toString());
-                    Log.d("groupchat", "groupchatOrder: " + groupchatOrder.toString());
-                    Log.d("groupchat", "unread: " + unread.toString());
-                    viewHolder.unreadNotification.setVisibility(View.VISIBLE);
-                } else if(!unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))) {
-                    Log.d("unread", "invisible");
-                    viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-                }
-            } else {
-                viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            Log.d("unread", "invisible, no unread list");
-            viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-        }
+//        if(unread.size() > 0){
+//            if(unreadGroupchatOrder.contains(groupchatOrder.get(i))){
+//                if(unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))){
+//                    Log.d("groupchat", "unreadGroupchatOrder: " + unreadGroupchatOrder.toString());
+//                    Log.d("groupchat", "groupchatOrder: " + groupchatOrder.toString());
+//                    Log.d("groupchat", "unread: " + unread.toString());
+//                    viewHolder.unreadNotification.setVisibility(View.VISIBLE);
+//                } else if(!unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))) {
+//                    Log.d("unread", "invisible");
+//                    viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
+//                }
+//            } else {
+//                viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
+//            }
+//        } else {
+//            Log.d("unread", "invisible, no unread list");
+//            viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
+//        }
 
         //Add onclicklistener to each list entry
         viewHolder.GroupchatParentLayout.setOnClickListener(new View.OnClickListener(){
@@ -104,38 +119,18 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 
                 Log.d("GroupchatRecyclerView", "groupchats: "+ groupchats.toString());
 
-                Log.d("groupchat", "INSIDE RECVIEW groupchatNames: " + groupchatNames.toString() + "\ngroupchats: "
-                        + groupchats.toString() + "\ngroupchatUnread: " + unread.toString() +
-                        "\ngroupchatOrder: " + groupchatOrder.toString() + "\ngroupchatUnreadOrder: " +
-                        unreadGroupchatOrder.toString());
+                GroupchatActivity.setToUserIds(groupchatUserIds.get(i));
+                GroupchatActivity.setGroupchatId(groupchats.get(i));
 
-                db.collection("groupchats").document(groupchatOrder.get(i)).get()
-                        .addOnSuccessListener(
-                                new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        Log.d("groupchat", "current group: " + groupchatOrder.get(i));
-
-                                        final ArrayList<String> groupchatMemberIds = (ArrayList<String>) documentSnapshot.get("ids");
-                                        GroupchatActivity.setToUserIds(groupchatMemberIds);
-                                        GroupchatActivity.setGroupchatId(groupchatOrder.get(i));
-
-                                        GroupchatActivity.setFromUserID(mAuth.getUid());
-                                        String name = groupchatNames.get(i);
-                                        Intent i = new Intent(mContext, GroupchatActivity.class);
-                                        i.putExtra("name", name);
-                                        i.putExtra("fromChooseGroupchats", false);
-                                        mContext.startActivity(i);
-                                    }
-                                });
-
+                GroupchatActivity.setFromUserID(mAuth.getUid());
+                String name = (String) viewHolder.groupchatName.getText();
+                Intent i = new Intent(mContext, GroupchatActivity.class);
+                i.putExtra("name", name);
+                i.putExtra("fromChooseGroupchats", false);
+                mContext.startActivity(i);
 
             }
         });
-
-        if(groupchatOrder.size() > 0) {
-            viewHolder.id = groupchatOrder.get(i);
-        }
     }
 
 
@@ -149,7 +144,6 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
         TextView groupchatName;
         TextView unreadNotification;
         RelativeLayout GroupchatParentLayout;
-        String id;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -161,17 +155,6 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
         }
     }
 
-    public void filterList(ArrayList<String> groupchatNames, ArrayList<String> groupchats,
-                           ArrayList<Boolean> unread, ArrayList<String> groupchatOrder,
-                           ArrayList<String> unreadGroupchatOrder){
-        Log.d("HERE", "FILTERED ");
-        this.groupchatNames = groupchatNames;
-        this.groupchats = groupchats;
-        this.unread = unread;
-        this.groupchatOrder = groupchatOrder;
-        this.unreadGroupchatOrder = unreadGroupchatOrder;
-        notifyDataSetChanged();
-    }
 
     public void refreshData(){
         notifyDataSetChanged();
@@ -179,11 +162,15 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 
     public void clear() {
         final int size = groupchatNames.size();
-        groupchatNames.clear();
-        groupchats.clear();
-        unread.clear();
-        groupchatOrder.clear();
-        unreadGroupchatOrder.clear();
+        if(size > 0){
+            for(int i =0; i<size; i++){
+                groupchatNames.remove(0);
+                groupchats.remove(0);
+                unread.remove(0);
+                groupchatOrder.remove(0);
+                unreadGroupchatOrder.remove(0);
+            }
+        }
         notifyItemRangeRemoved(0, size);
     }
 
