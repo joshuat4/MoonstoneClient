@@ -208,10 +208,26 @@ public class Tab3Fragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
+                                        //add things that aren't already in the view
                                         if(!reqIds.contains(documentSnapshot.getId())) {
                                             reqProfilePics.add(documentSnapshot.get("profilePic").toString());
                                             reqNames.add(documentSnapshot.get("name").toString());
                                             reqIds.add(documentSnapshot.getId());
+                                        }
+
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for(int item = 0; item<reqIds.size(); item++){
+                                            if(!requests.contains(reqIds.get(item))){
+                                                removal.add(reqIds.get(item));
+                                            }
+                                        }
+                                        for(String s : removal){
+                                            index = reqIds.indexOf(s);
+                                            reqNames.remove(index);
+                                            reqIds.remove(index);
+                                            reqProfilePics.remove(index);
                                         }
 
                                         Log.d("qqqqq", reqNames.toString());
@@ -240,12 +256,28 @@ public class Tab3Fragment extends Fragment {
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-
+                                        //add things that aren't already in the view
                                         if(!ids.contains(documentSnapshot.getId())) {
                                             profilePics.add(documentSnapshot.get("profilePic").toString());
                                             emails.add(documentSnapshot.get("email").toString());
                                             names.add(documentSnapshot.get("name").toString());
                                             ids.add(documentSnapshot.getId());
+                                        }
+
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for(int item = 0; item<ids.size(); item++){
+                                            if(!contacts.contains(ids.get(item))){
+                                                removal.add(ids.get(item));
+                                            }
+                                        }
+                                        for(String s : removal){
+                                            index = ids.indexOf(s);
+                                            names.remove(index);
+                                            emails.remove(index);
+                                            ids.remove(index);
+                                            profilePics.remove(index);
                                         }
 
                                         if(names.size() == contacts.size()){
