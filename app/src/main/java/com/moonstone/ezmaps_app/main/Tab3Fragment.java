@@ -72,6 +72,8 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> contacts = new ArrayList<>();
     private ArrayList<String> requests = new ArrayList<>();
 
+    private TextWatcher textWatcher;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
@@ -99,11 +101,13 @@ public class Tab3Fragment extends Fragment {
             public void onClick(View v){
                 contactFilter.getText().clear();
                 clearButton.setVisibility(View.GONE);
+                Log.d("CLEARBUTTON", "GONE");
             }
         });
 
-        //Filter code
-        contactFilter.addTextChangedListener(new TextWatcher() {
+
+
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -112,12 +116,16 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                clearButton.setVisibility(View.VISIBLE);
+                if(s.toString().isEmpty()){
+                    clearButton.setVisibility(View.GONE);
+                }else{
+                    clearButton.setVisibility(View.VISIBLE);
+                }
 
                 // Check if there is contacts available before filtering
                 if(contactsAvailable){
@@ -125,9 +133,8 @@ public class Tab3Fragment extends Fragment {
                 }
 
             }
-        });
-
-
+        };
+        
 
         final FloatingActionsMenu mainAddButton =
                 (FloatingActionsMenu) fragmentLayout.findViewById(R.id.mainAddButton);
@@ -158,7 +165,6 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-        contactFilter.setSelected(false);
 
         return fragmentLayout;
     }
@@ -286,7 +292,7 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        contactFilter.setSelected(false);
+        //contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
 
         if(!contactsAvailable){
@@ -355,6 +361,7 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        contactFilter.addTextChangedListener(textWatcher);
         initRecyclerView();
         initRequestsRecyclerView();
         loadContactsFromDB();
