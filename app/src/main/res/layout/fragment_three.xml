@@ -53,7 +53,7 @@
                     android:background="@android:color/transparent"
                     android:hint="Search contacts"
                     android:inputType="textPersonName"
-                    android:paddingLeft="8dp" />
+                    android:paddingStart="8dp" />
 
                 <ImageButton
                     android:id="@+id/clearButton"
@@ -84,7 +84,8 @@
             android:id="@+id/ReturnToNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Back to navigation" />
+            android:visibility="gone"
+            android:text="Return to  Navigation" />
 
         <LinearLayout
             android:id="@+id/newRequests"

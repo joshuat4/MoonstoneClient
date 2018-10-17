@@ -92,6 +92,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private ImageButton leftButton;
     private ImageButton rightButton;
     private Button nextStopButton;
+    private Button contactsButton;
     private Button refreshButton;
 
     /* Recycler View Attributes */
@@ -135,6 +136,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         progressBar = findViewById(R.id.progressBar);
         //nextStopButton = findViewById(R.id.nextStopButton);
         refreshButton = findViewById(R.id.refreshButton);
+        contactsButton = findViewById(R.id.contactsButton);
 
         notFoundText = findViewById(R.id.notFoundText);
         notFoundSubtext = findViewById(R.id.notFoundSubtext);
@@ -145,6 +147,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         rightButton.setOnClickListener(this);
         //nextStopButton.setOnClickListener(this);
         refreshButton.setOnClickListener(this);
+        contactsButton.setOnClickListener(this);
 
         /* Set Up Action Bar */
         setSupportActionBar(toolbar);
@@ -697,11 +700,11 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 break;
 
             case R.id.contactsButton:
-                //navigate to contacts
-                Log.d("flipflop", "trying to press go to contacts");
+                Log.d("EZD", "Go Back to Contacts on Saved State");
                 Intent i = new Intent(this, MainActivity.class);
                 i.putExtra("frgToLoad", 3);
-                this.startActivity(i);
+                this.startActivityIfNeeded(i,REQUEST_CODE);
+                //this.startActivity(i);
                 break;
 
             case R.id.refreshButton:
