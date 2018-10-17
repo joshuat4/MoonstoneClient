@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -64,6 +65,10 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> reqNames;
     private ArrayList<String> reqIds;
 
+    private LinearLayout newRequestHeader;
+    private LinearLayout contactsHeader;
+    private boolean requestsAvailable = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
@@ -72,6 +77,8 @@ public class Tab3Fragment extends Fragment {
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+        contactsHeader = fragmentLayout.findViewById(R.id.contactsHeader);
+        newRequestHeader = fragmentLayout.findViewById(R.id.newRequestsHeader);
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -198,12 +205,20 @@ public class Tab3Fragment extends Fragment {
 
                                         //Might cause a race condition
                                         if (reqNames.size() == requests.size()) {
+                                            requestsAvailable = true;
                                             initRequestsRecyclerView();
+
                                         }
                                     }
                                 });
                             }
+                        }else{
+                            requestsAvailable = false;
+                            initRequestsRecyclerView();
+
                         }
+
+
                         if(!contacts.isEmpty()){
 
                             for (String contact : contacts){
@@ -220,8 +235,8 @@ public class Tab3Fragment extends Fragment {
                                             Log.d("TAB3", "second list num: " + names.size());
                                             Log.d("TAB3", "contacts size: " + contacts.size());
                                             Log.d("TAB3", "contacts available: init recycler view: ");
-                                            initRecyclerView();
                                             contactsAvailable = true;
+                                            initRecyclerView();
 
                                         }
                                     }
@@ -257,9 +272,15 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
+
+        if(!contactsAvailable){
+            contactsHeader.setVisibility(View.GONE);
+        }else{
+
+            contactsHeader.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initRequestsRecyclerView(){
@@ -271,6 +292,14 @@ public class Tab3Fragment extends Fragment {
         requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
         requestRecyclerView.setAdapter(requestAdapter);
         requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if(!requestsAvailable){
+            newRequestHeader.setVisibility(View.GONE);
+
+        }else{
+            newRequestHeader.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void filter(String text){

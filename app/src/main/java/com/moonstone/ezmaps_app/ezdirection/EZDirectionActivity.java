@@ -710,10 +710,17 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 break;
 
             case R.id.contactsButton:
-                Log.d("EZD", "Go Back to Contacts on Saved State");
-                Intent i = new Intent(this, MainActivity.class);
-                i.putExtra("frgToLoad", 3);
-                this.startActivityIfNeeded(i,REQUEST_CODE);
+
+                if(isCardLoaded){
+                    Log.d("EZD", "Go Back to Contacts on Saved State");
+                    Intent i = new Intent(this, MainActivity.class);
+                    i.putExtra("frgToLoad", 3);
+                    this.startActivityIfNeeded(i,REQUEST_CODE);
+
+                    overridePendingTransition(R.anim.slide_down, R.anim.no_change);
+
+                }
+
                 //this.startActivity(i);
                 break;
 

@@ -12,10 +12,10 @@
     <Button
         android:id="@+id/returnToNav"
         android:layout_width="match_parent"
-        android:background="@color/transparentBlack"
+        android:background="@color/colorSearchButton"
         android:text="Return to Navigation"
-        android:textColorHighlight="@color/lightGreen"
-        android:textColor="@color/textBlue"
+        android:textColorHighlight="@color/textBlue"
+        android:textColor="@color/colorForeground"
         android:visibility="visible"
         android:layout_height="35dp" />
 
