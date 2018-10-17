@@ -523,7 +523,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     /* Send URL with Current Location's Coordinates and Destination */
     public void executeURL(){
 
-        if(mCurrentLocation != null){
+        if(mCurrentLocation != null && currentDestination != null){
             String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
             String latitudeURL = Double.toString(mCurrentLocation.getLatitude());
             String longitudeURL = Double.toString(mCurrentLocation.getLongitude());
