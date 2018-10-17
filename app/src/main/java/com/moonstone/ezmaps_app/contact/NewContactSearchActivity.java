@@ -59,6 +59,8 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private ArrayList<String> emails;
     private ArrayList<String> names;
 
+    private TextWatcher textWatcher;
+
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -121,7 +123,9 @@ public class NewContactSearchActivity extends AppCompatActivity{
         });
 
 
-        filterSearch.addTextChangedListener(new TextWatcher() {
+
+
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -130,18 +134,29 @@ public class NewContactSearchActivity extends AppCompatActivity{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                clearButton.setVisibility(View.VISIBLE);
-            }
-        });
+                if(s.toString().isEmpty()){
+                    clearButton.setVisibility(View.GONE);
+                }else{
+                    clearButton.setVisibility(View.VISIBLE);
+                }
 
-        filterSearch.setSelected(true);
+            }
+        };
 
     }
 
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        filterSearch.addTextChangedListener(textWatcher);
+    }
 
     public void search(View v){
         touchAPlace(v);

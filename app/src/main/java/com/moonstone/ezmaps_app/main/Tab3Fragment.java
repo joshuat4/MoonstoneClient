@@ -134,7 +134,7 @@ public class Tab3Fragment extends Fragment {
 
             }
         };
-        
+
 
         final FloatingActionsMenu mainAddButton =
                 (FloatingActionsMenu) fragmentLayout.findViewById(R.id.mainAddButton);
