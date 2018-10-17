@@ -108,9 +108,13 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 | ![screenshot_1538236861](https://user-images.githubusercontent.com/12033253/46247878-1ba71880-c455-11e8-9285-dec2d4276bda.png)  | ![screenshot_1538236906](https://user-images.githubusercontent.com/12033253/46247879-1ba71880-c455-11e8-85ea-0988fd614ac7.png)   | ![screenshot_1538236980](https://user-images.githubusercontent.com/12033253/46247880-1ba71880-c455-11e8-8821-498d61899226.png)   |
 | ------------- |:-------------:| -----:|
 
-### Testing Voice Call (TBA)
+### Testing Video Call (DOES NOT WORK IN EMULATORS)
+1) Go to contacts page by clicking or swiping to *Contacts*
+2) Click on a the contact you would like to call (User must be added and have had approved your request)
+3) You should now be in an outgoing call pending page which will become a video call once the other person answers the call
 
-### Testing Video Call (TBA)
+### Testing Voice Call (DOES NOT WORK IN EMULATORS)
+1) Press the audio mode button in any existing video call in order to enable audio only mode
 
 ### Testing Instant Messaging
 1) Go to your contacts page 

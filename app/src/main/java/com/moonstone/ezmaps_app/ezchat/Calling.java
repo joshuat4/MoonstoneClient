@@ -220,7 +220,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
                     callerPic.setVisibility(View.VISIBLE);
                     callerName.setVisibility(View.VISIBLE);
-                    audioMode.setImageResource(R.drawable.videocamera);
+                    audioMode.setImageResource(R.drawable.ic_videocamon_black_24dp);
                     audioMode.setTag("video_cam");
                 }
 

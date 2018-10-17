@@ -62,6 +62,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.moonstone.ezmaps_app.BuildConfig;
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.main.MainActivity;
+import com.moonstone.ezmaps_app.main.Tab3Fragment;
 import com.moonstone.ezmaps_app.utilities.RetrieveFeed;
 
 
@@ -90,6 +92,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private ImageButton leftButton;
     private ImageButton rightButton;
     private Button nextStopButton;
+    private Button contactsButton;
     private Button refreshButton;
 
     /* Recycler View Attributes */
@@ -133,6 +136,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         progressBar = findViewById(R.id.progressBar);
         //nextStopButton = findViewById(R.id.nextStopButton);
         refreshButton = findViewById(R.id.refreshButton);
+        contactsButton = findViewById(R.id.contactsButton);
 
         notFoundText = findViewById(R.id.notFoundText);
         notFoundSubtext = findViewById(R.id.notFoundSubtext);
@@ -143,6 +147,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         rightButton.setOnClickListener(this);
         //nextStopButton.setOnClickListener(this);
         refreshButton.setOnClickListener(this);
+        contactsButton.setOnClickListener(this);
 
         /* Set Up Action Bar */
         setSupportActionBar(toolbar);
@@ -176,6 +181,9 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
         startLocationUpdatesPermission(); // Initiate Request permission to access GPS
+
+        //let contacts know that the navigation is active
+        Tab3Fragment.setFromNav(true);
 
     }
 
@@ -701,15 +709,19 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
                 break;
 
-            /*case R.id.nextStopButton:
-                if(isCardLoaded){
-                    swipeTo(nextStopCounter);
-                }*/
+            case R.id.contactsButton:
+                Log.d("EZD", "Go Back to Contacts on Saved State");
+                Intent i = new Intent(this, MainActivity.class);
+                i.putExtra("frgToLoad", 3);
+                this.startActivityIfNeeded(i,REQUEST_CODE);
+                //this.startActivity(i);
+                break;
 
             case R.id.refreshButton:
                 if(isCardLoaded || isLocationNotFound){
                     refresh();
                 }
+                break;
         }
 
     }
@@ -819,5 +831,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        Tab3Fragment.setFromNav(false);
+        super.onDestroy();
+    }
 
 }
