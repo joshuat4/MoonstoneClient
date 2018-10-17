@@ -5,7 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<include layout="@layout/app_bar"/>-->
+    <!--<include layout="@layout/app_bar"
+        android:id="@+id/toolbar"
+        android:visibility="gone"/>-->
+
+    <Button
+        android:id="@+id/returnToNav"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"
+        android:text="Return to Navigation"
+        android:textColorHighlight="@color/lightGreen"
+        android:textColor="@color/lightGreen"
+        android:visibility="gone"
+        android:layout_height="35dp" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
