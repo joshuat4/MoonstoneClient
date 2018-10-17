@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.moonstone.ezmaps_app.R;
 
+import static android.support.v4.content.ContextCompat.getSystemService;
 import static org.junit.Assert.*;
 
 
@@ -45,17 +46,21 @@ public class EZDirectionActivityTest  {
         locationManager.addTestProvider("Test", false, false, false, false, false, false, false, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
         locationManager.setTestProviderEnabled("Test", true);
 
-        // Set up your test
+        /*// Set up your test
 
-
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(GPS_MOCK_PROVIDER)) {
+            locationManager.requestLocationUpdates(GPS_MOCK_PROVIDER, 0, 0f, this);
+        }
 
         // Long 144.96, Lat -37.7962
         Location location = new Location("Test");
         location.setLatitude(-37.7962);
         location.setLongitude(144.96);
         locationManager.setTestProviderLocation("Test", location);
-
+*/
         // Check if your listener reacted the right way
+        //assertNotNull(location);
 
         locationManager.removeTestProvider("Test");
     }
