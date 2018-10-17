@@ -62,6 +62,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.moonstone.ezmaps_app.BuildConfig;
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.main.MainActivity;
+import com.moonstone.ezmaps_app.main.Tab3Fragment;
 import com.moonstone.ezmaps_app.utilities.RetrieveFeed;
 
 
@@ -172,6 +174,9 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         initFusedLocationProvider(); // Initialise Fused Location Provider
         restoreValuesFromBundle(savedInstanceState); // Restore the values from saved instance state
         startLocationUpdatesPermission(); // Initiate Request permission to access GPS
+
+        //let contacts know that the navigation is active
+        Tab3Fragment.setFromNav(true);
 
     }
 
@@ -691,15 +696,19 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
                 break;
 
-            /*case R.id.nextStopButton:
-                if(isCardLoaded){
-                    swipeTo(nextStopCounter);
-                }*/
+            case R.id.contactsButton:
+                //navigate to contacts
+                Log.d("flipflop", "trying to press go to contacts");
+                Intent i = new Intent(this, MainActivity.class);
+                i.putExtra("frgToLoad", 3);
+                this.startActivity(i);
+                break;
 
             case R.id.refreshButton:
                 if(isCardLoaded || isLocationNotFound){
                     refresh();
                 }
+                break;
         }
 
     }
@@ -809,5 +818,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        Tab3Fragment.setFromNav(false);
+        super.onDestroy();
+    }
 
 }

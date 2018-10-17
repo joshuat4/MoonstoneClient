@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
 import com.moonstone.ezmaps_app.contact.requestsRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.ezdirection.EZDirectionActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private requestsRecyclerViewAdapter requestAdapter;
     private boolean contactsAvailable = false;
+    private static boolean fromNav;
+    private Button returnToNav;
+
 
     private EditText contactFilter;
     private Button newContactButton;
@@ -66,6 +71,7 @@ public class Tab3Fragment extends Fragment {
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+        returnToNav = fragmentLayout.findViewById(R.id.ReturnToNav);
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -116,6 +122,21 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onClick(View v){
                 newContact();
+            }
+        });
+
+        //return to navigation in its last saved state
+        returnToNav.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(fromNav){
+                    Intent intent= new Intent(getActivity(), EZDirectionActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    getActivity().startActivityIfNeeded(intent, 0);
+                } else {
+                    Toast.makeText(getActivity(), "No navigation started yet! " +
+                            "Go back to 'Home' and type an address", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -303,6 +324,10 @@ public class Tab3Fragment extends Fragment {
 
     public void refreshFragment(){
         getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    public static void setFromNav(boolean update){
+        fromNav = update;
     }
 
     /*

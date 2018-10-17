@@ -56,8 +56,31 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Tab3Fragment(), "Contacts");
 
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-        tabLayout.setupWithViewPager(viewPager);
+        //inflate specific fragment if naving straight to it
+        if(getIntent().getExtras() != null){
+            if(getIntent().getExtras().containsKey("frgToLoad")) {
+                int intentFragment = getIntent().getExtras().getInt("frgToLoad");
+
+                switch (intentFragment) {
+                    case 1:
+                        viewPager.setCurrentItem(viewPager.getCurrentItem());
+                        break;
+                    case 2:
+                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                        break;
+                    case 3:
+                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 2);
+                        break;
+                    default:
+                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                        break;
+                }
+            }  else {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+            }
+        } else {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+        }        tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
 
 
