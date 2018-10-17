@@ -116,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
                 returnToNav.setVisibility(View.GONE);
 
-                Toast.makeText(getApplicationContext(), "No navigation started yet! " +
-                        "Go back to 'Home' and type an address", Toast.LENGTH_LONG).show();
-
             }
         });
 
