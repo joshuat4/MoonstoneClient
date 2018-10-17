@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,11 +48,9 @@ public class Tab3Fragment extends Fragment {
     private boolean contactsAvailable = false;
     private static boolean fromNav;
 
-
-
     private EditText contactFilter;
-    private FloatingActionButton newContactButton;
-    private FloatingActionButton addQRButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  newContactButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  addQRButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
 
@@ -72,9 +71,6 @@ public class Tab3Fragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
-//        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
-        newContactButton = fragmentLayout.findViewById(R.id.floatingAddButton2);
-        addQRButton = fragmentLayout.findViewById(R.id.floatingAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
 
         profilePics = new ArrayList<>() ;
@@ -121,22 +117,36 @@ public class Tab3Fragment extends Fragment {
         });
 
 
-        //Set up add new contacts button
-        newContactButton.setOnClickListener(new Button.OnClickListener(){
+
+        final FloatingActionsMenu mainAddButton =
+                (FloatingActionsMenu) fragmentLayout.findViewById(R.id.mainAddButton);
+
+        addQRButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addQR);
+        newContactButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addContact);
+
+
+        addQRButton.setIcon(R.drawable.qr_icon);
+        addQRButton.setTitle("Add via QR");
+        addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View view) {
+                Log.d("Add Contacts through qr","qr scan cam initiated");
+                Intent intent = new Intent(view.getContext() , ScanBarcodeActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        newContactButton.setIcon(R.drawable.add_contact);
+        newContactButton.setTitle("Add Contacts");
+        newContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 newContact();
             }
         });
 
-        addQRButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("Add Contacts through qr","qr scan cam initiated");
-                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
 
 
         loadContactsFromDB();

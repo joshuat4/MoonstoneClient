@@ -35,10 +35,10 @@
             <LinearLayout
                 android:id="@+id/left"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="12dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="2"
                 android:background="@drawable/tab3_search"
@@ -153,7 +153,8 @@
 
 
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
+
+    <!--<android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingAddButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -178,8 +179,40 @@
         android:clickable="true"
         app:backgroundTint="@color/colorAccent"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_person_add_black_24dp" />
+        app:srcCompat="@drawable/ic_person_add_black_24dp" />-->
 
 
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/mainAddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:fab_addButtonColorNormal="@color/colorForeground"
+        app:fab_addButtonColorPressed="@color/lightGreen"
+        app:fab_addButtonPlusIconColor="@color/lightGreen"
+        app:fab_labelStyle="@style/menu_labels_style"
+        app:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addQR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorForeground"
+            app:fab_title="Add via QR"
+            app:fab_colorPressed="@color/colorForeground"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorForeground"
+            app:fab_title="Add New Contacts"
+            app:fab_colorPressed="@color/colorBackground"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

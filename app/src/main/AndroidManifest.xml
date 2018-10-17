@@ -29,43 +29,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
-
 
         <!-- Main Activity -->
         <activity
             android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".FrontPageActivity"
             android:screenOrientation="portrait">
             <intent-filter>
+
                 <!-- Starting Launcher -->
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <!-- Google Search -->
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "http://www.ezmaps.com/frontpage” -->
-                <data android:scheme="http"
+                <data
                     android:host="www.ezmaps.com"
-                    android:pathPrefix="/frontpage" />
-                <!-- note that the leading "/" is required for pathPrefix-->
+                    android:pathPrefix="/frontpage"
+                    android:scheme="http" />
+                <!-- note that the leading "/" is required for pathPrefix -->
                 <!-- Accepts URIs that begin with "ezmaps://frontpage” -->
-                <data android:scheme="ezmaps"
-                    android:host="frontpage" />
+                <data
+                    android:host="frontpage"
+                    android:scheme="ezmaps" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".UserSignUpActivity"
             android:screenOrientation="portrait" />
@@ -73,63 +73,58 @@
             android:name=".UserLoginActivity"
             android:screenOrientation="portrait" />
 
-
         <!-- Contacts -->
         <activity
-            android:screenOrientation="portrait"
-            android:name=".contact.NewContactSearchActivity" />
+            android:name=".contact.NewContactSearchActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-            android:name=".contact.ChooseContactsActivity" />
+            android:name=".contact.ChooseContactsActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".contact.FriendRequestActivity"
             android:label="@string/title_activity_friend_request"
-            android:theme="@style/AppTheme"/>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <!-- Profile -->
         <activity
-            android:screenOrientation="portrait"
             android:name=".ezprofile.EditProfileActivity"
             android:label="@string/title_edit_profile"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:title="Edit Profile" />
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ezprofile.ImageUploadActivity" />
+            android:name=".ezprofile.ImageUploadActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ezprofile.CameraUploadActivity" />
+            android:name=".ezprofile.CameraUploadActivity"
+            android:screenOrientation="portrait" />
 
         <!-- Chat -->
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ezchat.ChatActivity" />
+            android:name=".ezchat.ChatActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-            android:name=".ezchat.ImageSendingActivity" />
+            android:name=".ezchat.ImageSendingActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".ezchat.incomingCall"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".ezchat.Calling"
-            android:launchMode="singleInstance"/>
-
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
 
         <!-- EZ Direction -->
         <activity
-            android:screenOrientation="portrait"
             android:name=".ezdirection.EZDirectionActivity"
             android:label="@string/title_activity_ezdirection"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
-
         <!-- Utilities -->
-        <service
-            android:name=".ezchat.MyFirebaseMessagingService">
+        <service android:name=".ezchat.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -138,20 +133,22 @@
         <!-- QR Code -->
         <activity
             android:name=".qrcode.QRCodeActivity"
-            android:theme="@style/AppTheme.PopMe"/>
-        <activity
-            android:screenOrientation="portrait"
-            android:name=".qrcode.QRCode"
             android:theme="@style/AppTheme.PopMe" />
         <activity
+            android:name=".qrcode.QRCode"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.PopMe" />
+        <activity
             android:name=".qrcode.qrCodeScanner"
             android:label="@string/title_activity_qr_code_scanner"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".qrcode.ScanBarcodeActivity"
-            android:label="Scan Barcode" />
+            android:label="Scan Barcode"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".test"/>
 
     </application>
 
