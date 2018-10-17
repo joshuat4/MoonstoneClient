@@ -57,6 +57,10 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> reqNames;
     private ArrayList<String> reqIds;
 
+    private ArrayList<String> contacts = new ArrayList<>();
+    private ArrayList<String> requests = new ArrayList<>();
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
@@ -119,8 +123,6 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
-        loadContactsFromDB();
-
         contactFilter.setSelected(false);
 
         return fragmentLayout;
@@ -143,15 +145,19 @@ public class Tab3Fragment extends Fragment {
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("TAB3", "Current data: " + snapshot.getData());
-
                     names.clear();
                     emails.clear();
                     ids.clear();
                     profilePics.clear();
+                    reqProfilePics.clear();
+                    reqNames.clear();
+                    reqIds.clear();
+                    contacts.clear();
+                    requests.clear();
 
                     try{
-                        final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
-                        final ArrayList<String> requests = (ArrayList<String>) snapshot.get("requests");
+                        contacts = (ArrayList<String>) snapshot.get("contacts");
+                        requests = (ArrayList<String>) snapshot.get("requests");
                         Log.d("TAB3", "CONTACTS: " + contacts);
 
                         if(!requests.isEmpty()) {
@@ -161,15 +167,18 @@ public class Tab3Fragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        reqProfilePics.add(documentSnapshot.get("profilePic").toString());
-                                        reqNames.add(documentSnapshot.get("name").toString());
-                                        reqIds.add(documentSnapshot.getId());
+                                        if(!reqIds.contains(documentSnapshot.getId())) {
+                                            reqProfilePics.add(documentSnapshot.get("profilePic").toString());
+                                            reqNames.add(documentSnapshot.get("name").toString());
+                                            reqIds.add(documentSnapshot.getId());
+                                        }
 
                                         Log.d("qqqqq", reqNames.toString());
 
                                         //Might cause a race condition
                                         if (reqNames.size() == requests.size()) {
-                                            initRequestsRecyclerView();
+                                            Log.d("duplication", "reqNames: " + reqNames.toString());
+                                            requestAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 });
@@ -182,16 +191,20 @@ public class Tab3Fragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        profilePics.add(documentSnapshot.get("profilePic").toString());
-                                        emails.add(documentSnapshot.get("email").toString());
-                                        names.add(documentSnapshot.get("name").toString());
-                                        ids.add(documentSnapshot.getId());
+                                        if(!ids.contains(documentSnapshot.getId())) {
+                                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                                            emails.add(documentSnapshot.get("email").toString());
+                                            names.add(documentSnapshot.get("name").toString());
+                                            ids.add(documentSnapshot.getId());
+                                        }
 
                                         if(names.size() == contacts.size()){
                                             Log.d("TAB3", "second list num: " + names.size());
                                             Log.d("TAB3", "contacts size: " + contacts.size());
                                             Log.d("TAB3", "contacts available: init recycler view: ");
-                                            initRecyclerView();
+                                            Log.d("duplication", "contactNames: " + names.toString());
+
+                                            adapter.notifyDataSetChanged();
                                             contactsAvailable = true;
 
                                         }
@@ -202,7 +215,7 @@ public class Tab3Fragment extends Fragment {
                         }else{
                             contactsAvailable = false;
                             Log.d("TAB3", "contacts NOT available: init recycler view: ");
-                            initRecyclerView();
+                            adapter.notifyDataSetChanged();
                         }
 
                     } catch (NullPointerException n){
@@ -230,7 +243,7 @@ public class Tab3Fragment extends Fragment {
 
 
         contactFilter.setSelected(false);
-        contactsLoading.setVisibility(View.GONE);
+        contactsLoading.setVisibility(View.INVISIBLE);
     }
 
     private void initRequestsRecyclerView(){
@@ -280,10 +293,15 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(adapter != null){
-            adapter.notifyDataSetChanged();
-        }
-
+        initRecyclerView();
+        initRequestsRecyclerView();
+        loadContactsFromDB();
+        Log.d("duplication", "onResume called");
+//        contactFilter.setText("Resuming...");
+//        contactFilter.getText().clear();
+//        clearButton.setVisibility(View.INVISIBLE);
+        adapter.notifyDataSetChanged();
+        requestAdapter.notifyDataSetChanged();
     }
 
     @Override
