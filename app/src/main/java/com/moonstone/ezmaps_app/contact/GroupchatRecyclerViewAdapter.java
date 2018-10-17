@@ -53,6 +53,9 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 //        this.unreadGroupchatOrder = unreadGroupchatOrder;
         this.db = db;
         this.mAuth = mAuth;
+        Log.d("GroupchatRecyclerView", "groupchats: "+ groupchats.toString());
+        Log.d("GroupchatRecyclerView", "userids: "+ groupchatUserIds.toString());
+        Log.d("GroupchatRecyclerView", "usernames: "+ groupchatNames.toString());
     }
 
     //Actually recycles the view holders
@@ -117,7 +120,6 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 
                 Log.d("GroupchatRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
 
-                Log.d("GroupchatRecyclerView", "groupchats: "+ groupchats.toString());
 
                 GroupchatActivity.setToUserIds(groupchatUserIds.get(i));
                 GroupchatActivity.setGroupchatId(groupchats.get(i));
@@ -128,7 +130,6 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
                 i.putExtra("name", name);
                 i.putExtra("fromChooseGroupchats", false);
                 mContext.startActivity(i);
-
             }
         });
     }
