@@ -12,11 +12,11 @@
     <Button
         android:id="@+id/returnToNav"
         android:layout_width="match_parent"
-        android:background="@android:color/transparent"
+        android:background="@color/transparentBlack"
         android:text="Return to Navigation"
         android:textColorHighlight="@color/lightGreen"
-        android:textColor="@color/lightGreen"
-        android:visibility="gone"
+        android:textColor="@color/textBlue"
+        android:visibility="visible"
         android:layout_height="35dp" />
 
     <android.support.design.widget.TabLayout

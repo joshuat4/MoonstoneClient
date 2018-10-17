@@ -23,5 +23,7 @@
     <color name="callGreen">#54D769</color>
     <color name="callRed">#FB3D38</color>
     <color name="tblack">#33000006</color>
+    <color name="lightlightgreen">#32C454</color>
+    <color name="transparentBlack">#0D000000</color>
 
 </resources>

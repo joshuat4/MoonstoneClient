@@ -148,7 +148,6 @@ public class Tab3Fragment extends Fragment {
         });
 
 
-
         loadContactsFromDB();
 
         contactFilter.setSelected(false);

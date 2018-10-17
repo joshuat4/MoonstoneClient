@@ -111,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent= new Intent(getApplicationContext(), EZDirectionActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
                 startActivityIfNeeded(intent, 0);
+
                 returnToNav.setVisibility(View.GONE);
 
                 Toast.makeText(getApplicationContext(), "No navigation started yet! " +
