@@ -105,18 +105,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addQR"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:rippleColor="@color/textBlue"
-        app:fabSize="normal"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/qr_camera" />
-
-
 
 </RelativeLayout>

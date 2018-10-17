@@ -70,15 +70,7 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/contactAddButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Add"
-                android:theme="@style/AnotherButton" />
-
-        </LinearLayout>
+    </LinearLayout>
 
         <Button
             android:id="@+id/ReturnToNav"
@@ -158,7 +150,36 @@
 
         </ScrollView>
 
+
+
     </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingAddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/floatingAddButton2"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="101dp"
+        android:clickable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/darker_gray"
+        app:elevation="2dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/qr_icon" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingAddButton2"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="35dp"
+        android:layout_marginEnd="35dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_person_add_black_24dp" />
+
 
 
 </RelativeLayout>
