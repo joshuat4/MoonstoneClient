@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
 import com.moonstone.ezmaps_app.contact.requestsRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.ezdirection.EZDirectionActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ public class Tab3Fragment extends Fragment {
     private ContactRecyclerViewAdapter adapter;
     private requestsRecyclerViewAdapter requestAdapter;
     private boolean contactsAvailable = false;
+    private static boolean fromNav;
+
+
 
     private EditText contactFilter;
     private Button newContactButton;
@@ -297,9 +302,6 @@ public class Tab3Fragment extends Fragment {
         initRequestsRecyclerView();
         loadContactsFromDB();
         Log.d("duplication", "onResume called");
-//        contactFilter.setText("Resuming...");
-//        contactFilter.getText().clear();
-//        clearButton.setVisibility(View.INVISIBLE);
         adapter.notifyDataSetChanged();
         requestAdapter.notifyDataSetChanged();
     }
@@ -321,6 +323,10 @@ public class Tab3Fragment extends Fragment {
 
     public void refreshFragment(){
         getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    public static void setFromNav(boolean update){
+        fromNav = update;
     }
 
     /*
