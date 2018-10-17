@@ -71,7 +71,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
 
 
         //temporary buttons WILL NEED TO MOVE
-        addQRButton = findViewById(R.id.addQR);
+//        addQRButton = findViewById(R.id.);
         ////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
@@ -105,14 +105,14 @@ public class NewContactSearchActivity extends AppCompatActivity{
         });
 
 
-        addQRButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("Add Contacts through qr","qr scan cam initiated");
-                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
+//        addQRButton.setOnClickListener(new Button.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                Log.d("Add Contacts through qr","qr scan cam initiated");
+//                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
+//                startActivityForResult(intent, 1);
+//            }
+//        });
 
 
 

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
 import com.moonstone.ezmaps_app.contact.requestsRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.qrcode.ScanBarcodeActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -43,7 +45,8 @@ public class Tab3Fragment extends Fragment {
     private boolean contactsAvailable = false;
 
     private EditText contactFilter;
-    private Button newContactButton;
+    private FloatingActionButton newContactButton;
+    private FloatingActionButton addQRButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
 
@@ -64,7 +67,9 @@ public class Tab3Fragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
-        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
+//        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
+        newContactButton = fragmentLayout.findViewById(R.id.floatingAddButton2);
+        addQRButton = fragmentLayout.findViewById(R.id.floatingAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
 
         profilePics = new ArrayList<>() ;
@@ -116,6 +121,15 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onClick(View v){
                 newContact();
+            }
+        });
+
+        addQRButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Log.d("Add Contacts through qr","qr scan cam initiated");
+                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -276,6 +290,8 @@ public class Tab3Fragment extends Fragment {
         Intent intent = new Intent(getActivity(), NewContactSearchActivity.class);
         startActivityForResult(intent, 3);
     }
+
+
 
     @Override
     public void onResume(){
