@@ -1,8 +1,6 @@
 package com.moonstone.ezmaps_app.contact;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -20,15 +18,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moonstone.ezmaps_app.R;
-import com.moonstone.ezmaps_app.ezchat.ChatActivity;
-import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRecyclerViewAdapter.ViewHolder> {
+public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<String> contactNames = new ArrayList<>();
     private ArrayList<String> profilePics = new ArrayList<>();
@@ -44,8 +40,8 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
 
     private Bundle shareImageBundle;
 
-    public requestsRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
-                                            ArrayList<String> profilePics, ArrayList<String> ids,
+    public RequestsRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+                                       ArrayList<String> profilePics, ArrayList<String> ids,
                                        FirebaseFirestore db, FirebaseAuth mAuth){
 
         this.contactNames = contactNames;
@@ -60,10 +56,10 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
     //Actually recycles the view holders
     @NonNull
     @Override
-    public requestsRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RequestsRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.requestlistitem, viewGroup, false);
 
-        requestsRecyclerViewAdapter.ViewHolder holder = new requestsRecyclerViewAdapter.ViewHolder(view);
+        RequestsRecyclerViewAdapter.ViewHolder holder = new RequestsRecyclerViewAdapter.ViewHolder(view);
 
         holder.setIsRecyclable(false);
         return holder;
@@ -71,7 +67,7 @@ public class requestsRecyclerViewAdapter extends RecyclerView.Adapter<requestsRe
 
     //Called every time a new item is added to the list
     @Override
-    public void onBindViewHolder(@NonNull requestsRecyclerViewAdapter.ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull RequestsRecyclerViewAdapter.ViewHolder viewHolder, final int i) {
         Log.d("HERE", Integer.toString(i));
 
         Picasso.get().load(profilePics.get(i)).into(viewHolder.profilePic);

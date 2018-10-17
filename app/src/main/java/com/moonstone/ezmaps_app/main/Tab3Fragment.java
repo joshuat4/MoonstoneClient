@@ -4,6 +4,7 @@ package com.moonstone.ezmaps_app.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,42 +16,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.contact.GroupchatRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
-import com.moonstone.ezmaps_app.contact.requestsRecyclerViewAdapter;
-import com.moonstone.ezmaps_app.ezdirection.EZDirectionActivity;
+import com.moonstone.ezmaps_app.contact.RequestsRecyclerViewAdapter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private View fragmentLayout;
     private ContactRecyclerViewAdapter adapter;
-    private requestsRecyclerViewAdapter requestAdapter;
+    private RequestsRecyclerViewAdapter requestAdapter;
+    private GroupchatRecyclerViewAdapter groupchatAdapter;
     private boolean contactsAvailable = false;
     private static boolean fromNav;
-
-
 
     private EditText contactFilter;
     private Button newContactButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
+    private CheckBox select;
+    static public Boolean checked;
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -62,8 +68,15 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> reqNames;
     private ArrayList<String> reqIds;
 
+    private ArrayList<ArrayList<String>> groupchatNames;
+    private ArrayList<ArrayList<String>> groupchatUserIds;
+    private ArrayList<String> groupchatIds;
+    private ArrayList<String> newGroupIds;
+
+
     private ArrayList<String> contacts = new ArrayList<>();
     private ArrayList<String> requests = new ArrayList<>();
+    private ArrayList<String> groupchats = new ArrayList<>();
 
 
     @Override
@@ -71,10 +84,13 @@ public class Tab3Fragment extends Fragment {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        checked = false;
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+        select = (CheckBox) fragmentLayout.findViewById(R.id.Select);
+
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -84,6 +100,10 @@ public class Tab3Fragment extends Fragment {
         reqNames = new ArrayList<>();
         reqIds = new ArrayList<>();
         reqProfilePics = new ArrayList<>();
+
+        groupchatUserIds = new ArrayList<>();
+        groupchatNames = new ArrayList<>();
+        groupchatIds = new ArrayList<>();
 
         clearButton = (ImageButton) fragmentLayout.findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new Button.OnClickListener(){
@@ -119,12 +139,63 @@ public class Tab3Fragment extends Fragment {
             }
         });
 
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Is the view now checked?
+                checked = ((CheckBox) view).isChecked();
+                if (checked) {
+                    newContactButton.setText("Create Group Chat");
+                } else {
+                    newContactButton.setText("Add");
+                    adapter.clearSelected();
+                }
+            }
+        });
 
-        //Set up add new contacts button
+
+        //Set up add new contacts button, make it so that it can go to the add contacts screen,
+        // or make a new group chat
         newContactButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                newContact();
+                if(!checked)
+                {
+                    newContact();
+                } else {
+                    select.setChecked(false);
+                    checked = false;
+                    String thisUserId = mAuth.getUid();
+                    newGroupIds = new ArrayList<String>(adapter.getSelectedIds());
+                    newGroupIds.add(thisUserId);
+                    //make the group chat
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("ids", newGroupIds);
+
+                    //make the groupchat
+                    db.collection("groupchats").add(data).addOnCompleteListener(
+                            new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    final String groupChatId = task.getResult().getId();
+                                    Log.d("groupchat", "groupchat id: " + groupChatId);
+
+                                    //add the group chat to all included party's contacts
+                                    for(int i = 0; i<newGroupIds.size(); i++){
+                                        DocumentReference docRef = db
+                                                .collection("users")
+                                                .document(newGroupIds.get(i));
+                                        docRef.update(
+                                                "groupchats", FieldValue
+                                                        .arrayUnion(groupChatId));
+                                        docRef.collection("groupchats")
+                                                .document(groupChatId).update(
+                                                "unread", "0");
+                                    }
+                                }
+                            });
+                }
+
             }
         });
 
@@ -257,9 +328,14 @@ public class Tab3Fragment extends Fragment {
 
         Log.d("aaaaa", "is this here");
 
-        requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
+        requestAdapter = new RequestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
         requestRecyclerView.setAdapter(requestAdapter);
         requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private void initGroupchatRecyclerView() {
+        //groupchats recycler view
+        RecyclerView groupchatRecyclerView = fragmentLayout.findViewById(R.id.groupchatRecyclerView);
     }
 
     private void filter(String text){
