@@ -164,6 +164,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.ezchat.ChatActivity;
 import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
@@ -177,6 +178,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> profilePics = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
+    private FirebaseAuth mAuth;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
@@ -192,6 +194,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         this.ids = ids;
         this.emails = emails;
         this.mActivity = mActivity;
+
+        mAuth = FirebaseAuth.getInstance();
+
+
     }
 
     //Actually recycles the view holders
@@ -209,51 +215,42 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Log.d("HERE", Integer.toString(i));
 
-        //Gets the image and puts it into the referenced imageView
-        Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
+        if(ids.size() != 0){
+            //Gets the image and puts it into the referenced imageView
+            Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
 
-        viewHolder.contactName.setText(contactNames.get(i));
+            viewHolder.contactName.setText(contactNames.get(i));
 
-        //Add onclicklistener to each list entry
-        viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
+            //Add onclicklistener to each list entry
+            viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
 
-                //Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
+                    if(ids.size() != 0){
+                        Log.d("ContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
+                        Log.d("ContactRecyclerView", "onClick: " + ids.get(i));
 
-                //--------------------------------READ THIS----------------------//
-                //--Here's where you would link to the messaging page for that person
-                //-----ids.get(i) will give you the id of the person you clicked on which can then be linked to message functionality
-                // E.g. sendMessageTo(ids.get(i));
-                Log.d("ContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
-                Log.d("ContactRecyclerView", "onClick: " + ids.get(i));
+                        ChatActivity.setToUserID(ids.get(i));
+                        ChatActivity.setFromUserID(mAuth.getUid());
+
+                        String name = contactNames.get(i);
+                        Intent i = new Intent(mContext, ChatActivity.class);
+                        i.putExtra("name", name);
+                        i.putExtra("fromChooseContacts", false);
+                        mActivity.startActivity(i);
+                        mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
+
+                    }
+
+                }
+            });
+
+            viewHolder.id = ids.get(i);
+            viewHolder.email = emails.get(i);
 
 
-                //-------------------------PLS HELP------------------------------
-                // Need this to redirect to chat_page
-//                Intent intent = new Intent(, FrontPageActivity.class);
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.enter, R.anim.exit);
+        }
 
-                ChatActivity.setToUserID(ids.get(i));
-                ChatActivity.setFromUserID(MyFirebaseMessagingService.fetchToken());
-                String name = contactNames.get(i);
-                Intent i = new Intent(mContext, ChatActivity.class);
-                i.putExtra("name", name);
-                i.putExtra("fromChooseContacts", false);
-                mActivity.startActivity(i);
-                mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
-
-            }
-        });
-
-        viewHolder.id = ids.get(i);
-        viewHolder.email = emails.get(i);
-
-        //last one
-        /*if(i == contactNames.size() - 1){
-            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
-        }*/
     }
 
 
