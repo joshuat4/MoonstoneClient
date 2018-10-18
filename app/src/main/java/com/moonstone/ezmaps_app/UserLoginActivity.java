@@ -63,6 +63,7 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
         String password = _passwordField.getText().toString().trim();
 
         if(email.isEmpty() || password.isEmpty()){
+            _progressBar.setVisibility(View.INVISIBLE);
             return;
         }
 

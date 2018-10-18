@@ -165,9 +165,13 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         /* Retrieve Object from Tab 2 */
         Intent intent = getIntent();
         tab2_to_ezdirection = (HashMap<String, Object>) intent.getSerializableExtra("tab2_to_ezdirection");
-        isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
-        currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
-        Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
+        if(tab2_to_ezdirection != null){
+            isCurrentDestinationFavourited = (boolean) tab2_to_ezdirection.get("isCurrentDestinationFavourited");
+            currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
+            Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
+        }
+
+
 
         /* Attach Snapper to Recycler View */
         SnapHelper helper = new LinearSnapHelper();
@@ -276,6 +280,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
         return false;
     }
+
+
 
     /* Restoring values from saved instance state */
     private void restoreValuesFromBundle(Bundle savedInstanceState) {
@@ -408,6 +414,10 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 });
     }
 
+    public Location getLastKnownLocation(){
+        return mCurrentLocation;
+    }
+
 
     public void showLastKnownLocation() {
         if (mCurrentLocation != null) {
@@ -521,7 +531,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     /* Send URL with Current Location's Coordinates and Destination */
     public void executeURL(){
 
-        if(mCurrentLocation != null){
+        if(mCurrentLocation != null && currentDestination != null){
             String bodyURL = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/mapRequest?text=";
             String latitudeURL = Double.toString(mCurrentLocation.getLatitude());
             String longitudeURL = Double.toString(mCurrentLocation.getLongitude());
@@ -700,10 +710,17 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 break;
 
             case R.id.contactsButton:
-                Log.d("EZD", "Go Back to Contacts on Saved State");
-                Intent i = new Intent(this, MainActivity.class);
-                i.putExtra("frgToLoad", 3);
-                this.startActivityIfNeeded(i,REQUEST_CODE);
+
+                if(isCardLoaded){
+                    Log.d("EZD", "Go Back to Contacts on Saved State");
+                    Intent i = new Intent(this, MainActivity.class);
+                    i.putExtra("frgToLoad", 3);
+                    this.startActivityIfNeeded(i,REQUEST_CODE);
+
+                    overridePendingTransition(R.anim.slide_down, R.anim.no_change);
+
+                }
+
                 //this.startActivity(i);
                 break;
 

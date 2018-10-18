@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +21,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +39,10 @@ import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.contact.ContactRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.GroupchatRecyclerViewAdapter;
 import com.moonstone.ezmaps_app.contact.NewContactSearchActivity;
-import com.moonstone.ezmaps_app.contact.RecView;
 import com.moonstone.ezmaps_app.contact.RequestsRecyclerViewAdapter;
+import com.moonstone.ezmaps_app.ezdirection.EZDirectionActivity;
+import com.moonstone.ezmaps_app.qrcode.ScanBarcodeActivity;
+import com.moonstone.ezmaps_app.contact.RecView;
 import com.moonstone.ezmaps_app.utilities.IntCounter;
 
 import java.util.ArrayList;
@@ -58,7 +63,8 @@ public class Tab3Fragment extends Fragment {
     int groupNumber;
 
     private EditText contactFilter;
-    private Button newContactButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  newContactButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  addQRButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
     private CheckBox select;
@@ -81,6 +87,10 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> newGroupIds;
 
 
+    private LinearLayout newRequestHeader;
+    private LinearLayout contactsHeader;
+    private boolean requestsAvailable = false;
+
     private ArrayList<String> contacts = new ArrayList<>();
     private ArrayList<String> requests = new ArrayList<>();
     private ArrayList<String> groupchats = new ArrayList<>();
@@ -89,6 +99,7 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<Boolean> loaded = new ArrayList<>();
     private ArrayList<Boolean> loading = new ArrayList<>();
 
+    private TextWatcher textWatcher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,9 +109,8 @@ public class Tab3Fragment extends Fragment {
         checked = false;
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
-        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
-        select = (CheckBox) fragmentLayout.findViewById(R.id.Select);
+        select = (CheckBox) fragmentLayout.findViewById(R.id.select);
 
         loaded.clear();
         loading.clear();
@@ -108,6 +118,9 @@ public class Tab3Fragment extends Fragment {
             loaded.add(false);
             loading.add(false);
         }
+
+        contactsHeader = fragmentLayout.findViewById(R.id.contactsHeader);
+        newRequestHeader = fragmentLayout.findViewById(R.id.newRequestsHeader);
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -128,11 +141,13 @@ public class Tab3Fragment extends Fragment {
             public void onClick(View v){
                 contactFilter.getText().clear();
                 clearButton.setVisibility(View.GONE);
+                Log.d("CLEARBUTTON", "GONE");
             }
         });
 
-        //Filter code
-        contactFilter.addTextChangedListener(new TextWatcher() {
+
+
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -141,12 +156,16 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                clearButton.setVisibility(View.VISIBLE);
+                if(s.toString().isEmpty()){
+                    clearButton.setVisibility(View.GONE);
+                }else{
+                    clearButton.setVisibility(View.VISIBLE);
+                }
 
                 // Check if there is contacts available before filtering
                 if(contactsAvailable){
@@ -154,25 +173,32 @@ public class Tab3Fragment extends Fragment {
                 }
 
             }
-        });
+        };
 
-        select.setOnClickListener(new View.OnClickListener() {
+
+        final FloatingActionsMenu mainAddButton =
+                (FloatingActionsMenu) fragmentLayout.findViewById(R.id.mainAddButton);
+
+        addQRButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addQR);
+        newContactButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addContact);
+
+
+        addQRButton.setIcon(R.drawable.qr_icon);
+        addQRButton.setTitle("Add via QR");
+        addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Is the view now checked?
-                checked = ((CheckBox) view).isChecked();
-                if (checked) {
-                    newContactButton.setText("Create Group Chat");
-                } else {
-                    newContactButton.setText("Add");
-                    adapter.clearSelected();
-                }
+                Log.d("Add Contacts through qr","qr scan cam initiated");
+                Intent intent = new Intent(view.getContext() , ScanBarcodeActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 
-
-        //Set up add new contacts button, make it so that it can go to the add contacts screen,
-        // or make a new group chat
+        newContactButton.setIcon(R.drawable.add_contact);
+        newContactButton.setTitle("Add Contacts");
+        //Set up add new contacts button
         newContactButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -213,6 +239,20 @@ public class Tab3Fragment extends Fragment {
                             });
                 }
 
+            }
+        });
+
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Is the view now checked?
+                checked = ((CheckBox) view).isChecked();
+                if (checked) {
+                    newContactButton.setTitle("Create Group Chat");
+                } else {
+                    newContactButton.setTitle("Add Contacts");
+                    adapter.clearSelected();
+                }
             }
         });
 
@@ -469,9 +509,17 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        //contactFilter.setSelected(false);
+        contactsLoading.setVisibility(View.INVISIBLE);
+
+//        if(!contactsAvailable){
+//            contactsHeader.setVisibility(View.GONE);
+//        }else{
+//            contactsHeader.setVisibility(View.VISIBLE);
+//        }
 
         contactFilter.setSelected(false);
-
+        contactsLoading.setVisibility(View.INVISIBLE);
     }
 
     private void initRequestsRecyclerView(){
@@ -483,6 +531,13 @@ public class Tab3Fragment extends Fragment {
         requestAdapter = new RequestsRecyclerViewAdapter(this, getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
         requestRecyclerView.setAdapter(requestAdapter);
         requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+//        if(!requestsAvailable){
+//            newRequestHeader.setVisibility(View.INVISIBLE);
+//        }else{
+//            newRequestHeader.setVisibility(View.VISIBLE);
+//        }
+
     }
 
     private void initGroupchatRecyclerView() {
@@ -640,14 +695,9 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-//        initRecyclerView();
-//        initRequestsRecyclerView();
-//        initGroupchatRecyclerView();
+        contactFilter.addTextChangedListener(textWatcher);
         loadContactsFromDB();
         Log.d("duplication", "onResume called");
-//        adapter.notifyDataSetChanged();
-//        requestAdapter.notifyDataSetChanged();
-//        groupchatAdapter.notifyDataSetChanged();
     }
 
     @Override

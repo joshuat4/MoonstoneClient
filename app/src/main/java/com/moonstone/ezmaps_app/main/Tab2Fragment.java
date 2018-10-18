@@ -78,6 +78,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
     private View view;
 
     private boolean ezdirectionInSession = false;
+    private TextWatcher textWatcher;
 
     @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,12 +129,16 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
             source.setAdapter(placeAdapter);
             /////////////////////////////////////////////////////////////////////////////////////
-            source.addTextChangedListener(new TextWatcher() {
+
+            textWatcher = new TextWatcher() {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    Log.d("TAB2", "SEARCH TYPED IN");
-                    clearButton.setVisibility(View.VISIBLE);
+                    if(s.toString().isEmpty()){
+                        clearButton.setVisibility(View.GONE);
+                    }else{
+                        clearButton.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -145,7 +150,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
                 }
 
-            });
+            };
 
 
             source.setOnKeyListener(new View.OnKeyListener() {
@@ -252,6 +257,13 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
         });
 
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        source.addTextChangedListener(textWatcher);
+    }
+
 
     public void startEZMap(String destination){
         if(!ezdirectionInSession){
