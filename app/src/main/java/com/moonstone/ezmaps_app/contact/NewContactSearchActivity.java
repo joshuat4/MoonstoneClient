@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -58,6 +59,8 @@ public class NewContactSearchActivity extends AppCompatActivity{
     private ArrayList<String> emails;
     private ArrayList<String> names;
 
+    private TextWatcher textWatcher;
+
     @Override
     protected  void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -69,16 +72,11 @@ public class NewContactSearchActivity extends AppCompatActivity{
         clearButton = findViewById(R.id.clearButton);
         toolbar = findViewById(R.id.my_toolbar);
 
-
-        //temporary buttons WILL NEED TO MOVE
-//        addQRButton = findViewById(R.id.);
-        ////////////////////////////////////////////////
-
         setSupportActionBar(toolbar);
         actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.close_dark);
-        actionbar.setTitle("Add New Contacts");
+        actionbar.setTitle("Add Contacts");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +84,7 @@ public class NewContactSearchActivity extends AppCompatActivity{
                 finish();
             }
         });
+
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -98,31 +97,16 @@ public class NewContactSearchActivity extends AppCompatActivity{
         searchButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                Log.d("Add Contacts","search button initiated");
-                findContactsLoading.setVisibility(View.VISIBLE);
-                searchForContacts(filterSearch.getText().toString().trim());
+                search(v);
             }
         });
-
-
-//        addQRButton.setOnClickListener(new Button.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                Log.d("Add Contacts through qr","qr scan cam initiated");
-//                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
-//                startActivityForResult(intent, 1);
-//            }
-//        });
-
 
 
         filterSearch.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                        Log.d("Add Contacts", "enter button initiated");
-                        findContactsLoading.setVisibility(View.VISIBLE);
-                        searchForContacts(filterSearch.getText().toString().trim());
+                        search(v);
                         return true;
                     }
                 }
@@ -139,7 +123,9 @@ public class NewContactSearchActivity extends AppCompatActivity{
         });
 
 
-        filterSearch.addTextChangedListener(new TextWatcher() {
+
+
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -148,18 +134,35 @@ public class NewContactSearchActivity extends AppCompatActivity{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                clearButton.setVisibility(View.VISIBLE);
-            }
-        });
+                if(s.toString().isEmpty()){
+                    clearButton.setVisibility(View.GONE);
+                }else{
+                    clearButton.setVisibility(View.VISIBLE);
+                }
 
-        filterSearch.setSelected(true);
+            }
+        };
 
     }
 
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        filterSearch.addTextChangedListener(textWatcher);
+    }
+
+    public void search(View v){
+        touchAPlace(v);
+        findContactsLoading.setVisibility(View.VISIBLE);
+        searchForContacts(filterSearch.getText().toString().trim());
+    }
 
 
 
@@ -232,6 +235,27 @@ public class NewContactSearchActivity extends AppCompatActivity{
         });
 
 
+    }
+
+    private void touchAPlace(View view){
+        // Obtain MotionEvent object
+        long downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis() + 100;
+        float x = 0.0f;
+        float y = 0.0f;
+        // List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
+        int metaState = 0;
+        MotionEvent motionEvent = MotionEvent.obtain(
+                downTime,
+                eventTime,
+                MotionEvent.ACTION_UP,
+                x,
+                y,
+                metaState
+        );
+
+        // Dispatch touch event to view
+        view.dispatchTouchEvent(motionEvent);
     }
 
 

@@ -35,10 +35,10 @@
             <LinearLayout
                 android:id="@+id/left"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="12dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="14dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="2"
                 android:background="@drawable/tab3_search"
@@ -70,20 +70,13 @@
 
             </LinearLayout>
 
-    </LinearLayout>
-
-        <Button
-            android:id="@+id/ReturnToNav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Return to  Navigation" />
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/newRequests"
+            android:id="@+id/newRequestsHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/topBar"
+            android:visibility="visible"
             android:background="@color/colorBackground">
 
             <TextView
@@ -102,8 +95,7 @@
         <ScrollView
             android:id="@+id/requestLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/newRequests">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/requestRecyclerView"
@@ -116,10 +108,10 @@
         </ScrollView>
 
         <LinearLayout
-            android:id="@+id/contacts"
+            android:id="@+id/contactsHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/requestLayout"
+            android:visibility="visible"
             android:background="@color/colorBackground">
 
             <TextView
@@ -137,8 +129,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/contacts">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/contactRecyclerView"
@@ -149,37 +140,38 @@
                 android:visibility="visible" />
 
         </ScrollView>
-
-
-
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingAddButton"
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/mainAddButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/floatingAddButton2"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="101dp"
-        android:clickable="true"
-        android:scaleType="center"
-        app:backgroundTint="@android:color/darker_gray"
-        app:elevation="2dp"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/qr_icon" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingAddButton2"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="35dp"
-        android:layout_marginEnd="35dp"
-        android:clickable="true"
-        app:backgroundTint="@color/colorAccent"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/ic_person_add_black_24dp" />
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:fab_addButtonColorNormal="@color/colorForeground"
+        app:fab_addButtonColorPressed="@color/lightGreen"
+        app:fab_addButtonPlusIconColor="@color/lightGreen"
+        app:fab_labelStyle="@style/menu_labels_style"
+        app:fab_labelsPosition="left">
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addQR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorForeground"
+            app:fab_title="Add via QR"
+            app:fab_colorPressed="@color/colorForeground"/>
 
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorForeground"
+            app:fab_title="Add New Contacts"
+            app:fab_colorPressed="@color/colorBackground"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

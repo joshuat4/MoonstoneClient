@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,11 +49,9 @@ public class Tab3Fragment extends Fragment {
     private boolean contactsAvailable = false;
     private static boolean fromNav;
 
-
-
     private EditText contactFilter;
-    private FloatingActionButton newContactButton;
-    private FloatingActionButton addQRButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  newContactButton;
+    private com.getbase.floatingactionbutton.FloatingActionButton  addQRButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
 
@@ -65,6 +65,15 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> reqNames;
     private ArrayList<String> reqIds;
 
+    private LinearLayout newRequestHeader;
+    private LinearLayout contactsHeader;
+    private boolean requestsAvailable = false;
+
+    private ArrayList<String> contacts = new ArrayList<>();
+    private ArrayList<String> requests = new ArrayList<>();
+
+    private TextWatcher textWatcher;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentLayout = inflater.inflate(R.layout.fragment_three, container, false);
@@ -72,10 +81,10 @@ public class Tab3Fragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
-//        newContactButton = fragmentLayout.findViewById(R.id.contactAddButton);
-        newContactButton = fragmentLayout.findViewById(R.id.floatingAddButton2);
-        addQRButton = fragmentLayout.findViewById(R.id.floatingAddButton);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
+
+        contactsHeader = fragmentLayout.findViewById(R.id.contactsHeader);
+        newRequestHeader = fragmentLayout.findViewById(R.id.newRequestsHeader);
 
         profilePics = new ArrayList<>() ;
         ids = new ArrayList<>();
@@ -92,11 +101,13 @@ public class Tab3Fragment extends Fragment {
             public void onClick(View v){
                 contactFilter.getText().clear();
                 clearButton.setVisibility(View.GONE);
+                Log.d("CLEARBUTTON", "GONE");
             }
         });
 
-        //Filter code
-        contactFilter.addTextChangedListener(new TextWatcher() {
+
+
+        textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -105,12 +116,16 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                clearButton.setVisibility(View.VISIBLE);
+                if(s.toString().isEmpty()){
+                    clearButton.setVisibility(View.GONE);
+                }else{
+                    clearButton.setVisibility(View.VISIBLE);
+                }
 
                 // Check if there is contacts available before filtering
                 if(contactsAvailable){
@@ -118,30 +133,38 @@ public class Tab3Fragment extends Fragment {
                 }
 
             }
-        });
+        };
 
 
-        //Set up add new contacts button
-        newContactButton.setOnClickListener(new Button.OnClickListener(){
+        final FloatingActionsMenu mainAddButton =
+                (FloatingActionsMenu) fragmentLayout.findViewById(R.id.mainAddButton);
+
+        addQRButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addQR);
+        newContactButton =
+                (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addContact);
+
+
+        addQRButton.setIcon(R.drawable.qr_icon);
+        addQRButton.setTitle("Add via QR");
+        addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                newContact();
-            }
-        });
-
-        addQRButton.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
+            public void onClick(View view) {
                 Log.d("Add Contacts through qr","qr scan cam initiated");
-                Intent intent = new Intent(v.getContext() , ScanBarcodeActivity.class);
+                Intent intent = new Intent(view.getContext() , ScanBarcodeActivity.class);
                 startActivityForResult(intent, 1);
             }
         });
 
+        newContactButton.setIcon(R.drawable.add_contact);
+        newContactButton.setTitle("Add Contacts");
+        newContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newContact();
+            }
+        });
 
-        loadContactsFromDB();
-
-        contactFilter.setSelected(false);
 
         return fragmentLayout;
     }
@@ -163,15 +186,19 @@ public class Tab3Fragment extends Fragment {
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("TAB3", "Current data: " + snapshot.getData());
-
                     names.clear();
                     emails.clear();
                     ids.clear();
                     profilePics.clear();
+                    reqProfilePics.clear();
+                    reqNames.clear();
+                    reqIds.clear();
+                    contacts.clear();
+                    requests.clear();
 
                     try{
-                        final ArrayList<String> contacts = (ArrayList<String>) snapshot.get("contacts");
-                        final ArrayList<String> requests = (ArrayList<String>) snapshot.get("requests");
+                        contacts = (ArrayList<String>) snapshot.get("contacts");
+                        requests = (ArrayList<String>) snapshot.get("requests");
                         Log.d("TAB3", "CONTACTS: " + contacts);
 
                         if(!requests.isEmpty()) {
@@ -181,38 +208,87 @@ public class Tab3Fragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        reqProfilePics.add(documentSnapshot.get("profilePic").toString());
-                                        reqNames.add(documentSnapshot.get("name").toString());
-                                        reqIds.add(documentSnapshot.getId());
+                                        //add things that aren't already in the view
+                                        if(!reqIds.contains(documentSnapshot.getId())) {
+                                            reqProfilePics.add(documentSnapshot.get("profilePic").toString());
+                                            reqNames.add(documentSnapshot.get("name").toString());
+                                            reqIds.add(documentSnapshot.getId());
+                                        }
+
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for(int item = 0; item<reqIds.size(); item++){
+                                            if(!requests.contains(reqIds.get(item))){
+                                                removal.add(reqIds.get(item));
+                                            }
+                                        }
+                                        for(String s : removal){
+                                            index = reqIds.indexOf(s);
+                                            reqNames.remove(index);
+                                            reqIds.remove(index);
+                                            reqProfilePics.remove(index);
+                                        }
 
                                         Log.d("qqqqq", reqNames.toString());
 
                                         //Might cause a race condition
                                         if (reqNames.size() == requests.size()) {
+
+                                            requestsAvailable = true;
                                             initRequestsRecyclerView();
+                                            Log.d("duplication", "reqNames: " + reqNames.toString());
+                                            requestAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 });
                             }
+                        }else{
+                            requestsAvailable = false;
+                            initRequestsRecyclerView();
+
                         }
+
+
                         if(!contacts.isEmpty()){
 
                             for (String contact : contacts){
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        //add things that aren't already in the view
+                                        if(!ids.contains(documentSnapshot.getId())) {
+                                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                                            emails.add(documentSnapshot.get("email").toString());
+                                            names.add(documentSnapshot.get("name").toString());
+                                            ids.add(documentSnapshot.getId());
+                                        }
 
-                                        profilePics.add(documentSnapshot.get("profilePic").toString());
-                                        emails.add(documentSnapshot.get("email").toString());
-                                        names.add(documentSnapshot.get("name").toString());
-                                        ids.add(documentSnapshot.getId());
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for(int item = 0; item<ids.size(); item++){
+                                            if(!contacts.contains(ids.get(item))){
+                                                removal.add(ids.get(item));
+                                            }
+                                        }
+                                        for(String s : removal){
+                                            index = ids.indexOf(s);
+                                            names.remove(index);
+                                            emails.remove(index);
+                                            ids.remove(index);
+                                            profilePics.remove(index);
+                                        }
 
                                         if(names.size() == contacts.size()){
                                             Log.d("TAB3", "second list num: " + names.size());
                                             Log.d("TAB3", "contacts size: " + contacts.size());
                                             Log.d("TAB3", "contacts available: init recycler view: ");
-                                            initRecyclerView();
+                                            Log.d("duplication", "contactNames: " + names.toString());
+
+                                            adapter.notifyDataSetChanged();
                                             contactsAvailable = true;
+                                            initRecyclerView();
 
                                         }
                                     }
@@ -222,7 +298,7 @@ public class Tab3Fragment extends Fragment {
                         }else{
                             contactsAvailable = false;
                             Log.d("TAB3", "contacts NOT available: init recycler view: ");
-                            initRecyclerView();
+                            adapter.notifyDataSetChanged();
                         }
 
                     } catch (NullPointerException n){
@@ -248,9 +324,16 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-        contactFilter.setSelected(false);
+        //contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.GONE);
+
+        if(!contactsAvailable){
+            contactsHeader.setVisibility(View.GONE);
+        }else{
+
+            contactsHeader.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void initRequestsRecyclerView(){
@@ -262,6 +345,14 @@ public class Tab3Fragment extends Fragment {
         requestAdapter = new requestsRecyclerViewAdapter(getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
         requestRecyclerView.setAdapter(requestAdapter);
         requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if(!requestsAvailable){
+            newRequestHeader.setVisibility(View.GONE);
+
+        }else{
+            newRequestHeader.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void filter(String text){
@@ -302,10 +393,13 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        if(adapter != null){
-            adapter.notifyDataSetChanged();
-        }
-
+        contactFilter.addTextChangedListener(textWatcher);
+        initRecyclerView();
+        initRequestsRecyclerView();
+        loadContactsFromDB();
+        Log.d("duplication", "onResume called");
+        adapter.notifyDataSetChanged();
+        requestAdapter.notifyDataSetChanged();
     }
 
     @Override
