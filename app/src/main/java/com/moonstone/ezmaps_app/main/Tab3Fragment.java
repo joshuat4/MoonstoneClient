@@ -4,6 +4,7 @@ package com.moonstone.ezmaps_app.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -72,6 +73,7 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> reqProfilePics;
     private ArrayList<String> reqNames;
     private ArrayList<String> reqIds;
+    private ArrayList<String> respondedRequests = new ArrayList<>();
 
     private ArrayList<ArrayList<String>> groupchatNames;
     private ArrayList<ArrayList<String>> groupchatUserIds;
@@ -215,7 +217,9 @@ public class Tab3Fragment extends Fragment {
         });
 
         contactFilter.setSelected(false);
-
+        initRecyclerView();
+        initRequestsRecyclerView();
+        initGroupchatRecyclerView();
         return fragmentLayout;
     }
 
@@ -234,201 +238,220 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("TAB3", "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    reloading();
-                    Log.d("TAB3", "Current data: " + snapshot.getData());
-                    names.clear();
-                    emails.clear();
-                    ids.clear();
-                    profilePics.clear();
-                    contacts.clear();
-
-                    reqProfilePics.clear();
-                    reqNames.clear();
-                    reqIds.clear();
-                    requests.clear();
-
-                    groupchatNames.clear();
-                    groupchatIds.clear();
-                    groupchatUserIds.clear();
-                    groupchats.clear();
-
-                    initRecyclerView();
-                    initRequestsRecyclerView();
-                    initGroupchatRecyclerView();
-                    try{
-                        contacts = new ArrayList<>((ArrayList<String>) snapshot.get("contacts"));
-                        requests = new ArrayList<>((ArrayList<String>) snapshot.get("requests"));
-                        groupchats = new ArrayList<>((ArrayList<String>) snapshot.get("groupchats"));
-                        Log.d("TAB3", "CONTACTS: " + contacts);
-
-                        Log.d("TAB3", "GROUPCHATS loading 270: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
-
-                        if(!loading.get(RecView.REQUESTS.getNumVal())) {
-                            loading.set(RecView.REQUESTS.getNumVal(), true);
-                            if (!requests.isEmpty()) {
-
-                                for (String request : requests) {
-                                    db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            //add things that aren't already in the view
-                                            if (!reqIds.contains(documentSnapshot.getId())) {
-                                                reqProfilePics.add(documentSnapshot.get("profilePic").toString());
-                                                reqNames.add(documentSnapshot.get("name").toString());
-                                                reqIds.add(documentSnapshot.getId());
-                                            }
-
-                                            //remove things that are in the view, but dropped from the server
-                                            ArrayList<String> removal = new ArrayList<>();
-                                            int index;
-                                            for (int item = 0; item < reqIds.size(); item++) {
-                                                if (!requests.contains(reqIds.get(item))) {
-                                                    removal.add(reqIds.get(item));
-                                                }
-                                            }
-                                            for (String s : removal) {
-                                                index = reqIds.indexOf(s);
-                                                reqNames.remove(index);
-                                                reqIds.remove(index);
-                                                reqProfilePics.remove(index);
-                                            }
-
-                                            Log.d("qqqqq", reqNames.toString());
-
-                                            //Might cause a race condition
-                                            if (reqNames.size() == requests.size()) {
-                                                Log.d("duplication", "reqNames: " + reqNames.toString());
-                                                requestAdapter.notifyDataSetChanged();
-                                                if (requests.size() == 0) {
-                                                    updateLoaded(RecView.REQUESTS);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            } else {
-                                updateLoaded(RecView.REQUESTS);
-                            }
+                if (loading.contains(true)) {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadContactsFromDB();
                         }
-
-                        Log.d("TAB3", "GROUPCHATS loading 318: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
-
-                        //load contacts
-                        if(!loading.get(RecView.CONTACTS.getNumVal())) {
-                            loading.set(RecView.CONTACTS.getNumVal(), true);
-                            if (!contacts.isEmpty()) {
-
-                                for (String contact : contacts) {
-                                    db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            //add things that aren't already in the view
-                                            if (!ids.contains(documentSnapshot.getId())) {
-                                                profilePics.add(documentSnapshot.get("profilePic").toString());
-                                                emails.add(documentSnapshot.get("email").toString());
-                                                names.add(documentSnapshot.get("name").toString());
-                                                ids.add(documentSnapshot.getId());
-
-                                            }
-
-                                            //remove things that are in the view, but dropped from the server
-                                            ArrayList<String> removal = new ArrayList<>();
-                                            int index;
-                                            for (int item = 0; item < ids.size(); item++) {
-                                                if (!contacts.contains(ids.get(item))) {
-                                                    removal.add(ids.get(item));
-                                                }
-                                            }
-                                            for (String s : removal) {
-                                                index = ids.indexOf(s);
-                                                names.remove(index);
-                                                emails.remove(index);
-                                                ids.remove(index);
-                                                profilePics.remove(index);
-                                            }
-
-                                            if (names.size() == contacts.size()) {
-                                                Log.d("TAB3", "second list num: " + names.size());
-                                                Log.d("TAB3", "contacts size: " + contacts.size());
-                                                Log.d("TAB3", "contacts available: init recycler view: ");
-                                                Log.d("duplication", "contactNames: " + names.toString());
-
-                                                adapter.notifyDataSetChanged();
-                                                if (contacts.size() == 0) {
-                                                    updateLoaded(RecView.CONTACTS);
-                                                    loading.set(RecView.CONTACTS.getNumVal(), false);
-                                                }
-                                                contactsAvailable = true;
-
-                                            }
-                                        }
-                                    });
-                                }
-
-                            } else {
-                                contactsAvailable = false;
-                                Log.d("TAB3", "contacts NOT available: init recycler view: ");
-                                adapter.notifyDataSetChanged();
-                                loading.set(RecView.CONTACTS.getNumVal(), false);
-                                updateLoaded(RecView.GROUPCHATS);
-                            }
-                        }
-
-                        //Now load in groupchats
-                        Log.d("TAB3", "GROUPCHATS: " + groupchats);
-                        Log.d("TAB3", "GROUPCHATS loading: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
-
-                        if(!loading.get(RecView.GROUPCHATS.getNumVal())) {
-                            loading.set(RecView.GROUPCHATS.getNumVal(), true);
-                            if (!groupchats.isEmpty()) {
-                                //add things that aren't already in the view
-                                if (groupchats.size() == 0) {
-                                    updateLoaded(RecView.GROUPCHATS);
-                                }
-                                for (int groupNum = 0; groupNum < groupchats.size(); groupNum++) {
-                                    if (!groupchatIds.contains(groupchats.get(groupNum))) {
-                                        final String group = groupchats.get(groupNum);
-                                        groupchatIds.add(group);
-                                    }
-                                }
-
-                                //remove things that are in the view, but dropped from the server
-                                ArrayList<String> removal = new ArrayList<>();
-                                int index;
-                                for (int item = 0; item < groupchatIds.size(); item++) {
-                                    if (!groupchats.contains(groupchatIds.get(item))) {
-                                        removal.add(groupchatIds.get(item));
-                                    }
-                                }
-                                for (String s : removal) {
-                                    index = groupchatIds.indexOf(s);
-                                    groupchatNames.remove(index);
-                                    groupchatIds.remove(index);
-                                    groupchatUserIds.remove(index);
-                                }
-
-                                groupNumber = 0;
-                                for (String group : groupchatIds) {
-                                    Log.d("groupchatDupes", "load members called: " + groupchatIds.toString());
-                                    loadMembers(group);
-                                }
-                            } else {
-                                updateLoaded(RecView.GROUPCHATS);
-                            }
-                        }
-                    } catch (NullPointerException n){
-                        contactsAvailable = false;
-
+                    }, 1000);
+                } else {
+                    if (e != null) {
+                        Log.w("TAB3", "Listen failed.", e);
+                        return;
                     }
 
-                } else {
-                    Log.d("TAB3", "Current data: null");
+                    if (snapshot != null && snapshot.exists()) {
+                        reloading();
+                        Log.d("TAB3", "Current data: " + snapshot.getData());
+                        names.clear();
+                        emails.clear();
+                        ids.clear();
+                        profilePics.clear();
+                        contacts.clear();
+
+                        reqProfilePics.clear();
+                        reqNames.clear();
+                        reqIds.clear();
+                        requests.clear();
+
+                        groupchatNames.clear();
+                        groupchatIds.clear();
+                        groupchatUserIds.clear();
+                        groupchats.clear();
+
+                        try {
+                            contacts = new ArrayList<>((ArrayList<String>) snapshot.get("contacts"));
+                            requests = new ArrayList<>((ArrayList<String>) snapshot.get("requests"));
+                            groupchats = new ArrayList<>((ArrayList<String>) snapshot.get("groupchats"));
+                            Log.d("TAB3", "CONTACTS: " + contacts);
+
+                            Log.d("TAB3", "GROUPCHATS loading 270: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
+
+                            if (!loading.get(RecView.REQUESTS.getNumVal())) {
+                                loading.set(RecView.REQUESTS.getNumVal(), true);
+                                if (!requests.isEmpty()) {
+
+                                    for (String request : requests) {
+                                        db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                //add things that aren't already in the view
+                                                if (!reqIds.contains(documentSnapshot.getId())) {
+                                                    reqProfilePics.add(documentSnapshot.get("profilePic").toString());
+                                                    reqNames.add(documentSnapshot.get("name").toString());
+                                                    reqIds.add(documentSnapshot.getId());
+                                                }
+
+                                                //remove things that are in the view, but dropped from the server
+                                                ArrayList<String> removal = new ArrayList<>();
+                                                int index;
+                                                for (int item = 0; item < reqIds.size(); item++) {
+                                                    if (!requests.contains(reqIds.get(item))) {
+                                                        removal.add(reqIds.get(item));
+                                                    }
+                                                }
+
+                                                for (String s : removal) {
+                                                    index = reqIds.indexOf(s);
+                                                    reqNames.remove(index);
+                                                    reqIds.remove(index);
+                                                    reqProfilePics.remove(index);
+                                                }
+
+                                                Log.d("qqqqq", reqNames.toString());
+
+                                                //Might cause a race condition
+                                                if (reqNames.size() == requests.size()) {
+                                                    //remove requests that have already been responded to
+                                                    for (String s : respondedRequests) {
+                                                        if(reqIds.contains(s)){
+                                                            index = reqIds.indexOf(s);
+                                                            reqNames.remove(index);
+                                                            reqIds.remove(index);
+                                                            reqProfilePics.remove(index);
+                                                        }
+                                                    }
+                                                    Log.d("duplication", "reqNames: " + reqNames.toString());
+                                                    requestAdapter.notifyDataSetChanged();
+                                                    updateLoaded(RecView.REQUESTS);
+                                                    respondedRequests.clear();
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    updateLoaded(RecView.REQUESTS);
+                                }
+                            }
+
+                            Log.d("TAB3", "GROUPCHATS loading 318: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
+
+                            //load contacts
+                            if (!loading.get(RecView.CONTACTS.getNumVal())) {
+                                loading.set(RecView.CONTACTS.getNumVal(), true);
+                                if (!contacts.isEmpty()) {
+
+                                    for (String contact : contacts) {
+                                        db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                //add things that aren't already in the view
+                                                if (!ids.contains(documentSnapshot.getId())) {
+                                                    profilePics.add(documentSnapshot.get("profilePic").toString());
+                                                    emails.add(documentSnapshot.get("email").toString());
+                                                    names.add(documentSnapshot.get("name").toString());
+                                                    ids.add(documentSnapshot.getId());
+
+                                                }
+
+                                                //remove things that are in the view, but dropped from the server
+                                                ArrayList<String> removal = new ArrayList<>();
+                                                int index;
+                                                for (int item = 0; item < ids.size(); item++) {
+                                                    if (!contacts.contains(ids.get(item))) {
+                                                        removal.add(ids.get(item));
+                                                    }
+                                                }
+                                                for (String s : removal) {
+                                                    index = ids.indexOf(s);
+                                                    names.remove(index);
+                                                    emails.remove(index);
+                                                    ids.remove(index);
+                                                    profilePics.remove(index);
+                                                }
+
+                                                if (names.size() == contacts.size()) {
+                                                    Log.d("TAB3", "second list num: " + names.size());
+                                                    Log.d("TAB3", "contacts size: " + contacts.size());
+                                                    Log.d("TAB3", "contacts available: init recycler view: ");
+                                                    Log.d("duplication", "contactNames: " + names.toString());
+
+                                                    adapter.notifyDataSetChanged();
+                                                    if (contacts.size() == 0) {
+                                                        updateLoaded(RecView.CONTACTS);
+                                                        loading.set(RecView.CONTACTS.getNumVal(), false);
+                                                    }
+                                                    contactsAvailable = true;
+
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                } else {
+                                    contactsAvailable = false;
+                                    Log.d("TAB3", "contacts NOT available: init recycler view: ");
+                                    adapter.notifyDataSetChanged();
+                                    loading.set(RecView.CONTACTS.getNumVal(), false);
+                                    updateLoaded(RecView.GROUPCHATS);
+                                }
+                            }
+
+                            //Now load in groupchats
+                            Log.d("TAB3", "GROUPCHATS: " + groupchats);
+                            Log.d("TAB3", "GROUPCHATS loading: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
+
+                            if (!loading.get(RecView.GROUPCHATS.getNumVal())) {
+                                loading.set(RecView.GROUPCHATS.getNumVal(), true);
+                                if (!groupchats.isEmpty()) {
+                                    //add things that aren't already in the view
+                                    if (groupchats.size() == 0) {
+                                        updateLoaded(RecView.GROUPCHATS);
+                                    }
+                                    for (int groupNum = 0; groupNum < groupchats.size(); groupNum++) {
+                                        if (!groupchatIds.contains(groupchats.get(groupNum))) {
+                                            final String group = groupchats.get(groupNum);
+                                            groupchatIds.add(group);
+                                        }
+                                    }
+
+                                    //remove things that are in the view, but dropped from the server
+                                    ArrayList<String> removal = new ArrayList<>();
+                                    int index;
+                                    for (int item = 0; item < groupchatIds.size(); item++) {
+                                        if (!groupchats.contains(groupchatIds.get(item))) {
+                                            removal.add(groupchatIds.get(item));
+                                        }
+                                    }
+                                    for (String s : removal) {
+                                        index = groupchatIds.indexOf(s);
+                                        groupchatNames.remove(index);
+                                        groupchatIds.remove(index);
+                                        groupchatUserIds.remove(index);
+                                    }
+
+                                    groupNumber = 0;
+                                    for (String group : groupchatIds) {
+                                        Log.d("groupchatDupes", "load members called: " + groupchatIds.toString());
+                                        loadMembers(group);
+                                    }
+                                    if (groupchatIds.size() == 0) {
+                                        updateLoaded(RecView.GROUPCHATS);
+                                    }
+                                } else {
+                                    updateLoaded(RecView.GROUPCHATS);
+                                }
+                            }
+                        } catch (NullPointerException n) {
+                            contactsAvailable = false;
+
+                        }
+
+                    } else {
+                        Log.d("TAB3", "Current data: null");
+                    }
                 }
             }
         });
@@ -535,7 +558,7 @@ public class Tab3Fragment extends Fragment {
                                                                 @Override
                                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                                     numMembers.number++;
-                                                                    groupchatNames.get(groupNum).add(documentSnapshot.getString("name"));
+                                                                                                                                        groupchatNames.get(groupNum).add(documentSnapshot.getString("name"));
                                                                     Log.d("groupchat", "current names: " + documentSnapshot.getString("name"));
                                                                     Log.d("groupchat", "current group names: " + groupchatNames.get(groupNum).toString());
                                                                     Log.d("groupchatDupes", "all group names: " + groupchatNames.toString());
@@ -580,12 +603,15 @@ public class Tab3Fragment extends Fragment {
 //                                                                                                            }
 //
 //                                                                                                        });
+                                                                    Log.d("groupchatDupes", "nummems +1 = "+(numMembers.number+1));
+                                                                    Log.d("groupchatDupes", "groupchatUids = "+groupchatUserIds.get(groupNum).size());
                                                                     if ((numMembers.number + 1) == groupchatUserIds.get(groupNum).size()) {
                                                                         Log.d("groupchat", "how many groupchatNames: " + groupchatNames.size());
                                                                         Log.d("groupchat", "groupchatNames: " + groupchatNames.toString());
                                                                         Log.d("groupchat", "groupchats size: " + groupchats.size() + ", " + groupchats.toString());
                                                                         Log.d("groupchat", "groupchats available: init recycler view: ");
                                                                         Log.d("groupchat", "GROUPCHATS 2 : " + groupchats);
+                                                                        Log.d("groupchatDupes", "LOADED!");
                                                                         groupchatAdapter.notifyDataSetChanged();
                                                                         updateLoaded(RecView.GROUPCHATS);
                                                                     }
@@ -595,7 +621,8 @@ public class Tab3Fragment extends Fragment {
                                         }
                                     }
 
-
+                                    Log.d("groupchatDupes", "0 field nummems +1 = "+(numMembers.number+1));
+                                    Log.d("groupchatDupes", "0 field groupchatUids = "+groupchatUserIds.get(groupNum).size());
                                     if(numMembers.number == groupchatUserIds.get(groupNum).size()){
                                         Log.d("TAB3", "how many groupchatNames: " + groupchatNames.size());
                                         Log.d("TAB3", "groupchats size: " + groupchats.size() + ", " + groupchats.toString());
@@ -613,9 +640,9 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        initRecyclerView();
-        initRequestsRecyclerView();
-        initGroupchatRecyclerView();
+//        initRecyclerView();
+//        initRequestsRecyclerView();
+//        initGroupchatRecyclerView();
         loadContactsFromDB();
         Log.d("duplication", "onResume called");
 //        adapter.notifyDataSetChanged();
@@ -674,6 +701,13 @@ public class Tab3Fragment extends Fragment {
             loaded.set(e,false);
         }
         contactsLoading.setVisibility(View.VISIBLE);
+    }
+
+    public void addToRespondedRequests(String id){
+        //add things that aren't already in the list
+        if (!respondedRequests.contains(id)) {
+            respondedRequests.add(id);
+        }
     }
 
     /*

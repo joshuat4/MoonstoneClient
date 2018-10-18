@@ -96,12 +96,11 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
                 Log.d("ChooseContactRecyclerView", "Accepted");
                 //add contact
                 addContact(target, currentUser);
-                addContact(currentUser, target);
-                //delete requests on current user because added.
-                deleteSelf(currentUser, target);
+                addContact(currentUser, target, target);
                 contactNames.remove(i);
                 profilePics.remove(i);
                 ids.remove(i);
+                fragment.addToRespondedRequests(target);
                 refreshData();
             }
         });
@@ -176,6 +175,26 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
     }
 
 
+
+    public void addContact(final String currentUser, final String contactToBeAdded, final String contactToBeDeleted){
+        final String UIDFrom = currentUser;
+
+        if(contactToBeAdded != null){
+
+            db.collection("users").document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    db.collection("users").document(currentUser).update("contacts", FieldValue.arrayUnion(contactToBeAdded));
+                    db.collection("users").document(currentUser).update("contacts", FieldValue.arrayUnion(contactToBeAdded), "requests", FieldValue.arrayRemove(contactToBeDeleted));
+                    Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + contactToBeAdded);
+                }
+            });
+
+        }
+
+        else{
+        }
+    }
 
     public void addContact(final String currentUser, final String contactToBeAdded){
         final String UIDFrom = currentUser;
