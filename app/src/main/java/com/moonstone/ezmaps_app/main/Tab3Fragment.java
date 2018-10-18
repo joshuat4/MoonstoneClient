@@ -257,9 +257,6 @@ public class Tab3Fragment extends Fragment {
         });
 
         contactFilter.setSelected(false);
-        initRecyclerView();
-        initRequestsRecyclerView();
-        initGroupchatRecyclerView();
         return fragmentLayout;
     }
 
@@ -696,6 +693,9 @@ public class Tab3Fragment extends Fragment {
     public void onResume(){
         super.onResume();
         contactFilter.addTextChangedListener(textWatcher);
+        initRecyclerView();
+        initRequestsRecyclerView();
+        initGroupchatRecyclerView();
         loadContactsFromDB();
         Log.d("duplication", "onResume called");
     }
