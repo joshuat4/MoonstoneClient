@@ -53,6 +53,7 @@ public class Tab3Fragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private View fragmentLayout;
+    private View blocker;
     private ContactRecyclerViewAdapter adapter;
     private RequestsRecyclerViewAdapter requestAdapter;
     private GroupchatRecyclerViewAdapter groupchatAdapter;
@@ -111,6 +112,7 @@ public class Tab3Fragment extends Fragment {
         contactFilter = fragmentLayout.findViewById(R.id.contactFilter);
         contactsLoading = fragmentLayout.findViewById(R.id.contactsLoading);
         select = (CheckBox) fragmentLayout.findViewById(R.id.select);
+        blocker = fragmentLayout.findViewById(R.id.blocker);
 
         loaded.clear();
         loading.clear();
@@ -257,6 +259,9 @@ public class Tab3Fragment extends Fragment {
         });
 
         contactFilter.setSelected(false);
+        initRecyclerView();
+        initRequestsRecyclerView();
+        initGroupchatRecyclerView();
         return fragmentLayout;
     }
 
@@ -275,6 +280,7 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
+                blocker.setClickable(true);
                 if (loading.contains(true)) {
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -282,7 +288,7 @@ public class Tab3Fragment extends Fragment {
                         public void run() {
                             loadContactsFromDB();
                         }
-                    }, 1000);
+                    }, 5000);
                 } else {
                     if (e != null) {
                         Log.w("TAB3", "Listen failed.", e);
@@ -693,9 +699,6 @@ public class Tab3Fragment extends Fragment {
     public void onResume(){
         super.onResume();
         contactFilter.addTextChangedListener(textWatcher);
-        initRecyclerView();
-        initRequestsRecyclerView();
-        initGroupchatRecyclerView();
         loadContactsFromDB();
         Log.d("duplication", "onResume called");
     }
@@ -703,7 +706,6 @@ public class Tab3Fragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 
    @Override
@@ -742,6 +744,7 @@ public class Tab3Fragment extends Fragment {
             //unblock selection
         } else {
             contactsLoading.setVisibility(View.INVISIBLE);
+            blocker.setClickable(false);
             //block selection
         }
     }
