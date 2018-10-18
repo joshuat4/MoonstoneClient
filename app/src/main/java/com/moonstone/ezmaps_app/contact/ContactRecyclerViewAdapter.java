@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> profilePics = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
+    private Tab3Fragment fragment;
 
     private ArrayList<Integer> mSelected = new ArrayList<>();
 
@@ -37,16 +39,19 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> emails = new ArrayList<>();
 
-    public ContactRecyclerViewAdapter(Context context, Activity mActivity, ArrayList<String> contactNames,
+    public ContactRecyclerViewAdapter(Tab3Fragment fragment, Context context, Activity mActivity,
+                                      ArrayList<String> contactNames,
                                       ArrayList<String> profilePics, ArrayList<String> ids,
                                       ArrayList<String> emails){
         Log.d("HERE", "INITIALISED ");
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
+        this.fragment = fragment;
         this.ids = ids;
         this.emails = emails;
         this.mActivity = mActivity;
+
     }
 
     //Actually recycles the view holders
@@ -103,9 +108,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         viewHolder.email = emails.get(i);
 
         //last one
-        /*if(i == contactNames.size() - 1){
-            Tab3Fragment.contactsLoading.setVisibility(View.GONE);
-        }*/
+        if(i == contactNames.size() - 1){
+            fragment.updateLoaded(RecView.CONTACTS);
+        }
     }
 
 

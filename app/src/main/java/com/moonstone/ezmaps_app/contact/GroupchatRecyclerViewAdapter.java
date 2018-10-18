@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.ezchat.GroupchatActivity;
 import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
+import com.moonstone.ezmaps_app.main.Tab3Fragment;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
     private ArrayList<String> unreadGroupchatOrder = new ArrayList<>();
     private Context mContext;
     private Activity mActivity;
+    private Tab3Fragment fragment;
 
     private ArrayList<Integer> mSelected = new ArrayList<>();
 
@@ -42,10 +45,11 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    public GroupchatRecyclerViewAdapter(Context context, ArrayList<String> groupchatIds, ArrayList<ArrayList<String>> groupchatNames, ArrayList<ArrayList<String>> groupchatUserIds, FirebaseFirestore db, FirebaseAuth mAuth){
+    public GroupchatRecyclerViewAdapter(Tab3Fragment fragment, Context context, ArrayList<String> groupchatIds, ArrayList<ArrayList<String>> groupchatNames, ArrayList<ArrayList<String>> groupchatUserIds, FirebaseFirestore db, FirebaseAuth mAuth){
         Log.d("groupchat", "INITIALISED ");
         this.groupchatNames = groupchatNames;
         this.mContext = context;
+        this.fragment = fragment;
         this.groupchats = groupchatIds;
         this.groupchatUserIds = groupchatUserIds;
 //        this.unread = unread;
@@ -132,6 +136,11 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
                 mContext.startActivity(i);
             }
         });
+
+        //last one
+        if(i == groupchatNames.size() - 1){
+            fragment.updateLoaded(RecView.GROUPCHATS);
+        }
     }
 
 

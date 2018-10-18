@@ -3,6 +3,7 @@ package com.moonstone.ezmaps_app.contact;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.main.Tab3Fragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
     private Context mContext;
     private ImageButton acceptButton;
     private ImageButton declineButton;
+    private Tab3Fragment fragment;
 
     //Never rendered but information is held here
     private ArrayList<String> ids = new ArrayList<>();
@@ -40,13 +43,14 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
 
     private Bundle shareImageBundle;
 
-    public RequestsRecyclerViewAdapter(Context context, ArrayList<String> contactNames,
+    public RequestsRecyclerViewAdapter(Tab3Fragment fragment, Context context, ArrayList<String> contactNames,
                                        ArrayList<String> profilePics, ArrayList<String> ids,
                                        FirebaseFirestore db, FirebaseAuth mAuth){
 
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
+        this.fragment = fragment;
         this.ids = ids;
         this.db = db;
         this. mAuth = mAuth;
@@ -118,6 +122,10 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
 
 
         viewHolder.id = ids.get(i);
+        //last one
+        if(i == contactNames.size() - 1){
+            fragment.updateLoaded(RecView.REQUESTS);
+        }
     }
 
 
