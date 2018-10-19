@@ -139,6 +139,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    final ArrayList<String> contacts = new ArrayList<>();
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
                    final ArrayList<String> friendRequests = new ArrayList<>();
+                   final ArrayList<String> groupchats = new ArrayList<>();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
                    userMap.put("requests", friendRequests);
@@ -146,6 +147,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    userMap.put("name", name);
                    userMap.put("favouritePlaces", favouritePlaces);
                    userMap.put("QRCode", qrcodeURL);
+                   userMap.put("groupchats", groupchats);
 
 
 
