@@ -3,11 +3,9 @@ package com.moonstone.ezmaps_app;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.moonstone.ezmaps_app.main.MainActivity;
 
 public class test extends AppCompatActivity {
 

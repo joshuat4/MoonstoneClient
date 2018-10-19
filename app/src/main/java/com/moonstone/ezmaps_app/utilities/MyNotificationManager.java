@@ -5,15 +5,20 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.moonstone.ezmaps_app.contact.Constants;
+import com.moonstone.ezmaps_app.ezchat.Calling;
 import com.moonstone.ezmaps_app.main.MainActivity;
 import com.moonstone.ezmaps_app.R;
+
+import java.util.ArrayList;
 
 
 public class MyNotificationManager  {
     private Context mCtx;
     private static MyNotificationManager mInstance;
+    private Intent intent;
 
     private MyNotificationManager (Context context){
         mCtx = context;
@@ -32,7 +37,18 @@ public class MyNotificationManager  {
                 .setContentTitle(title)
                 .setContentText(body);
 
-        Intent intent = new Intent(mCtx, MainActivity.class);
+
+        //
+        if(title.contains("Text from")){
+            intent = new Intent(mCtx, MainActivity.class);
+        }
+        //Calling notification
+        else{
+            Log.d("notifcationt", "hmmm" );
+            intent = new Intent(mCtx, Calling.class);
+
+        }
+
 
         PendingIntent pendingIntent = PendingIntent.getActivity(mCtx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
