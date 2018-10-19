@@ -36,7 +36,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         //Calling notification
         else{
-            incomingCall(title, body);
+            String room = remoteMessage.getData().get("room");
+            String sender =remoteMessage.getData().get("sender");
+            incomingCall(sender, room);
         }
 
     }

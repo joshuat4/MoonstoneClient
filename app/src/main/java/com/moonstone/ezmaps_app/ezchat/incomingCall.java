@@ -27,21 +27,16 @@ public class incomingCall extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.temp);
-        Log.d("nononono", "What about here");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             callerString= extras.getString("callerName");
             roomId = extras.getString("roomId");
         }
-        Log.d("nononono", "What about here2");
-
         accept = findViewById(R.id.acceptCall);
         decline = findViewById(R.id.declineCall);
         callerName = findViewById(R.id.callerName);
 
         callerName.setText(callerString);
-
-        Log.d("nononono", "????");
 
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +57,6 @@ public class incomingCall extends AppCompatActivity {
             }
         });
 
-        Log.d("nononono", "What about here 2121");
         playSound();
     }
 
