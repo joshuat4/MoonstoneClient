@@ -90,8 +90,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                             ChatActivity.setToUserID(ids.get(i));
                             ChatActivity.setFromUserID(mAuth.getUid());
                             String name = contactNames.get(i);
+                            String profilePic = profilePics.get(i);
                             Intent i = new Intent(mContext, ChatActivity.class);
                             i.putExtra("name", name);
+                            i.putExtra("picture", profilePic);
                             i.putExtra("fromChooseContacts", false);
                             mContext.startActivity(i);
                             mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);

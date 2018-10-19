@@ -12,6 +12,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.moonstone.ezmaps_app.R;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class incomingCall extends AppCompatActivity {
 
@@ -19,7 +22,9 @@ public class incomingCall extends AppCompatActivity {
     private ImageButton accept, decline;
     private TextView callerName;
     private String callerString;
+    private String callerPicUrl;
     private String roomId;
+    private CircleImageView callerPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +36,17 @@ public class incomingCall extends AppCompatActivity {
         if (extras != null) {
             callerString= extras.getString("callerName");
             roomId = extras.getString("roomId");
+            callerPicUrl = extras.getString("callerPic");
         }
         accept = findViewById(R.id.acceptCall);
         decline = findViewById(R.id.declineCall);
         callerName = findViewById(R.id.callerName);
+        callerPic = findViewById(R.id.callerPic);
+
+        if(!callerPicUrl.isEmpty()){
+            Log.d("overhere", callerPicUrl);
+            Picasso.get().load(callerPicUrl).into(callerPic);
+        }
 
         callerName.setText(callerString);
 

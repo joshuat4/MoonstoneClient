@@ -48,6 +48,7 @@ public class Tab1Fragment extends Fragment implements OnClickListener{
 
     @Override
     public void onCreate(Bundle savedInstanceState){
+        Log.d("TAB1", "SUCCESS");
         super.onCreate(savedInstanceState);
 
 
