@@ -280,6 +280,7 @@ public class Tab3Fragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
+                Log.d("loaded", "blocker enabled");
                 blocker.setClickable(true);
                 if (loading.contains(true)) {
                     final Handler handler = new Handler();
@@ -316,20 +317,37 @@ public class Tab3Fragment extends Fragment {
                         groupchatNames.clear();
                         groupchatIds.clear();
                         groupchatUserIds.clear();
-                        groupchats.clear();
+                        if(groupchats != null){
+                            groupchats.clear();
+                        }
+
+                        Log.d("loaded", "322");
 
                         try {
+                            Log.d("loaded", "325");
                             contacts = new ArrayList<>((ArrayList<String>) snapshot.get("contacts"));
                             requests = new ArrayList<>((ArrayList<String>) snapshot.get("requests"));
                             groupchats = new ArrayList<>((ArrayList<String>) snapshot.get("groupchats"));
+                            if(contacts == null){
+                                updateLoaded(RecView.CONTACTS);
+                            }
+                            if(requests == null){
+                                updateLoaded(RecView.REQUESTS);
+                            }
+                            if(groupchats == null){
+                                updateLoaded(RecView.GROUPCHATS);
+                            }
                             Log.d("TAB3", "CONTACTS: " + contacts);
-
+                            Log.d("loaded", "340");
                             Log.d("TAB3", "GROUPCHATS loading 270: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
 
                             if (!loading.get(RecView.REQUESTS.getNumVal())) {
+                                Log.d("loaded", "345");
                                 loading.set(RecView.REQUESTS.getNumVal(), true);
                                 if (!requests.isEmpty()) {
-
+                                    if (requests.size() == 0) {
+                                        updateLoaded(RecView.REQUESTS);
+                                    }
                                     for (String request : requests) {
                                         db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
@@ -383,13 +401,17 @@ public class Tab3Fragment extends Fragment {
                                 }
                             }
 
+                            Log.d("loaded", "390");
                             Log.d("TAB3", "GROUPCHATS loading 318: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
 
                             //load contacts
                             if (!loading.get(RecView.CONTACTS.getNumVal())) {
                                 loading.set(RecView.CONTACTS.getNumVal(), true);
+                                Log.d("loaded", "398");
                                 if (!contacts.isEmpty()) {
-
+                                    if (contacts.size() == 0) {
+                                        updateLoaded(RecView.CONTACTS);
+                                    }
                                     for (String contact : contacts) {
                                         db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
@@ -436,13 +458,14 @@ public class Tab3Fragment extends Fragment {
                                             }
                                         });
                                     }
-
+                                    Log.d("loaded", "444");
                                 } else {
+                                    Log.d("loaded", "450");
                                     contactsAvailable = false;
                                     Log.d("TAB3", "contacts NOT available: init recycler view: ");
                                     adapter.notifyDataSetChanged();
                                     loading.set(RecView.CONTACTS.getNumVal(), false);
-                                    updateLoaded(RecView.GROUPCHATS);
+                                    updateLoaded(RecView.CONTACTS);
                                 }
                             }
 
