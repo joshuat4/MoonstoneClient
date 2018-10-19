@@ -193,8 +193,15 @@ public class Tab3Fragment extends Fragment {
                     reqProfilePics.clear();
                     reqNames.clear();
                     reqIds.clear();
-                    contacts.clear();
-                    requests.clear();
+
+                    if(requests != null){
+                        requests.clear();
+                    }
+
+
+                    if(contacts != null){
+                        contacts.clear();
+                    }
 
                     try{
                         contacts = (ArrayList<String>) snapshot.get("contacts");

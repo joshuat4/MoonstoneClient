@@ -72,7 +72,12 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
                 @Override
                 public void run() {
                     setupRemoteVideo(uid);
-                    mMediaPlayer.stop();
+
+                    if(mMediaPlayer != null){
+                        mMediaPlayer.stop();
+
+                    }
+
                     localContainer.setVisibility(View.VISIBLE);
                     remoteContainer.setVisibility(View.VISIBLE);
                     pulsator.stop();
@@ -183,7 +188,10 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             @Override
             public void onClick(View v) {
                 myRtcEngine.leaveChannel();
-                mMediaPlayer.stop();
+                if(mMediaPlayer != null){
+                    mMediaPlayer.stop();
+                }
+
                 inCall = false;
                 finish();
             }
