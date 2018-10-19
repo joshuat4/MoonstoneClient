@@ -31,9 +31,16 @@ public class FrontPageActivity extends AppCompatActivity {
     @BindView(R.id.signUpButton) Button _signupButton;
 
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+
+    /* DELETE HERE AFTER TESTING */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +50,11 @@ public class FrontPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_front_page);
         ButterKnife.bind(this);
         Log.d(TAG, "CreatedFrontPage");
+        //Persistent Login code.
         mAuthListener = new FirebaseAuth.AuthStateListener(){
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                Log.d(TAG, "onAuthStateChanged: START");
                 if(firebaseAuth.getCurrentUser() != null){ //if null, user hasn't logged in.
                     Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser().getDisplayName());
                     Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
