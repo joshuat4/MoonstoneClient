@@ -302,12 +302,16 @@ public class Tab3Fragment extends Fragment {
                         emails.clear();
                         ids.clear();
                         profilePics.clear();
-                        contacts.clear();
+                        if(contacts != null){
+                            contacts.clear();
+                        }
 
                         reqProfilePics.clear();
                         reqNames.clear();
                         reqIds.clear();
-                        requests.clear();
+                        if(requests != null){
+                            requests.clear();
+                        }
 
                         groupchatNames.clear();
                         groupchatIds.clear();

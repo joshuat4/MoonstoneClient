@@ -32,7 +32,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     private Context mContext;
     private Activity mActivity;
     private Tab3Fragment fragment;
-
+    private FirebaseAuth mAuth;
     private ArrayList<Integer> mSelected = new ArrayList<>();
 
     //Never rendered but information is held here
@@ -51,7 +51,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         this.ids = ids;
         this.emails = emails;
         this.mActivity = mActivity;
-
+        mAuth = FirebaseAuth.getInstance();
     }
 
     //Actually recycles the view holders
@@ -69,48 +69,53 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         Log.d("HERE", Integer.toString(i));
 
-        //Gets the image and puts it into the referenced imageView
-        Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
+        if(ids.size() != 0) {
+            //Gets the image and puts it into the referenced imageView
+            Glide.with(mContext).asBitmap().load(profilePics.get(i)).into(viewHolder.profilePic);
 
-        viewHolder.contactName.setText(contactNames.get(i));
+            viewHolder.contactName.setText(contactNames.get(i));
 
-        //Add onclicklistener to each list entry
-        viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
+            //Add onclicklistener to each list entry
+            viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                    if (ids.size() != 0) {
+                        Log.d("ContactRecyclerView", "This Device token: " + MyFirebaseMessagingService.fetchToken());
+                        Log.d("ContactRecyclerView", "onClick: " + ids.get(i));
 
-                Log.d("ContactRecyclerView", "This Device token: "+ MyFirebaseMessagingService.fetchToken());
-                Log.d("ContactRecyclerView", "onClick: " + ids.get(i));
+                        if (Tab3Fragment.checked == false) {
+                            FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-                if(Tab3Fragment.checked == false) {
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                            ChatActivity.setToUserID(ids.get(i));
+                            ChatActivity.setFromUserID(mAuth.getUid());
+                            String name = contactNames.get(i);
+                            Intent i = new Intent(mContext, ChatActivity.class);
+                            i.putExtra("name", name);
+                            i.putExtra("fromChooseContacts", false);
+                            mContext.startActivity(i);
+                            mActivity.overridePendingTransition(R.anim.enter, R.anim.exit);
+                        } else if (!mSelected.contains(i)) {
+                            mSelected.add(i);
+                            viewHolder.ContactParentLayout.setBackgroundColor(Color.parseColor("#00FFFF"));
+                        } else if (mSelected.contains(i)) {
+                            mSelected.remove((Object) i);
+                            viewHolder.ContactParentLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-                    ChatActivity.setToUserID(ids.get(i));
-                    ChatActivity.setFromUserID(mAuth.getUid());
-                    String name = contactNames.get(i);
-                    Intent i = new Intent(mContext, ChatActivity.class);
-                    i.putExtra("name", name);
-                    i.putExtra("fromChooseContacts", false);
-                    mContext.startActivity(i);
-                } else if(!mSelected.contains(i)){
-                    mSelected.add(i);
-                    viewHolder.ContactParentLayout.setBackgroundColor(Color.parseColor("#00FFFF"));
-                } else if(mSelected.contains(i)){
-                    mSelected.remove((Object) i);
-                    viewHolder.ContactParentLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
+                        }
+                    }
                 }
+            });
+
+            viewHolder.id = ids.get(i);
+            viewHolder.email = emails.get(i);
+
+            //last one
+            if (i == contactNames.size() - 1) {
+                fragment.updateLoaded(RecView.CONTACTS);
             }
-        });
-
-        viewHolder.id = ids.get(i);
-        viewHolder.email = emails.get(i);
-
-        //last one
-        if(i == contactNames.size() - 1){
-            fragment.updateLoaded(RecView.CONTACTS);
         }
+
     }
 
 

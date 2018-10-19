@@ -92,16 +92,18 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
             @Override
             public void onClick(View v) {
                 final String currentUser = mAuth.getUid();
-                final String target = ids.get(i);
-                Log.d("ChooseContactRecyclerView", "Accepted");
-                //add contact
-                addContact(target, currentUser);
-                addContact(currentUser, target, target);
-                contactNames.remove(i);
-                profilePics.remove(i);
-                ids.remove(i);
-                fragment.addToRespondedRequests(target);
-                refreshData();
+                if(ids.size() != 0) {
+                    final String target = ids.get(i);
+                    Log.d("ChooseContactRecyclerView", "Accepted");
+                    //add contact
+                    addContact(target, currentUser);
+                    addContact(currentUser, target, target);
+                    contactNames.remove(i);
+                    profilePics.remove(i);
+                    ids.remove(i);
+                    fragment.addToRespondedRequests(target);
+                    refreshData();
+                }
             }
         });
 
@@ -110,12 +112,14 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
             public void onClick(View v) {
                 Log.d("ChooseContactRecyclerView", "Declined");
                 final String currentUser = mAuth.getUid();
-                final String target = ids.get(i);
-                deleteSelf(currentUser, target);
-                contactNames.remove(i);
-                profilePics.remove(i);
-                ids.remove(i);
-                refreshData();
+                if(ids.size() != 0) {
+                    final String target = ids.get(i);
+                    deleteSelf(currentUser, target);
+                    contactNames.remove(i);
+                    profilePics.remove(i);
+                    ids.remove(i);
+                    refreshData();
+                }
             }
         });
 
