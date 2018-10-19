@@ -18,7 +18,9 @@ import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.moonstone.ezmaps_app.R;
 import com.moonstone.ezmaps_app.utilities.RetrieveFeed;
 
@@ -117,7 +119,16 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             toUserId = extras.getString("toUserId");
         }
 
-        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification2?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId ;
+        FirebaseUser user = mAuth.getCurrentUser();
+        String profilePic = "";
+        if(user!=null){
+            if(user.getPhotoUrl().toString()!= null){
+                profilePic = user.getPhotoUrl().toString();
+            }
+        }
+
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification2?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId +
+                "---" + profilePic;
         //execute async task
         new RetrieveFeed(this).execute(url);
 
@@ -155,6 +166,9 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             callerName.setText(extras.getString("name"));
+            String profilePic = extras.getString("picture");
+            Log.d("hereitis1", profilePic);
+            Glide.with(this).asBitmap().load(profilePic).into(callerPic);
             if(extras.getString("roomId")!=null){
                 roomId = extras.getString("roomId");
                 recieveMode= true;
@@ -167,6 +181,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             //Starting a new call from contacts
             localContainer.setVisibility(View.INVISIBLE);
             remoteContainer.setVisibility(View.INVISIBLE);
+
             callerPic.setVisibility(View.VISIBLE);
             callerName.setVisibility(View.VISIBLE);
             //The current device is the calling device

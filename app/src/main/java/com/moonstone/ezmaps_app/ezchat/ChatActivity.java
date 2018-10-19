@@ -56,6 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     private static String toUserID;
     private static String fromUserID;
     private String userName;
+    private String userProfilePic;
     private Timestamp currentTime;
 
     //where the text messages will be stored
@@ -114,7 +115,7 @@ public class ChatActivity extends AppCompatActivity {
 
         if (extras != null) {
             userName = extras.getString("name");
-
+            userProfilePic = extras.getString("picture");
             fromChooseContacts = extras.getBoolean("fromChooseContacts");
 
             if(fromChooseContacts){
@@ -372,6 +373,7 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(ChatActivity.this, "Call pressed", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), Calling.class);
             i.putExtra("name",userName );
+            i.putExtra("picture", userProfilePic);
             i.putExtra("toUserId", toUserID);
             startActivity(i);
             return true;

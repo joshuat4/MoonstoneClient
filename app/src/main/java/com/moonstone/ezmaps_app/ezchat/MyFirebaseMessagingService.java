@@ -38,17 +38,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         else{
             String room = remoteMessage.getData().get("room");
             String sender =remoteMessage.getData().get("sender");
-            incomingCall(sender, room);
+            String callerPic = remoteMessage.getData().get("callerPic");
+            incomingCall(sender, room, callerPic);
         }
 
     }
 
-    private void incomingCall(String callerName, String roomId){
+    private void incomingCall(String callerName, String roomId, String callerPic){
         Intent i = new Intent(this, incomingCall.class);
-        Log.d("aaaa", callerName);
-        Log.d("aaaa", roomId);
         i.putExtra("callerName",callerName );
         i.putExtra("roomId", roomId);
+        i.putExtra("callerPic", callerPic);
         startActivity(i);
     }
 

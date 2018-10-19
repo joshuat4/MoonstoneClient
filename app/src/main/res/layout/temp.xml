@@ -51,14 +51,14 @@
             android:layout_height="150dp"
             android:layout_below="@+id/top"
             android:id="@+id/middle"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="100dp"
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/callerPic"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/callerPic"
-                android:src="@drawable/not_found_img"/>
+                android:src="@drawable/not_found_img" />
 
         </LinearLayout>
 
