@@ -30,6 +30,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.moonstone.ezmaps_app.ezchat.MyFirebaseMessagingService;
 import com.moonstone.ezmaps_app.main.MainActivity;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String qrcodeURL;
+    public static Boolean signUpInProgress = false;
 
     @BindView(R.id.emailField) EditText _emailField;
     @BindView(R.id.passwordField) EditText _passwordField;
@@ -120,7 +122,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
             return;
         }
 
-
+        signUpInProgress = true;
         _progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -140,6 +142,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
                    final ArrayList<String> friendRequests = new ArrayList<>();
                    final ArrayList<String> groupchats = new ArrayList<>();
+                   final String deviceToken = MyFirebaseMessagingService.fetchToken();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
                    userMap.put("requests", friendRequests);
@@ -148,18 +151,28 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    userMap.put("favouritePlaces", favouritePlaces);
                    userMap.put("QRCode", qrcodeURL);
                    userMap.put("groupchats", groupchats);
+                   userMap.put("deviceToken", deviceToken);
+
+
+                   Log.d("Herewego", userMap.toString());
 
 
 
                    //This goes to Cloud Firestore
+                   Log.d("Herewego", mAuth.getUid());
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                        @Override
                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                           Log.d("Herewego", "activity  started0");
                            if (!documentSnapshot.exists()) {
+                               Log.d("Herewego", "activity  started1");
+
                                db.collection("users").document(mAuth.getUid()).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                    @Override
                                    public void onSuccess(Void aVoid) {
                                        //Setup complete
+                                       Log.d("Herewego", "activity  started");
+                                       signUpInProgress = false;
                                        startActivity(intent);
                                    }
                                });

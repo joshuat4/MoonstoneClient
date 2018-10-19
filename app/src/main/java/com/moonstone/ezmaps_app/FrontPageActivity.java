@@ -54,14 +54,17 @@ public class FrontPageActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener(){
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
-                Log.d(TAG, "onAuthStateChanged: START");
-                if(firebaseAuth.getCurrentUser() != null){ //if null, user hasn't logged in.
-                    Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser().getDisplayName());
-                    Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                } else {
-                    Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser());
+                if(!UserSignUpActivity.signUpInProgress){
+                    Log.d(TAG, "onAuthStateChanged: START");
+                    if(firebaseAuth.getCurrentUser() != null){ //if null, user hasn't logged in.
+                        Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser().getDisplayName());
+                        Intent intent = new Intent(FrontPageActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Log.d(TAG, "onAuthStateChanged: BINGO");
+                        startActivity(intent);
+                    } else {
+                        Log.d(TAG, "onAuthStateChanged: " + firebaseAuth.getCurrentUser());
+                    }
                 }
             }
         };

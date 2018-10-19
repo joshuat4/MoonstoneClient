@@ -117,8 +117,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             toUserId = extras.getString("toUserId");
         }
 
-        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId ;
-        Log.d("Testing", url);
+        String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification2?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId ;
         //execute async task
         new RetrieveFeed(this).execute(url);
 

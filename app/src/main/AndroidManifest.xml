@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -49,6 +50,28 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+
+
+
+                <!-- Google Search -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.ezmaps.com/frontpage” -->
+                <data
+                    android:host="www.ezmaps.com"
+                    android:pathPrefix="/frontpage"
+                    android:scheme="http" />
+                <!-- note that the leading "/" is required for pathPrefix -->
+                <!-- Accepts URIs that begin with "ezmaps://frontpage” -->
+                <data
+                    android:host="frontpage"
+                    android:scheme="ezmaps" />
+
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".UserSignUpActivity"
@@ -136,6 +159,13 @@
             android:screenOrientation="portrait"
             android:name=".qrcode.ScanBarcodeActivity"
             android:label="Scan Barcode" />
+
+        <!-- Group Chat -->
+        <activity
+            android:name=".ezchat.GroupchatActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".test"/>
 
     </application>
 
