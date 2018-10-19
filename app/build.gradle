@@ -115,6 +115,7 @@ dependencies {
 
     // FAB
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

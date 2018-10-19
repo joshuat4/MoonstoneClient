@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <!--<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />-->
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -103,6 +103,9 @@
         <!-- Chat -->
         <activity
             android:name=".ezchat.ChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ezchat.GroupchatActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ezchat.ImageSendingActivity"
