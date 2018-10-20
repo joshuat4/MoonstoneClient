@@ -222,10 +222,11 @@ public class NewContactSearchActivity extends AppCompatActivity{
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         ArrayList<String> contacts = (ArrayList<String>) documentSnapshot.get("contacts");
+                        ArrayList<String> pending = (ArrayList<String>) documentSnapshot.get("pendingRequests");
 
                         Log.d("Add Contacts", "user's contacts received: " + contacts);
                         Log.d("Add Contacts", "Initialise Recycler view");
-                        initRecyclerView(contacts);
+                        initRecyclerView(contacts, pending);
                         findContactsLoading.setVisibility(View.GONE);
                     }
                 });
@@ -259,9 +260,9 @@ public class NewContactSearchActivity extends AppCompatActivity{
     }
 
 
-    private void initRecyclerView(ArrayList<String> contacts){
+    private void initRecyclerView(ArrayList<String> contacts, ArrayList<String> pending){
         RecyclerView recyclerView =  findViewById(R.id.findRecyclerView);
-        adapter = new FindRecyclerViewAdapter(this, names, profilePics, ids, emails, contacts);
+        adapter = new FindRecyclerViewAdapter(this, names, profilePics, ids, emails, contacts, pending);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

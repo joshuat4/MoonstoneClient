@@ -142,6 +142,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
                    final ArrayList<String> friendRequests = new ArrayList<>();
                    final ArrayList<String> groupchats = new ArrayList<>();
+                   final ArrayList<String> pendingRequests = new ArrayList<>();
                    final String deviceToken = MyFirebaseMessagingService.fetchToken();
                    userMap.put("email", email);
                    userMap.put("contacts", contacts);
@@ -152,10 +153,7 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
                    userMap.put("QRCode", qrcodeURL);
                    userMap.put("groupchats", groupchats);
                    userMap.put("deviceToken", deviceToken);
-
-
-                   Log.d("Herewego", userMap.toString());
-
+                   userMap.put("pendingRequests", pendingRequests);
 
 
                    //This goes to Cloud Firestore

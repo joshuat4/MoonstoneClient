@@ -201,6 +201,7 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
     }
 
     public void addContact(final String currentUser, final String contactToBeAdded){
+        //target, currentUser
         final String UIDFrom = currentUser;
 
         if(contactToBeAdded != null){
@@ -208,7 +209,7 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
             db.collection("users").document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    db.collection("users").document(currentUser).update("contacts", FieldValue.arrayUnion(contactToBeAdded));
+                    db.collection("users").document(currentUser).update("contacts", FieldValue.arrayUnion(contactToBeAdded), "pendingRequests", FieldValue.arrayRemove(contactToBeAdded));
                     Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED: " + contactToBeAdded);
                 }
             });
