@@ -159,11 +159,30 @@ public class ChooseContactsActivity extends AppCompatActivity {
                                 db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        //add things that aren't already in the view
+                                        if (!ids.contains(documentSnapshot.getId())) {
+                                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                                            emails.add(documentSnapshot.get("email").toString());
+                                            names.add(documentSnapshot.get("name").toString());
+                                            ids.add(documentSnapshot.getId());
 
-                                        profilePics.add(documentSnapshot.get("profilePic").toString());
-                                        emails.add(documentSnapshot.get("email").toString());
-                                        names.add(documentSnapshot.get("name").toString());
-                                        ids.add(documentSnapshot.getId());
+                                        }
+
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for (int item = 0; item < ids.size(); item++) {
+                                            if (!contacts.contains(ids.get(item))) {
+                                                removal.add(ids.get(item));
+                                            }
+                                        }
+                                        for (String s : removal) {
+                                            index = ids.indexOf(s);
+                                            names.remove(index);
+                                            emails.remove(index);
+                                            ids.remove(index);
+                                            profilePics.remove(index);
+                                        }
 
                                         if (names.size() == contacts.size()) {
                                             Log.d("ChooseContactsActivity", "second list num: " + names.size());
