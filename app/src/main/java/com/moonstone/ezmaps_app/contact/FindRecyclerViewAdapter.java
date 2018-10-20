@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.moonstone.ezmaps_app.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,6 +35,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
     private ArrayList<String> contactNames = new ArrayList<>();
     private ArrayList<String> profilePics = new ArrayList<>();
     private ArrayList<String> contacts = new ArrayList<>();
+    private ArrayList<String> pending = new ArrayList<>();
     private Context mContext;
 
     //Never rendered but information is held here
@@ -46,13 +48,14 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
     final String TAG = "FindRecyclerViewAdaptor";
 
     public FindRecyclerViewAdapter(Context context, ArrayList<String> contactNames, ArrayList<String> profilePics,
-                                   ArrayList<String> ids, ArrayList<String> emails, ArrayList<String> contacts){
+                                   ArrayList<String> ids, ArrayList<String> emails, ArrayList<String> contacts, ArrayList<String> pending){
         this.contactNames = contactNames;
         this.profilePics = profilePics;
         this.mContext = context;
         this.ids = ids;
         this.emails = emails;
         this.contacts = contacts;
+        this.pending = pending;
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -75,7 +78,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         viewHolder.ContactParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Toast.makeText(mContext,contactNames.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,ids.get(i), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -85,12 +88,17 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         final Button butt = viewHolder.itemView.findViewById(R.id.addUser);
 
         //Add/remove contact handling code
+        if(pending.contains(viewHolder.id)){
+            Log.d("huhh",  pending.toString() + " does contain" + viewHolder.id);
+            changeToPendingButton(butt);
+        }
         if(contacts.contains(viewHolder.id)){
             changeToRemoveButton(butt);
-        }else{
+        }
+        //If not in pending or contacts
+        if(!(contacts.contains(viewHolder.id) || pending.contains(viewHolder.id)) ){
             changeToAddButton(butt);
         }
-
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -102,8 +110,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                     case "ADD":
                         Log.d("FINDRECYCLER", "ADD CONTACT: " + viewHolder.id);
                         sendFriendRequest(viewHolder.email);
-//                        addContact(viewHolder);
-                        changeToRemoveButton(butt);
+                        changeToPendingButton(butt);
+                        addToPending(viewHolder.id);
                         break;
 
                     case "REMOVE":
@@ -112,6 +120,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                         changeToAddButton(butt);
                         break;
                 }
+
 
             }
         });
@@ -125,11 +134,41 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
     }
 
+    public void changeToPendingButton(Button butt){
+        butt.setText("PENDING");
+        disableButton(butt);
+        butt.setTextColor(Color.parseColor("#505050"));
+        butt.setBackgroundResource(R.drawable.rm_button);
+    }
+
     public void changeToAddButton(Button butt){
         butt.setText("ADD");
         butt.setTextColor(Color.parseColor("#2A89F2"));
         butt.setBackgroundResource(R.drawable.rm_button);
 
+    }
+
+    public void disableButton(Button butt){
+        butt.setEnabled(false);
+    }
+
+    public void addToPending(final String userToAdd){
+
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    if(documentSnapshot.get("pendingRequests") != null){
+                        db.collection("users").document(Uid).update("pendingRequests", FieldValue.arrayUnion(userToAdd));
+                        Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED TO PENDING: " + userToAdd);
+                    }
+                    else{
+                    }
+                }
+            }
+        });
     }
 
     public void addContact(@NonNull final ViewHolder viewHolder){
@@ -215,10 +254,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                             targetUid[0] = doc.getId();
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
                             // If found, call the add method.
-//                            addContactFromUid(targetUid[0]);
                             addSelfToUid(targetUid[0]);
-
-
                         }
 
                     }

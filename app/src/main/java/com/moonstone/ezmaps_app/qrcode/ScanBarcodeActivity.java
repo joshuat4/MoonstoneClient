@@ -244,6 +244,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
                             // If found, call the add method.
                             addSelfToUid(targetUid[0]);
+                            addToPending(targetUid[0]);
 
                         }
 
@@ -293,6 +294,25 @@ public class ScanBarcodeActivity extends FragmentActivity {
                 }
                 Log.d(TAG, "onComplete1: "+ targetUid[0]);
 
+            }
+        });
+    }
+
+    public void addToPending(final String userToAdd){
+
+        final String Uid = mAuth.getUid();
+
+        db.collection("users").document(Uid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    if(documentSnapshot.get("pendingRequests") != null){
+                        db.collection("users").document(Uid).update("pendingRequests", FieldValue.arrayUnion(userToAdd));
+                        Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED TO PENDING: " + userToAdd);
+                    }
+                    else{
+                    }
+                }
             }
         });
     }
