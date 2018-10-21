@@ -1,4 +1,4 @@
-# Welcome to EZMaps v0.11.0
+# Welcome to EZMaps v1.0
 EZMaps is a frame-by-frame picture location service application that caters to the elderly population to navigate their way from one place to another. Along with a simple-to-use interface and straight-forward features, EZMaps tones down modern mapping technology relative to its contemporaries in order to comfortably aid the eldery people in getting to their destination. 
 
 ## Pre-requirements
@@ -14,7 +14,7 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 |Profile Setup | **Live** |
 |Image Upload | **Live** |
 |EZMap        | **Live** |
-|Automatic/ Manual Card Swiping | In Progress |
+|Automatic/ Manual Card Swiping | **Live** |
 |Favourite Route List | **Live** |
 |Contact List & Searching | **Live** |
 |Voice Call | **Live**   |
@@ -88,7 +88,20 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 | ------------- |:-------------:| -----:|
 
 
-### Testing Automatic/ Manual Card Swiping (TBA)
+### Testing Automatic/ Manual Card Swiping
+1) Upon clicking on a Favourite route or typing in a search query into the search bar, EZDirection will be in an automatic state, where if you arrive at the location of the card, the app will swipe to the next card that you're suppose to head to. 
+2) To test the Automatic state of EZDirection, look at *Stimulate Travelling* at the Unit Testing section. The EZDirection will swipe accordingly when the android arrives at each location. 
+3) **DISCLAIMER**: Testing this might be confusing and time consuming for a number of reasons. 
+    1) The route that is used to display in the EZDirection that was harvested by our server, may not match the route you are currently using to *Stimulate Travelling*. This is because, Google Maps changes its route base of its recommendation. Whereas, our server uses the route that is default to us (first one). Because of this, the EZDirection is prone to skipping to a certain steps. 
+    2) The current GPS system that we are using is updating at a rate of 0.1 second. Despite this, the default *Stimulate Travelling* may be travelling too fast to detect if it has arrived at the destination. In light of this, a buffer zone around the location of each card has been set up. However, there are still instances of where it would fail to catch the next stop and causing it to skip. 
+    3) The best way to actually test this is by going out on the field and actually using the app, albeit it might be a big hassle.
+
+|![screenshot_1540113040](https://user-images.githubusercontent.com/12033253/47265082-38270400-d56e-11e8-8c1c-bcbfee807546.png) | ![screenshot_1540113088](https://user-images.githubusercontent.com/12033253/47265087-3e1ce500-d56e-11e8-964f-b89123cde02c.png) | ![screenshot_1540113492](https://user-images.githubusercontent.com/12033253/47265113-876d3480-d56e-11e8-9317-47b240c7ab67.png)  |
+| ------------- |:-------------:| -----:|
+
+
+
+
 
 ### Testing Favourite Route List 
 1) Type in a query to the search bar (Melbourne University etc) and click on *Search* at the Home page.
@@ -177,4 +190,6 @@ Before starting to unit test EZMaps, we first need to stimulate our device as if
 
 | <img width="389" alt="em" src="https://user-images.githubusercontent.com/12033253/46915870-c1ce5300-cffd-11e8-9439-3674fa63a469.png">   | <img width="820" alt="screen shot 2018-10-14 at 10 06 12 pm" src="https://user-images.githubusercontent.com/12033253/46915871-c1ce5300-cffd-11e8-80dd-5b6a8b072f2e.png">  | 
 | ------------- |:-------------:|
+
+
 
