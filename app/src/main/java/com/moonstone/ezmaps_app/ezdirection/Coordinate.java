@@ -1,5 +1,7 @@
 package com.moonstone.ezmaps_app.ezdirection;
 
+
+/* Coordinate class that are used in EZDirectonActivity */
 public class Coordinate {
 
     double lat;

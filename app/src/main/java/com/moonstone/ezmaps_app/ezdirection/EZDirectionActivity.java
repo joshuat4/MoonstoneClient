@@ -68,6 +68,7 @@ import com.moonstone.ezmaps_app.main.MainActivity;
 import com.moonstone.ezmaps_app.main.Tab3Fragment;
 import com.moonstone.ezmaps_app.utilities.RetrieveFeed;
 
+/* EZDirectionActivity that is initated from Tab2Fragment, when user inputs a destination */
 
 public class EZDirectionActivity extends AppCompatActivity implements RetrieveFeed.AsyncResponse, View.OnClickListener {
 
@@ -127,6 +128,11 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
 
     private boolean isCheckingNextStop = false;
+
+
+    /*
+        Inflating the view layout
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,6 +229,9 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         mLocationSettingsRequest = builder.build();
     }
 
+    /*
+        Handles incoming GPS Location from FusedLocationProviderAPI
+     */
     private void checkCurrentGPSStatus(Location currentLocation, String lastUpdateTime){
 
         mLastUpdateTime = lastUpdateTime;
@@ -252,21 +261,13 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     }
 
+    /*
+        Method handles automatic swiping, checking when user has arrived at their location
+     */
 
     private boolean checkIfArrivedAtNextStop(Location location){
 
         isCheckingNextStop = true;
-
-     /*   Log.d("EZDcheck", "**********************************");
-        if(nextStopCoordinate == null){
-            nextStopCoordinate = coordinatesList.get(nextStopCounter);
-            Log.d("EZDcheck", "Next Stop is Null");
-            Log.d("EZDcheck", "Next Stop Coordinate: " + nextStopCoordinate);
-            Log.d("EZDcheck", "Next Stop Counter: " + nextStopCounter);
-
-            isCheckingNextStop = false;
-            return false;
-        }*/
 
         double currentLat = location.getLatitude();
         double currentLng = location.getLongitude();
@@ -341,6 +342,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
         }
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -645,6 +647,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         }
     }
 
+    /* Method displaying the view accordingly when the route is not found */
     private void setNotFoundVisibility(String visibility){
         switch (visibility.toUpperCase()){
             case "VISIBLE":
@@ -667,7 +670,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         }
     }
 
-    /* Create Recycler View */
+    /* Create Recycler View for the Cards */
     private void initRecyclerView() {
         Log.d("EZDIRECTION/Recycler", "initRecyclerView: init recyclerview");
 
@@ -785,6 +788,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     }
 
+    /* Method handling swipe to left side of the card */
     public void swipeRight(){
         if(counter < numView - 1){
             counter += 1;
@@ -796,6 +800,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     }
 
+    /* Method handling swipes to right side of the card*/
     public void swipeLeft(){
         if(counter >= 1){
             counter -= 1;

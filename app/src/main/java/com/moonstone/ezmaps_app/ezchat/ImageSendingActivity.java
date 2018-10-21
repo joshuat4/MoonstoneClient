@@ -33,6 +33,8 @@ import com.google.firebase.storage.UploadTask;
 import com.moonstone.ezmaps_app.R;
 import com.squareup.picasso.Picasso;
 
+
+/* Image Sending from Chat Activity */
 public class ImageSendingActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -110,7 +112,7 @@ public class ImageSendingActivity extends AppCompatActivity {
 
     }
 
-//Choose Image from Folder
+    //Choose Image from Folder
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -138,6 +140,7 @@ public class ImageSendingActivity extends AppCompatActivity {
         }
     }
 
+    // When image is successful
     public void setReturnSuccess(String imageUrl){
         returnIntent = new Intent();
         setResult(RESULT_OK, returnIntent);
@@ -145,12 +148,15 @@ public class ImageSendingActivity extends AppCompatActivity {
         finish();
     }
 
+
+    // When image returned is a failure
     public void setReturnFailure(){
         returnIntent = new Intent();
         setResult(RESULT_CANCELED, returnIntent);
         finish();
     }
 
+    // get the file extension of the URi
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -164,6 +170,7 @@ public class ImageSendingActivity extends AppCompatActivity {
         finish();
     }
 
+    // Upload file from android gallery to Firebase Storage
     public void uploadFile() {
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         if (mImageUri != null) {
