@@ -295,7 +295,6 @@ public class ChatActivity extends AppCompatActivity {
 
     //where data is fetched from the firestore, and fed into the recyclerview
     private void loadDataFromFirebase() {
-        Log.d("HERE", "just in ldff");
         messagesLoading.setVisibility(View.VISIBLE);
         final String Uid = mAuth.getUid();
 
@@ -350,7 +349,6 @@ public class ChatActivity extends AppCompatActivity {
                            } else if(ezMessagesArray.size() > 0) {
                                ezMessagesArray.sort(new EzMessagesComparator());
                                initRecyclerView();
-                               Log.d("messages", "2");
                                notFirstTime = true;
                                adapter.notifyDataSetChanged();
                            }
@@ -381,7 +379,6 @@ public class ChatActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_call) {
-            Toast.makeText(ChatActivity.this, "Call pressed", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), Calling.class);
             i.putExtra("name",userName );
             i.putExtra("picture", userProfilePic);
