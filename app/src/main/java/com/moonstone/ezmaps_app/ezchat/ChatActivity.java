@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.ezprofile.ImageUploadActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;

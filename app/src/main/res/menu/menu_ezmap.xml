@@ -9,25 +9,31 @@
         app:showAsAction="always"
         android:title="" />
 
+    <item
+        android:id="@+id/automaticSwitch"
+        android:orderInCategory="200"
+        android:title=""
+        app:showAsAction="always"
+        android:actionLayout="@layout/switch_layout" />
 
     <item
         android:id="@+id/favouriteEmpty"
         android:icon="@drawable/favourite_empty"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         app:showAsAction="always"
         android:title="Favourite Empty" />
 
     <item
         android:id="@+id/favouriteFull"
         android:icon="@drawable/favourite_full"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         app:showAsAction="always"
         android:title="Favourite Full" />
 
     <item
         android:id="@+id/options"
         android:icon="@drawable/more"
-        android:orderInCategory="300"
+        android:orderInCategory="400"
         app:showAsAction="always"
         android:title="More Options" />
 

@@ -29,30 +29,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBgYjlRPB5JtQs4OISpPl3RO7oKxgKKMZs" />
-
 
         <!-- Main Activity -->
         <activity
             android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".FrontPageActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-
-
 
                 <!-- Google Search -->
                 <action android:name="android.intent.action.VIEW" />
@@ -69,9 +65,7 @@
                 <data
                     android:host="frontpage"
                     android:scheme="ezmaps" />
-
             </intent-filter>
-
         </activity>
         <activity
             android:name=".UserSignUpActivity"
@@ -81,18 +75,19 @@
             android:screenOrientation="portrait" />
 
 
+
         <!-- Contacts -->
         <activity
-            android:screenOrientation="portrait"
-            android:name=".contact.NewContactSearchActivity" />
+            android:name=".contact.NewContactSearchActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:screenOrientation="portrait"
             android:name=".contact.ChooseContactsActivity" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".contact.FriendRequestActivity"
             android:label="@string/title_activity_friend_request"
-            android:theme="@style/AppTheme"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
 
         <!-- Profile -->
