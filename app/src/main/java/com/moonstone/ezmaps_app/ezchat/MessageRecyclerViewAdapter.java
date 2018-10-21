@@ -138,13 +138,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             holder.messageText.setText(textMessages.get(holderPos).getText());
             Log.d("MessageRecyclerView", "Text Set: " + textMessages.get(holderPos).getText());
 
-            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext,textMessages.get(holderPos).getText(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
 
         }else if (viewHolder instanceof ViewHolderImage){
             ViewHolderImage holder = (ViewHolderImage) viewHolder;
@@ -153,15 +146,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             //load in the image
             Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
             Log.d("MessageRecyclerView", "Image Load into: " + textMessages.get(holderPos).getText());
-
-            holder.MessageParentLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // when clicked zoom in to image
-                    Toast.makeText(mContext,textMessages.get(holderPos).getText(), Toast.LENGTH_SHORT).show();
-
-                }
-            });
 
 
         }
