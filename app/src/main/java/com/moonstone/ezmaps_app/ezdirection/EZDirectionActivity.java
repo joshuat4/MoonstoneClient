@@ -73,11 +73,11 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     /* FusedLocationProviderAPI attributes (https://developer.android.com/training/location/receive-location-updates#java)*/
     private String mLastUpdateTime; // Last Update Time
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000; // 5s
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000; // location fastest updates interval (5s)
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 100; // 0.5s
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 100; // location fastest updates interval (0.5s)
     private static final int REQUEST_CHECK_SETTINGS = 100;
 
-    private static final double BUFFER_ZONE = 0.0001;
+    private static final double BUFFER_ZONE = 0.0003;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -125,6 +125,8 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private boolean isCurrentDestinationFavourited;
     private String currentDestination; // Name of the current destination
 
+
+    private boolean isCheckingNextStop = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +140,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
         progressBar = findViewById(R.id.progressBar);
-        //nextStopButton = findViewById(R.id.nextStopButton);
         refreshButton = findViewById(R.id.refreshButton);
         contactsButton = findViewById(R.id.contactsButton);
 
@@ -174,7 +175,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             currentDestination = tab2_to_ezdirection.get("currentDestination").toString();
             Log.d("EZDIRECTION", "CURRENT DESTINATION RECEIVED FROM TAB2: " + currentDestination);
         }
-
 
 
         /* Attach Snapper to Recycler View */
@@ -225,14 +225,16 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     private void checkCurrentGPSStatus(Location currentLocation, String lastUpdateTime){
 
-        // Check to see if they have changed and isn't null
-        if(currentLocation == null || lastUpdateTime == null){
-            Log.d("EZDIRECTION/StatusCheck", "Current Location and Last Update time is null");
-            return;
-        }
-
         mLastUpdateTime = lastUpdateTime;
         mCurrentLocation = currentLocation;
+
+        // Check to see if they have changed and isn't null
+        if(mCurrentLocation == null || mLastUpdateTime == null){
+            Log.d("EZDIRECTION/StatusCheck", "Current Location and Last Update time is null");
+            // disable automatic system
+            automaticButton.setChecked(false);
+            return;
+        }
 
 
         // If the cards are not loaded, and object has not been returned (regardless of validity)
@@ -241,54 +243,67 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             Log.d("EZDIRECTION/StatusCheck", "URL Executed");
         }
 
-        if(isCardLoaded && isAutomatic){
+        if(isCardLoaded && isAutomatic && !isCheckingNextStop){
+            Log.d("EZDcheck", "Checking starts with Lat: " + mCurrentLocation.getLatitude() + "Lng: " + mCurrentLocation.getLongitude());
             checkIfArrivedAtNextStop(mCurrentLocation);
         }
 
     }
 
+
     private boolean checkIfArrivedAtNextStop(Location location){
-        Log.d("EZD", "**********************************");
+
+        isCheckingNextStop = true;
+
+        Log.d("EZDcheck", "**********************************");
         if(nextStopCoordinate == null){
             nextStopCoordinate = coordinatesList.get(nextStopCounter);
-            Log.d("EZD", "Next Stop is Null");
-            Log.d("EZD", "Next Stop Coordinate: " + nextStopCounter);
-            Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
+            Log.d("EZDcheck", "Next Stop is Null");
+            Log.d("EZDcheck", "Next Stop Coordinate: " + nextStopCoordinate);
+            Log.d("EZDcheck", "Next Stop Counter: " + nextStopCounter);
+
+            isCheckingNextStop = false;
             return false;
         }
 
         double currentLat = location.getLatitude();
         double currentLng = location.getLongitude();
 
+        Log.d("EZDcheck", "Next Stop is not Null");
+        Log.d("EZDcheck", "Next Stop Coordinate: " + coordinatesList.get(nextStopCounter));
+        Log.d("EZDcheck", "Next Stop Counter: " + nextStopCounter);
+        Log.d("EZDcheck", "Coordinate List: " + coordinatesList);
+
         for(Coordinate coord : coordinatesList){
+            Log.d("EZDcheck", "checking...");
+
             if(((currentLat <= (coord.getLat() + BUFFER_ZONE)) && (currentLat >= coord.getLat() - BUFFER_ZONE))
                     && ((currentLng <= (coord.getLng() + BUFFER_ZONE)) && (currentLng >= coord.getLng() - BUFFER_ZONE))){
 
+                Log.d("EZDcheck", "Next Stop Found!");
 
-                if(nextStopCounter != coordinatesList.indexOf(coord) + 1){
+                if(nextStopCounter != (coordinatesList.indexOf(coord) + 1) && nextStopCounter < coordinatesList.size()){
+
+                    Log.d("EZDcheck", "Swipe to Next Stop!");
                     nextStopCounter = coordinatesList.indexOf(coord) + 1;
+                    nextStopCoordinate = coordinatesList.get(nextStopCounter);
                     swipeTo(nextStopCounter);
 
-                    if(nextStopCounter < coordinatesList.size()){
-                        nextStopCoordinate = coordinatesList.get(nextStopCounter);
-                        Log.d("EZD", "Current Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
-                        Log.d("EZD", "Next Stop is not null");
-                        Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
-                        Log.d("EZD", "Next Stop Coordinate: " + nextStopCoordinate);
+                    Toast.makeText(getApplicationContext(), "Your next stop is: " + nextStopCounter, Toast.LENGTH_SHORT).show();
 
-                    }else{
-                        Toast.makeText(getApplicationContext(), "You have arrived at your destination!", Toast.LENGTH_SHORT).show();
 
-                    }
+                }else{
+                    Log.d("EZDcheck", "Don't Swipe to Next Stop!");
 
                 }
 
-
+                isCheckingNextStop = false;
                 return true;
             }
 
         }
 
+        isCheckingNextStop = false;
         return false;
     }
 
@@ -803,7 +818,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
         automaticButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isCardLoaded){
+                if(isCardLoaded && mCurrentLocation != null){
                     if(isChecked){
                         isAutomatic = true;
                         setLeftRightButtonVisibility("GONE");
