@@ -12,11 +12,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ChatActivityTest {
+public class GroupchatActivityTest {
     @Rule
-    public ActivityTestRule<ChatActivity> mActivityTestRule = new ActivityTestRule<>(ChatActivity.class);
+    public ActivityTestRule<GroupchatActivity> mActivityTestRule = new ActivityTestRule<>(GroupchatActivity.class);
 
-    private ChatActivity mActivity = null;
+    private GroupchatActivity mActivity = null;
 
     @Before
     public void setUp() throws Exception {
@@ -31,8 +31,9 @@ public class ChatActivityTest {
         View c = mActivity.findViewById(R.id.cameraButton);
         View d = mActivity.findViewById(R.id.messagesLoading);
         View e = mActivity.findViewById(R.id.my_toolbar);
-        View f = mActivity.findViewById(R.id.messageRecyclerView);
+        View f = mActivity.findViewById(R.id.groupMessageRecyclerView);
         View g = mActivity.findViewById(R.id.action_call);
+
 
         assertNotNull(a);
         assertNotNull(b);
@@ -41,6 +42,7 @@ public class ChatActivityTest {
         assertNotNull(e);
         assertNotNull(f);
         assertNotNull(g);
+
     }
 
 
@@ -50,6 +52,7 @@ public class ChatActivityTest {
     public void tearDown() throws Exception {
         mActivity = null;
     }
+
 
 
 }

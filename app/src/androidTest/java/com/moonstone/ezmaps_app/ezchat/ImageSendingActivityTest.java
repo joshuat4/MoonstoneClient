@@ -12,11 +12,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ChatActivityTest {
-    @Rule
-    public ActivityTestRule<ChatActivity> mActivityTestRule = new ActivityTestRule<>(ChatActivity.class);
+public class ImageSendingActivityTest {
 
-    private ChatActivity mActivity = null;
+    @Rule
+    public ActivityTestRule<ImageSendingActivity> mActivityTestRule = new ActivityTestRule<>(ImageSendingActivity.class);
+
+    private ImageSendingActivity mActivity = null;
 
     @Before
     public void setUp() throws Exception {
@@ -26,21 +27,18 @@ public class ChatActivityTest {
     @Test
     public void testLaunch(){
 
-        View a = mActivity.findViewById(R.id.textField);
-        View b = mActivity.findViewById(R.id.sendButton);
-        View c = mActivity.findViewById(R.id.cameraButton);
-        View d = mActivity.findViewById(R.id.messagesLoading);
+        View a = mActivity.findViewById(R.id.cancelButton);
+        View b = mActivity.findViewById(R.id.uploadButton);
+        View c = mActivity.findViewById(R.id.imageView);
+        View d = mActivity.findViewById(R.id.progressBar);
         View e = mActivity.findViewById(R.id.my_toolbar);
-        View f = mActivity.findViewById(R.id.messageRecyclerView);
-        View g = mActivity.findViewById(R.id.action_call);
 
         assertNotNull(a);
         assertNotNull(b);
         assertNotNull(c);
         assertNotNull(d);
         assertNotNull(e);
-        assertNotNull(f);
-        assertNotNull(g);
+
     }
 
 
@@ -50,6 +48,4 @@ public class ChatActivityTest {
     public void tearDown() throws Exception {
         mActivity = null;
     }
-
-
 }

@@ -39,42 +39,71 @@ public class EZDirectionActivityTest  {
 
     }
 
-
-
-    private LocationManager locationManager;
-
     @Test
-    public void testGPS() {
-        LocationManager lm = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy( Criteria.ACCURACY_FINE );
+    public void testLaunch(){
 
-        String mocLocationProvider = LocationManager.GPS_PROVIDER;//lm.getBestProvider( criteria, true );
+        View a = mActivity.findViewById(R.id.recyclerView);
+        View b = mActivity.findViewById(R.id.my_toolbar);
+        View c = mActivity.findViewById(R.id.leftButton);
+        View d = mActivity.findViewById(R.id.rightButton);
+        View e = mActivity.findViewById(R.id.progressBar);
+        View f = mActivity.findViewById(R.id.refreshButton);
+        View g = mActivity.findViewById(R.id.contactsButton);
+        View h = mActivity.findViewById(R.id.notFoundText);
+        View i = mActivity.findViewById(R.id.notFoundSubtext);
+        View j = mActivity.findViewById(R.id.notFoundImg);
 
-        if ( mocLocationProvider == null ) {
-            Toast.makeText(mActivity.getApplicationContext(), "No location provider found!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        lm.addTestProvider(mocLocationProvider, false, false,
-                false, false, true, true, true, 0, 5);
-        lm.setTestProviderEnabled(mocLocationProvider, true);
 
-        Location loc = new Location(mocLocationProvider);
-        Location mockLocation = new Location(mocLocationProvider); // a string
-        mockLocation.setLatitude(-26.902038);  // double
-        mockLocation.setLongitude(-48.671337);
-        mockLocation.setAltitude(loc.getAltitude());
-        mockLocation.setTime(System.currentTimeMillis());
-        mockLocation.setAccuracy(1);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-        }
-        lm.setTestProviderLocation( mocLocationProvider, mockLocation);
-        //Toast.makeText(mActivity.getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
 
-        assertNotNull(loc);
+        assertNotNull(a);
+        assertNotNull(b);
+        assertNotNull(c);
+        assertNotNull(d);
+        assertNotNull(e);
+        assertNotNull(f);
+        assertNotNull(g);
+        assertNotNull(h);
+        assertNotNull(i);
 
+        assertNotNull(j);
     }
+
+
+
+//    private LocationManager locationManager;
+//
+//    @Test
+//    public void testGPS() {
+//        LocationManager lm = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+//        Criteria criteria = new Criteria();
+//        criteria.setAccuracy( Criteria.ACCURACY_FINE );
+//
+//        String mocLocationProvider = LocationManager.GPS_PROVIDER;//lm.getBestProvider( criteria, true );
+//
+//        if ( mocLocationProvider == null ) {
+//            Toast.makeText(mActivity.getApplicationContext(), "No location provider found!", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        lm.addTestProvider(mocLocationProvider, false, false,
+//                false, false, true, true, true, 0, 5);
+//        lm.setTestProviderEnabled(mocLocationProvider, true);
+//
+//        Location loc = new Location(mocLocationProvider);
+//        Location mockLocation = new Location(mocLocationProvider); // a string
+//        mockLocation.setLatitude(-26.902038);  // double
+//        mockLocation.setLongitude(-48.671337);
+//        mockLocation.setAltitude(loc.getAltitude());
+//        mockLocation.setTime(System.currentTimeMillis());
+//        mockLocation.setAccuracy(1);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+//        }
+//        lm.setTestProviderLocation( mocLocationProvider, mockLocation);
+//        //Toast.makeText(mActivity.getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
+//
+//        assertNotNull(loc);
+//
+//    }
 
 
 
