@@ -187,7 +187,7 @@ public class Tab3Fragment extends Fragment {
                 (com.getbase.floatingactionbutton.FloatingActionButton) fragmentLayout.findViewById(R.id.addContact);
 
 
-        addQRButton.setIcon(R.drawable.qr_icon);
+        addQRButton.setIcon(R.drawable.qr_example);
         addQRButton.setTitle("Add via QR");
         addQRButton.setOnClickListener(new View.OnClickListener() {
             @Override

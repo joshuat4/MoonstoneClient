@@ -64,6 +64,7 @@ public class incomingCall extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), Calling.class);
                 i.putExtra("name",callerString );
                 i.putExtra("roomId", roomId);
+                i.putExtra("picture", callerPicUrl);
                 mMediaPlayer.stop();
                 startActivity(i);
             }
