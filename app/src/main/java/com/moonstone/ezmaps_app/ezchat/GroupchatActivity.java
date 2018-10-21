@@ -108,9 +108,9 @@ public class GroupchatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        db.collection("users").document(mAuth.getUid())
-                .collection("groupchats").document(groupchatId)
-                .update("unread", 0);
+//        db.collection("users").document(mAuth.getUid())
+//                .collection("groupchats").document(groupchatId)
+//                .update("unread", 0);
 
         currentTime = Timestamp.now();
         Log.d("time", "time: " + currentTime.toDate().toString());

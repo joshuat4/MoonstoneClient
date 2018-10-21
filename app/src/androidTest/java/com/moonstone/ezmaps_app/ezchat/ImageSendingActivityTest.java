@@ -29,13 +29,11 @@ public class ImageSendingActivityTest {
 
         View a = mActivity.findViewById(R.id.cancelButton);
         View b = mActivity.findViewById(R.id.uploadButton);
-        View c = mActivity.findViewById(R.id.imageView);
         View d = mActivity.findViewById(R.id.progressBar);
         View e = mActivity.findViewById(R.id.my_toolbar);
 
         assertNotNull(a);
         assertNotNull(b);
-        assertNotNull(c);
         assertNotNull(d);
         assertNotNull(e);
 
