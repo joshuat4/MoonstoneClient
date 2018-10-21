@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
+//this class deals with manipulating the camera to upload images.
 public class CameraUploadActivity extends UploadActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -30,6 +31,7 @@ public class CameraUploadActivity extends UploadActivity {
 
     }
 
+    //request app permission.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -51,7 +53,7 @@ public class CameraUploadActivity extends UploadActivity {
 
     }
 
-    // Display Image on Activity
+    // Display the chosen image on the activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

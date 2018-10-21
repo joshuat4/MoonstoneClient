@@ -47,8 +47,10 @@ import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+//the class takes care of everything that have to do with profile editing in the app.
 public class EditProfileActivity extends AppCompatActivity implements OnClickListener {
 
+    //fields
     private Toolbar _toolbar;
 
     private EditText _editNameField;
@@ -71,10 +73,14 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
 
     private ActionBar actionBar;
 
+
+    //oncreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        //get the respective layout elements for this activity
         setContentView(R.layout.activity_edit_profile);
         _editNameField = (EditText) findViewById(R.id.editName);
 
@@ -103,11 +109,13 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
             }
         });
 
+        //this is required to access the DB
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         loadProfileInfo();
 
+        //sets onclick listeners to the interactive buttons in the activity
         _editImage.setOnClickListener(this);
         _signOutButton.setOnClickListener(this);
         _editNameField.addTextChangedListener(new TextWatcher() {
@@ -178,6 +186,8 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         super.onResume();
     }
 
+
+    //deal with clicks on the app.
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -186,6 +196,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
                 bottomSheet.show(getSupportFragmentManager(), "com.moonstone.ezmaps_app.profiles.UploadDialogFragment");
                 break;
             case R.id.signOutButton:
+                //logout
                 FirebaseAuth.getInstance().signOut();
 
                 // Restarts
@@ -197,6 +208,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         }
     }
 
+    //its a function that deals with UI accessibility.
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -214,6 +226,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         return super.dispatchTouchEvent( event );
     }
 
+    //load profile information from the DB
     public void loadProfileInfo(){
         if (user != null) {
             String name = user.getDisplayName();
@@ -286,7 +299,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         return true;
     }
 
-
+    //when name is tapped on to edit, this function is called.
     public void editName(){
 
         final String editName = _editNameField.getText().toString().trim();
@@ -296,6 +309,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
                 .setDisplayName(editName)
                 .build();
 
+        //update the user profile with the new display name
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -328,11 +342,13 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
 
     }
 
+    //function is called when email field is being edited/tapped on
     public void editEmail(){
         final String editEmail = _editEmailField.getText().toString().trim();
         if (user != null) {
 
 
+            //update the email of the user through the DB
             user.updateEmail(editEmail)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

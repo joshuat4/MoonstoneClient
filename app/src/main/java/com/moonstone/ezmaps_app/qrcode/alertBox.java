@@ -22,6 +22,8 @@ public class alertBox extends DialogFragment {
 
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_MaterialComponents_Light_DarkActionBar);
         // Use the Builder class for convenient dialog construction
+
+        //create the dialog box with the required buttons and text.
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Friend request sent!");
         builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {

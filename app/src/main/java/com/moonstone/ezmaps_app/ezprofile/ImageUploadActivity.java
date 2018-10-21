@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 
+//image upload activity is the activity that is started up to select pictures to get them ready
+//for upload.
 public class ImageUploadActivity extends UploadActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -17,7 +19,7 @@ public class ImageUploadActivity extends UploadActivity {
 
     }
 
-    // Choose Image from Folder
+    //Choose Image from Folder
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
