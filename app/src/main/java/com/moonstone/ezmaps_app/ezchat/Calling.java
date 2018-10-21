@@ -124,12 +124,16 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         if(user!=null){
             if(user.getPhotoUrl().toString()!= null){
                 profilePic = user.getPhotoUrl().toString();
+                Log.d("xxxxx", profilePic);
             }
         }
 
+        profilePic = profilePic.replace("%2F", "*");
         String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification2?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId +
                 "---" + profilePic;
         //execute async task
+
+        Log.d("XDXDXD", url);
         new RetrieveFeed(this).execute(url);
 
     }

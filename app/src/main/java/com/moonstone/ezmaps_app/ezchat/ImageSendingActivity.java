@@ -36,19 +36,20 @@ import com.squareup.picasso.Picasso;
 public class ImageSendingActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 1;
-    private Uri mImageUri;
+    public Uri mImageUri;
+    public ImageView mImageView;
     private StorageTask mUploadTask;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
 
-    private ImageView mImageView;
     private Button cancelButton;
     private Button uploadButton;
     private ProgressBar mProgressBar;
 
     private Toolbar toolbar;
     private ActionBar actionbar;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
 
     private static final int MY_REQUEST_CODE = 2;
@@ -56,6 +57,7 @@ public class ImageSendingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         setContentView(R.layout.activity_image_upload);
         cancelButton = findViewById(R.id.cancelButton);
@@ -103,31 +105,17 @@ public class ImageSendingActivity extends AppCompatActivity {
             }
         });
 
-        if (checkSelfPermission(Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        openFileChooser();
 
-            requestPermissions(new String[]{Manifest.permission.CAMERA},
-                    MY_REQUEST_CODE);
-
-        }else{
-            openCamera();
-        }
 
     }
 
-    // Open Camera App
-    private void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, CAMERA_REQUEST_CODE);
-        }
-
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//Choose Image from Folder
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
 
@@ -138,30 +126,16 @@ public class ImageSendingActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // When the activity takes a picture, the app does returns data.getData() == null
-        // A way to circumvent this is by opening up the Camera roll after taking a picture
-        if(data.getData() == null){
-            Intent pickImageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            if (pickImageIntent.resolveActivity(getPackageManager()) != null)
-                Log.d("CAMERAUPLOAD", "DATA == NULL, new INTENT");
-            startActivityForResult(pickImageIntent, CAMERA_REQUEST_CODE);
-        }
-
-        Log.d("ImageSendingActivity", "RES CODE " + resultCode + "/ " + RESULT_OK);
-        Log.d("ImageSendingActivity", "REQ CODE  " + requestCode + "/ " + CAMERA_REQUEST_CODE);
-        Log.d("ImageSendingActivity", "DATA " + data);
-        Log.d("ImageSendingActivity", "DATA.getDATA() " + data.getData());
-
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
 
+            Log.d("IMAGEUPLOAD", "IMAGE UPLOAD");
             mImageUri = data.getData();
-
-            Log.d("ImageSendingActivity", "DATA " + mImageUri);
             Picasso.get().load(mImageUri).into(mImageView);
 
+        }else{
+            finish();
         }
-
     }
 
     public void setReturnSuccess(String imageUrl){

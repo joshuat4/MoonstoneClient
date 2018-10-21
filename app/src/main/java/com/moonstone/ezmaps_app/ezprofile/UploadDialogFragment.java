@@ -26,12 +26,10 @@ public class UploadDialogFragment extends BottomSheetDialogFragment implements O
         View view = inflater.inflate(R.layout.bottom_sheet_edit_image, container, false);
 
         Button _choosePhoto = view.findViewById(R.id.choosePhoto);
-        Button _takePhoto = view.findViewById(R.id.takePhoto);
         Button _cancelButton = view.findViewById(R.id.cancelButton);
 
 
         _choosePhoto.setOnClickListener(this);
-        _takePhoto.setOnClickListener(this);
         _cancelButton.setOnClickListener(this);
 
         return view;
@@ -46,10 +44,6 @@ public class UploadDialogFragment extends BottomSheetDialogFragment implements O
                 startActivity(new Intent(getActivity(), ImageUploadActivity.class));
                 break;
 
-            case R.id.takePhoto:
-                this.dismiss();
-                startActivity(new Intent(getActivity(), CameraUploadActivity.class));
-                break;
 
             case R.id.cancelButton:
                 this.dismiss();

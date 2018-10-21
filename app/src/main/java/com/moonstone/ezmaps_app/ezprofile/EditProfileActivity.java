@@ -312,6 +312,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
+                                            _progressBar.setVisibility(View.GONE);
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -331,6 +332,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
         final String editEmail = _editEmailField.getText().toString().trim();
         if (user != null) {
 
+
             user.updateEmail(editEmail)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -346,21 +348,23 @@ public class EditProfileActivity extends AppCompatActivity implements OnClickLis
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Log.d("EDITPROFILE", "DocumentSnapshot successfully updated!");
+                                                _progressBar.setVisibility(View.GONE);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Log.w("EDITPROFILE", "Error updating document", e);
+                                                _progressBar.setVisibility(View.GONE);
                                             }
                                         });
 
                             }else{
                                 Log.d("EDITPROFILE", "Can't change email");
-                                Toast.makeText(getApplicationContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Email either already registered, or last login too long ago", Toast.LENGTH_SHORT).show();
 
                                 _progressBar.setVisibility(View.GONE);
-                                _editEmailLayout.setError("Email already registered");
+                                _editEmailLayout.setError("Email already registered, or last login too long ago");
                                 loadProfileInfo();
 
 
