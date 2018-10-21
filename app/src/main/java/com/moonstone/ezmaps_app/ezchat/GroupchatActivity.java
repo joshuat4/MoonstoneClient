@@ -53,10 +53,10 @@ public class GroupchatActivity extends AppCompatActivity {
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
 
-    private static ArrayList<String> toUserIds;
-    private static String fromUserID;
-    private static String groupchatId;
-    private String groupName;
+    private static ArrayList<String> toUserIds; //users which will receive messages
+    private static String fromUserID; //this user
+    private static String groupchatId; //firestore documetn id of the groupchat
+    private String groupName; //all the names of the users in the groupchat
     private Timestamp currentTime;
 
     //where the text messages will be stored
@@ -74,6 +74,7 @@ public class GroupchatActivity extends AppCompatActivity {
         return toUserIds;
     }
 
+    //allows delayed running of functions
     Handler handler = new Handler();
 
     public static void setToUserIds(ArrayList<String> uids) {
@@ -108,10 +109,6 @@ public class GroupchatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-//        db.collection("users").document(mAuth.getUid())
-//                .collection("groupchats").document(groupchatId)
-//                .update("unread", 0);
-
         currentTime = Timestamp.now();
         Log.d("time", "time: " + currentTime.toDate().toString());
 
@@ -121,6 +118,7 @@ public class GroupchatActivity extends AppCompatActivity {
         ArrayList<String> currentImageUrlsList;
         int currentCounter;
 
+        //load in the group's name
         if (extras != null) {
             groupName = extras.getString("name");
 
@@ -165,6 +163,7 @@ public class GroupchatActivity extends AppCompatActivity {
             }
         });
 
+        //send image
         cameraButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -192,6 +191,7 @@ public class GroupchatActivity extends AppCompatActivity {
             String imageUrl = data.getStringExtra("imageUrl");
             Log.d("ChatActivity", "IMAGE URL:" + imageUrl);
 
+            //send image
             if(imageUrl != null){
                 sendImage(mAuth.getUid(), imageUrl, toUserIds,
                         Timestamp.now().toDate().toString());
@@ -209,12 +209,14 @@ public class GroupchatActivity extends AppCompatActivity {
         final Map<String, Object> message = new HashMap<>();
 
         for(String imageUrl : imageUrlList){
+            //construct message
             message.put("toGroupId", groupchatId);
             message.put("text", imageUrl);
             message.put("fromUserId", from);
             message.put("time", time);
             message.put("textType", "IMAGE");
 
+            //put in all groupchat user's db
             for (String id: to) {
                 db.collection("users").document(id).collection("groupchats").document(groupchatId).collection("messages").add(message);
                 db.collection("users").document(id).collection("groupchats").document(groupchatId).update("unread", 1);
@@ -228,12 +230,14 @@ public class GroupchatActivity extends AppCompatActivity {
     private void sendImage(String from, String imageUrl, ArrayList<String> to, String time){
         final Map<String, Object> message = new HashMap<>();
 
+        //make message
         message.put("toGroupId", groupchatId);
         message.put("text", imageUrl);
         message.put("fromUserId", from);
         message.put("time", time);
         message.put("textType", "IMAGE");
 
+        //put in all groupchat user's db
         for (String id: to) {
             db.collection("users").document(id).collection("groupchats").document(groupchatId).collection("messages").add(message);
             db.collection("users").document(id).collection("groupchats").document(groupchatId).update("unread", 1);
@@ -243,12 +247,14 @@ public class GroupchatActivity extends AppCompatActivity {
 
     private void sendText(String from, String text, ArrayList<String> to, String time){
         final Map<String, Object> message = new HashMap<>();
+        //make message
         message.put("toGroupId", groupchatId);
         message.put("text", text);
         message.put("fromUserId", from);
         message.put("time", time);
         message.put("textType", "TEXT");
 
+        //put in all groupchat user's db
         for (String id: to) {
             db.collection("users").document(id).collection("groupchats").document(groupchatId).collection("messages").add(message);
             db.collection("users").document(id).collection("groupchats").document(groupchatId).update("unread", 1);
@@ -342,7 +348,7 @@ public class GroupchatActivity extends AppCompatActivity {
                                     break;
                             }
                         }
-                        //sort and display the messages if there are any
+                        //sort by time and display the messages if there are any
                         if(newDocs>0){
                            ezMessagesArray.sort(new EzMessagesComparator());
                            if(notFirstTime){

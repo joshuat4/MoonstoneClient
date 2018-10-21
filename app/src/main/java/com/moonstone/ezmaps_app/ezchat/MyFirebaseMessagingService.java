@@ -9,6 +9,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.moonstone.ezmaps_app.utilities.MyNotificationManager;
 
+//allows acting on data in notifications, and displaying notifications when the app is foregrounded
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static String deviceToken;
 
@@ -16,25 +17,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         String s ="Empty";
         super.onNewToken(s);
-//      Log.d("Token", "onMessageReceived: "+s);
+        //record the device token so that FCM can send notifications to specific devices
         Log.d("Firebase", "MessageReceivedToken "+ FirebaseInstanceId.getInstance().getToken());
         Log.d("here we go", "NEW MESSAGE");
-//        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getInstanceId());
 
 
-
+        //on receiving a notification while the app is foregrounded, construct and display the notification
         MyNotificationManager.getInstance(getApplicationContext())
                 .displayNotification(s, s);
 
+        //get the notification info
         String title = remoteMessage.getNotification().getTitle();
         String body = remoteMessage.getNotification().getBody();
 
-
+        //text notification
         if(title.contains("Text from")){
             MyNotificationManager.getInstance(getApplicationContext())
                     .displayNotification(title, body);
         }
-        //Calling notification
+        //Calling notification receipt
         else{
             String room = remoteMessage.getData().get("room");
             String sender =remoteMessage.getData().get("sender");
@@ -44,6 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
+    //enter a call room on receiving an FCM call related notification
     private void incomingCall(String callerName, String roomId, String callerPic){
         Intent i = new Intent(this, incomingCall.class);
         i.putExtra("callerName",callerName );
@@ -52,6 +54,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         startActivity(i);
     }
 
+    //get the devices FCM token
     public static String fetchToken(){
         deviceToken = FirebaseInstanceId.getInstance().getToken();
         return deviceToken;

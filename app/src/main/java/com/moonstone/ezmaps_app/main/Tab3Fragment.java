@@ -54,22 +54,22 @@ public class Tab3Fragment extends Fragment {
     private FirebaseFirestore db;
     private View fragmentLayout;
     private View blocker;
-    private ContactRecyclerViewAdapter adapter;
-    private RequestsRecyclerViewAdapter requestAdapter;
-    private GroupchatRecyclerViewAdapter groupchatAdapter;
+    private ContactRecyclerViewAdapter adapter; //contacts recycler view
+    private RequestsRecyclerViewAdapter requestAdapter; //requests recview
+    private GroupchatRecyclerViewAdapter groupchatAdapter; //groupchat recview
 
     private boolean contactsAvailable = false;
     private static boolean fromNav;
     int numMembers;
-    int groupNumber;
+    int groupNumber; // number of groups
 
-    private EditText contactFilter;
+    private EditText contactFilter; //filters contacts
     private com.getbase.floatingactionbutton.FloatingActionButton  newContactButton;
     private com.getbase.floatingactionbutton.FloatingActionButton  addQRButton;
     public ProgressBar contactsLoading;
     private ImageButton clearButton;
-    private CheckBox select;
-    static public Boolean checked;
+    private CheckBox select; //checkbox for selecting multiple contacts
+    static public Boolean checked; //whether the above checkbox is checked
 
     //Arrays needed for recyclerView
     private ArrayList<String> profilePics;
@@ -83,22 +83,23 @@ public class Tab3Fragment extends Fragment {
     private ArrayList<String> respondedRequests = new ArrayList<>();
 
     private ArrayList<ArrayList<String>> groupchatNames;
-    private ArrayList<ArrayList<String>> groupchatUserIds;
-    private ArrayList<String> groupchatIds;
-    private ArrayList<String> newGroupIds;
+    private ArrayList<ArrayList<String>> groupchatUserIds; //ids of groupchat's members
+    private ArrayList<String> groupchatIds; //firestore doc id of the groupchat
+    private ArrayList<String> newGroupIds; //
 
 
     private LinearLayout newRequestHeader;
     private LinearLayout contactsHeader;
     private boolean requestsAvailable = false;
 
-    private ArrayList<String> contacts = new ArrayList<>();
-    private ArrayList<String> requests = new ArrayList<>();
-    private ArrayList<String> groupchats = new ArrayList<>();
+    private ArrayList<String> contacts = new ArrayList<>(); //contacts pulled from db
+    private ArrayList<String> requests = new ArrayList<>(); //requests pulled from db
+    private ArrayList<String> groupchats = new ArrayList<>(); //groupchats pulled from db
 
     //whether a recyclerview is loading/loaded
-    private ArrayList<Boolean> loaded = new ArrayList<>();
-    private ArrayList<Boolean> loading = new ArrayList<>();
+    private ArrayList<Boolean> loaded = new ArrayList<>(); //arraylist of the recycler views and contains
+    // the status of whether they're loaded or not
+    private ArrayList<Boolean> loading = new ArrayList<>();//arraylist of the rec views and contains status of whether they'e loading or not
 
     private TextWatcher textWatcher;
 
@@ -114,6 +115,7 @@ public class Tab3Fragment extends Fragment {
         select = (CheckBox) fragmentLayout.findViewById(R.id.select);
         blocker = fragmentLayout.findViewById(R.id.blocker);
 
+        //set up loaded and loading
         loaded.clear();
         loading.clear();
         for(int e = 0; e < 3; e++){
@@ -149,6 +151,7 @@ public class Tab3Fragment extends Fragment {
 
 
 
+        //for filtering contacts based on text input
         textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -204,10 +207,12 @@ public class Tab3Fragment extends Fragment {
         newContactButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
+                // if not checked, just start trying to add a contact
                 if(!checked)
                 {
                     newContact();
                 } else {
+                    //if checked, create a new groupchat
                     select.setChecked(false);
                     checked = false;
                     String thisUserId = mAuth.getUid();
@@ -225,7 +230,7 @@ public class Tab3Fragment extends Fragment {
                                     final String groupChatId = task.getResult().getId();
                                     Log.d("groupchat", "groupchat id: " + groupChatId);
 
-                                    //add the group chat to all included party's contacts
+                                    //add the group chat to all included party's groupchats field in their user document on firestore
                                     for(int i = 0; i<newGroupIds.size(); i++){
                                         DocumentReference docRef = db
                                                 .collection("users")
@@ -259,6 +264,7 @@ public class Tab3Fragment extends Fragment {
         });
 
         contactFilter.setSelected(false);
+        //initialise the recycler views
         initRecyclerView();
         initRequestsRecyclerView();
         initGroupchatRecyclerView();
@@ -275,13 +281,15 @@ public class Tab3Fragment extends Fragment {
 
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
-
+        //update recycler views everytime the user doc changes
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 Log.d("loaded", "blocker enabled");
+                //block selection of items while loading
                 blocker.setClickable(true);
+                //if loading in already, wait to load more stuff for 5 seconds
                 if (loading.contains(true)) {
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -290,6 +298,7 @@ public class Tab3Fragment extends Fragment {
                             loadContactsFromDB();
                         }
                     }, 5000);
+                //if not already loading in, load in
                 } else {
                     if (e != null) {
                         Log.w("TAB3", "Listen failed.", e);
@@ -341,6 +350,7 @@ public class Tab3Fragment extends Fragment {
                             Log.d("loaded", "340");
                             Log.d("TAB3", "GROUPCHATS loading 270: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
 
+                            //if not currently loading in requests, load in requests
                             if (!loading.get(RecView.REQUESTS.getNumVal())) {
                                 Log.d("loaded", "345");
                                 loading.set(RecView.REQUESTS.getNumVal(), true);
@@ -349,6 +359,7 @@ public class Tab3Fragment extends Fragment {
                                         updateLoaded(RecView.REQUESTS);
                                     }
                                     for (String request : requests) {
+                                        //get the request's user from db
                                         db.collection("users").document(request).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -375,7 +386,6 @@ public class Tab3Fragment extends Fragment {
                                                     reqProfilePics.remove(index);
                                                 }
 
-                                                Log.d("qqqqq", reqNames.toString());
 
                                                 //Might cause a race condition
                                                 if (reqNames.size() == requests.size()) {
@@ -404,7 +414,7 @@ public class Tab3Fragment extends Fragment {
                             Log.d("loaded", "390");
                             Log.d("TAB3", "GROUPCHATS loading 318: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
 
-                            //load contacts
+                            //if not currently loading in contacts, load in contacts
                             if (!loading.get(RecView.CONTACTS.getNumVal())) {
                                 loading.set(RecView.CONTACTS.getNumVal(), true);
                                 Log.d("loaded", "398");
@@ -413,6 +423,7 @@ public class Tab3Fragment extends Fragment {
                                         updateLoaded(RecView.CONTACTS);
                                     }
                                     for (String contact : contacts) {
+                                        //load in contact's user from the db
                                         db.collection("users").document(contact).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -472,7 +483,7 @@ public class Tab3Fragment extends Fragment {
                             //Now load in groupchats
                             Log.d("TAB3", "GROUPCHATS: " + groupchats);
                             Log.d("TAB3", "GROUPCHATS loading: " + loading.get(RecView.GROUPCHATS.getNumVal()).toString());
-
+                            //if not currently loading in groupchats, load in groupchats
                             if (!loading.get(RecView.GROUPCHATS.getNumVal())) {
                                 loading.set(RecView.GROUPCHATS.getNumVal(), true);
                                 if (!groupchats.isEmpty()) {
@@ -539,14 +550,8 @@ public class Tab3Fragment extends Fragment {
         recyclerView.setAdapter(adapter) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.INVISIBLE);
 
-//        if(!contactsAvailable){
-//            contactsHeader.setVisibility(View.GONE);
-//        }else{
-//            contactsHeader.setVisibility(View.VISIBLE);
-//        }
 
         contactFilter.setSelected(false);
         contactsLoading.setVisibility(View.INVISIBLE);
@@ -556,17 +561,9 @@ public class Tab3Fragment extends Fragment {
         //contact requests recycler view
         RecyclerView requestRecyclerView = fragmentLayout.findViewById(R.id.requestRecyclerView);
 
-        Log.d("aaaaa", "is this here");
-
         requestAdapter = new RequestsRecyclerViewAdapter(this, getActivity(), reqNames, reqProfilePics, reqIds, db, mAuth);
         requestRecyclerView.setAdapter(requestAdapter);
         requestRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-//        if(!requestsAvailable){
-//            newRequestHeader.setVisibility(View.INVISIBLE);
-//        }else{
-//            newRequestHeader.setVisibility(View.VISIBLE);
-//        }
 
     }
 
@@ -579,6 +576,7 @@ public class Tab3Fragment extends Fragment {
         groupchatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    //filter out contacts based on input text
     private void filter(String text){
 
         //Filtered arrays
@@ -612,6 +610,7 @@ public class Tab3Fragment extends Fragment {
         startActivityForResult(intent, 3);
     }
 
+    //load in all the members of a groupchat and their names
     private void loadMembers(final String group){
         db.collection("groupchats").document(group).get()
                 .addOnSuccessListener(
@@ -643,51 +642,12 @@ public class Tab3Fragment extends Fragment {
                                                                 @Override
                                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                                     numMembers.number++;
-                                                                                                                                        groupchatNames.get(groupNum).add(documentSnapshot.getString("name"));
+                                                                    groupchatNames.get(groupNum).add(documentSnapshot.getString("name"));
                                                                     Log.d("groupchat", "current names: " + documentSnapshot.getString("name"));
                                                                     Log.d("groupchat", "current group names: " + groupchatNames.get(groupNum).toString());
                                                                     Log.d("groupchatDupes", "all group names: " + groupchatNames.toString());
                                                                     Log.d("groupchat", "current numMembers: " + numMembers);
                                                                     Log.d("groupchat", "current Uids size: " + groupchatUserIds.get(groupNum).size());
-//                                                                if (groupchatNames.get(groupNum).size() == groupchatUserIds.get(groupNum).size()) {
-                                                                    //check if there are any unread messages from groupchats,
-                                                                    //and record which contacts have unread messages
-//                                                                                        docRef.collection("groupchats")
-//                                                                                                .document(group).get()
-//                                                                                                .addOnSuccessListener(
-//                                                                                                        new OnSuccessListener<DocumentSnapshot>() {
-//                                                                                                            @Override
-//                                                                                                            public void onSuccess(
-//                                                                                                                    DocumentSnapshot documentSnapshot) {
-//                                                                                                                if(documentSnapshot.contains("unread")){
-//                                                                                                                    String singUn = documentSnapshot.get("unread").toString();
-//                                                                                                                    Log.d("unread", "value of unread: " + singUn);
-//                                                                                                                    int singleUnread = Integer.parseInt(singUn);
-//
-//                                                                                                                    if (singleUnread == 1) {
-//                                                                                                                        groupchatUnreadOrder.add(group);
-//                                                                                                                        groupchatUnread.add(true);
-//                                                                                                                    } else {
-//                                                                                                                        groupchatOrder.add(group);
-//                                                                                                                        groupchatUnread.add(false);
-//                                                                                                                    }
-//                                                                                                                } else {
-//                                                                                                                    groupchatUnreadOrder.add(group);
-//                                                                                                                    groupchatUnread.add(false);
-//                                                                                                                }
-//
-//                                                                                                                if((groupchatUnread.size() == groupchats.size()) && (groupchatNames.size() == groupchats.size())){
-//                                                                                                                    Log.d("TAB3", "how many groupchatNames: " + groupchatNames.size());
-//                                                                                                                    Log.d("TAB3", "groupchats size: " + groupchats.size() + ", " + groupchats.toString());
-//                                                                                                                    Log.d("TAB3", "groupchats available: init recycler view: ");
-//                                                                                                                    Log.d("TAB3", "GROUPCHATS 2 : " + groupchats);
-//                                                                                                                    groupchatAdapter.notifyDataSetChanged();
-//                                                                                                                    groupchatsAvailable = true;
-//
-//                                                                                                                }
-//                                                                                                            }
-//
-//                                                                                                        });
                                                                     Log.d("groupchatDupes", "nummems +1 = "+(numMembers.number+1));
                                                                     Log.d("groupchatDupes", "groupchatUids = "+groupchatUserIds.get(groupNum).size());
                                                                     if ((numMembers.number + 1) == groupchatUserIds.get(groupNum).size()) {
@@ -700,7 +660,6 @@ public class Tab3Fragment extends Fragment {
                                                                         groupchatAdapter.notifyDataSetChanged();
                                                                         updateLoaded(RecView.GROUPCHATS);
                                                                     }
-//                                                                }
                                                                 }
                                                             });
                                         }
@@ -789,14 +748,5 @@ public class Tab3Fragment extends Fragment {
             respondedRequests.add(id);
         }
     }
-
-    /*
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            refresh();
-        }
-    }
-    */
+    
 }

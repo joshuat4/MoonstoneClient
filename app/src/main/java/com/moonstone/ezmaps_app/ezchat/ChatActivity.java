@@ -47,18 +47,18 @@ public class ChatActivity extends AppCompatActivity {
     //facilitates updating the recycler view without reinitialising it
     private boolean notFirstTime = false;
 
-    private EditText textField;
+    private EditText textField; //where message is typed
     private ImageButton sendButton;
     private ImageButton cameraButton;
     private static Toolbar toolbar;
     private static ActionBar actionbar;
     public static ProgressBar messagesLoading;
 
-    private static String toUserID;
-    private static String fromUserID;
-    private String userName;
-    private String userProfilePic;
-    private Timestamp currentTime;
+    private static String toUserID; //user being sent to
+    private static String fromUserID; //this user
+    private String userName; //to user's name
+    private String userProfilePic; //to user's profile pic
+    private Timestamp currentTime; //current time
 
     //where the text messages will be stored
     private ArrayList<EzMessage> ezMessagesArray = new ArrayList<>();
@@ -114,11 +114,13 @@ public class ChatActivity extends AppCompatActivity {
         ArrayList<String> currentImageUrlsList;
         int currentCounter;
 
+        //load in to user's name and pic, and whether from choose contacts
         if (extras != null) {
             userName = extras.getString("name");
             userProfilePic = extras.getString("picture");
             fromChooseContacts = extras.getBoolean("fromChooseContacts");
 
+            //send images in EZDirection navigation
             if(fromChooseContacts){
                 currentImageUrlsList = extras.getStringArrayList("currentImageUrlsList");
                 currentCounter = extras.getInt("currentCounter");
@@ -158,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        //send pic
         cameraButton.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -180,6 +183,7 @@ public class ChatActivity extends AppCompatActivity {
         Log.d("ChatActivity", "Request Code: " + requestCode + "/" + REQUEST_CODE);
         Log.d("ChatActivity", "Result Code: " + resultCode + "/" + RESULT_OK);
 
+        //send an image
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 
             String imageUrl = data.getStringExtra("imageUrl");
@@ -201,6 +205,7 @@ public class ChatActivity extends AppCompatActivity {
     private void sendImage(String from, ArrayList<String> imageUrlList, String to, String time){
         final Map<String, Object> message = new HashMap<>();
 
+        //construct the message
         for(String imageUrl : imageUrlList){
             message.put("toUserId", to);
             message.put("text", imageUrl);
@@ -208,6 +213,7 @@ public class ChatActivity extends AppCompatActivity {
             message.put("time", time);
             message.put("textType", "IMAGE");
 
+            //put it in the database
             db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
             db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
 
@@ -220,12 +226,14 @@ public class ChatActivity extends AppCompatActivity {
     private void sendImage(String from, String imageUrl, String to, String time){
         final Map<String, Object> message = new HashMap<>();
 
+        //construct message
         message.put("toUserId", to);
         message.put("text", imageUrl);
         message.put("fromUserId", from);
         message.put("time", time);
         message.put("textType", "IMAGE");
 
+        //put in db
         db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
         db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
 
@@ -234,12 +242,14 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendText(String from, String text, String to, String time){
         final Map<String, Object> message = new HashMap<>();
+        //construct message
         message.put("toUserId", to);
         message.put("text", text);
         message.put("fromUserId", from);
         message.put("time", time);
         message.put("textType", "TEXT");
 
+        //put in db
         db.collection("users").document(from).collection("contacts").document(to).collection("messages").add(message);
         db.collection("users").document(to).collection("contacts").document(from).collection("messages").add(message);
         Log.d("messages", "Message written: " + text);
@@ -276,7 +286,6 @@ public class ChatActivity extends AppCompatActivity {
         public void run(){
             try {
                 loadDataFromFirebase();
-//                handler.postDelayed(this, 5000);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -311,6 +320,7 @@ public class ChatActivity extends AppCompatActivity {
 
                                     try {
                                         Date date = dateFormat.parse(dc.getDocument().getString("time"));
+                                        //add all the messages into ezMessagesArray
                                         ezMessagesArray.add(new EzMessage(dc.getDocument().getString("text"),
                                                 dc.getDocument().getString("toUserId"),
                                                 dc.getDocument().getString("fromUserId"),date,
@@ -330,7 +340,7 @@ public class ChatActivity extends AppCompatActivity {
                                     break;
                             }
                         }
-                        //sot and display the messages if there are any
+                        //sort by time and display the messages if there are any
                         if(newDocs>0){
                            ezMessagesArray.sort(new EzMessagesComparator());
                            if(notFirstTime){

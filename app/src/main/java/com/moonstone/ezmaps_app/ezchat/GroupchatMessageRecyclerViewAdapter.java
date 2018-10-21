@@ -21,14 +21,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+//very similar to message recycler view adapter
 public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<EzMessage> textMessages = new ArrayList<>();
+    private ArrayList<EzMessage> textMessages = new ArrayList<>(); //all the messages
     private Context mContext;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
-    private String fromUsersName;
+    private String fromUsersName; //name of all users in the groupchat
 
     private int testing = 0;
 
@@ -42,11 +43,13 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
 
     }
 
+    //impromptu enum for deciding what type of message everything is
     private static final int LAYOUT_IMAGE_SELF = 0;
     private static final int LAYOUT_IMAGE_OTHERS = 1;
     private static final int LAYOUT_TEXT_SELF = 2;
     private static final int LAYOUT_TEXT_OTHERS = 3;
 
+    //evaluate if a message is from self or other, and if text or image
     @Override
     public int getItemViewType(int position) {
         final String Uid = mAuth.getUid();
@@ -96,7 +99,7 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
 
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
-
+        //load message into the right position, in the right way, depending on sender and text/image
         switch (position) {
             case LAYOUT_IMAGE_SELF:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image_self, viewGroup, false);
@@ -129,6 +132,7 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
 
+        //load message into the right position, in the right way, depending on sender and text/image
         if(viewHolder instanceof ViewHolderTextSelf){
             ViewHolderTextSelf holder = (ViewHolderTextSelf) viewHolder;
             final int holderPos = holder.getAdapterPosition();
@@ -148,6 +152,7 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
             ViewHolderImageSelf holder = (ViewHolderImageSelf) viewHolder;
             final int holderPos = holder.getAdapterPosition();
 
+            //load in the image
             Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
             Log.d("GroupchatMessageRecyclerView", "Image Load into: " + textMessages.get(holderPos).getText());
 
@@ -160,6 +165,7 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
                 }
             });
 
+            //if from a user other than self, do as above, but also load and display their name
         } else if(viewHolder instanceof ViewHolderTextOthers){
             final ViewHolderTextOthers holder = (ViewHolderTextOthers) viewHolder;
             final int holderPos = holder.getAdapterPosition();
@@ -197,6 +203,7 @@ public class GroupchatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Re
                                 }
                             });
 
+            //load in the image
             Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
 
             Log.d("GroupchatMessageRecyclerView", "Image Load into: " + textMessages.get(holderPos).getText());

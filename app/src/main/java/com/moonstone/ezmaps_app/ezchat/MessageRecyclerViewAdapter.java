@@ -17,8 +17,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+//loads and displays all text/image messages
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    //messages to be displayed
     private ArrayList<EzMessage> textMessages = new ArrayList<>();
     private Context mContext;
     private FirebaseAuth mAuth;
@@ -37,11 +39,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+    //impromptu enum for deciding what type of message everything is
     private static final int LAYOUT_IMAGE_SELF = 0;
     private static final int LAYOUT_IMAGE_OTHERS = 1;
     private static final int LAYOUT_TEXT_SELF = 2;
     private static final int LAYOUT_TEXT_OTHERS = 3;
 
+    //evaluate if a message is from self or other, and if text or image
     @Override
     public int getItemViewType(int position) {
         final String Uid = mAuth.getUid();
@@ -92,6 +96,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
 
+        //load message into the right position, in the right way, depending on sender and text/image
         switch (position) {
             case LAYOUT_IMAGE_SELF:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_list_item_image_self, viewGroup, false);
@@ -121,9 +126,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+    //display the messages
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
 
+        //load in the text, or the image
         if(viewHolder instanceof ViewHolderText){
             ViewHolderText holder = (ViewHolderText) viewHolder;
             final int holderPos = holder.getAdapterPosition();
@@ -143,6 +150,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             ViewHolderImage holder = (ViewHolderImage) viewHolder;
             final int holderPos = holder.getAdapterPosition();
 
+            //load in the image
             Picasso.get().load(textMessages.get(holderPos).getText()).into(holder.messageText);
             Log.d("MessageRecyclerView", "Image Load into: " + textMessages.get(holderPos).getText());
 
@@ -175,6 +183,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    //same as above, but for image
     public class ViewHolderImage extends RecyclerView.ViewHolder {
         ImageView messageText;
         RelativeLayout MessageParentLayout;
