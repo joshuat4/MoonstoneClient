@@ -96,6 +96,8 @@ EZMaps is a frame-by-frame picture location service application that caters to t
     2) The current GPS system that we are using is updating at a rate of 0.1 second. Despite this, the default *Stimulate Travelling* may be travelling too fast to detect if it has arrived at the destination. In light of this, a buffer zone around the location of each card has been set up. However, there are still instances of where it would fail to catch the next stop and causing it to skip. 
     3) The best way to actually test this is by going out on the field and actually using the app, albeit it might be a big hassle.
 
+4) To switch to Manual state of EZDirection, hit the switch at the top of toolbar. When the GPS is null, EZDirection automatically switches back to Manual state. 
+
 |![screenshot_1540113040](https://user-images.githubusercontent.com/12033253/47265082-38270400-d56e-11e8-8c1c-bcbfee807546.png) | ![screenshot_1540113088](https://user-images.githubusercontent.com/12033253/47265087-3e1ce500-d56e-11e8-964f-b89123cde02c.png) | ![screenshot_1540113492](https://user-images.githubusercontent.com/12033253/47265113-876d3480-d56e-11e8-9317-47b240c7ab67.png)  |
 | ------------- |:-------------:| -----:|
 
