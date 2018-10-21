@@ -25,9 +25,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,6 +115,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
     private boolean isAutomatic = true;
+    private Switch automaticButton;
 
     /* Utilities */
     private int REQUEST_CODE = 1;
@@ -261,18 +264,25 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             if(((currentLat <= (coord.getLat() + BUFFER_ZONE)) && (currentLat >= coord.getLat() - BUFFER_ZONE))
                     && ((currentLng <= (coord.getLng() + BUFFER_ZONE)) && (currentLng >= coord.getLng() - BUFFER_ZONE))){
 
-                nextStopCounter = coordinatesList.indexOf(coord) + 1;
-                if(nextStopCounter < coordinatesList.size()){
-                    nextStopCoordinate = coordinatesList.get(nextStopCounter);
-                    Log.d("EZD", "Current Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
-                    Log.d("EZD", "Next Stop is not null");
-                    Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
-                    Log.d("EZD", "Next Stop Coordinate: " + nextStopCoordinate);
 
-                }else{
-                    Toast.makeText(getApplicationContext(), "You have arrived at your destination!", Toast.LENGTH_SHORT).show();
+                if(nextStopCounter != coordinatesList.indexOf(coord) + 1){
+                    nextStopCounter = coordinatesList.indexOf(coord) + 1;
+                    swipeTo(nextStopCounter);
+
+                    if(nextStopCounter < coordinatesList.size()){
+                        nextStopCoordinate = coordinatesList.get(nextStopCounter);
+                        Log.d("EZD", "Current Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude());
+                        Log.d("EZD", "Next Stop is not null");
+                        Log.d("EZD", "Next Stop Counter: " + nextStopCounter);
+                        Log.d("EZD", "Next Stop Coordinate: " + nextStopCoordinate);
+
+                    }else{
+                        Toast.makeText(getApplicationContext(), "You have arrived at your destination!", Toast.LENGTH_SHORT).show();
+
+                    }
 
                 }
+
 
                 return true;
             }
@@ -730,6 +740,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                     refresh();
                 }
                 break;
+
         }
 
     }
@@ -785,6 +796,31 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_ezmap, menu);
+
+        MenuItem item = menu.findItem(R.id.automaticSwitch);
+        item.setActionView(R.layout.switch_layout);
+
+        automaticButton = item.getActionView().findViewById(R.id.switchForActionBar);
+        automaticButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isCardLoaded){
+                    if(isChecked){
+                        isAutomatic = true;
+                        Toast.makeText(getApplicationContext(), "Automatic Option Enabled", Toast.LENGTH_SHORT).show();
+
+                    }else{
+                        isAutomatic = false;
+                        Toast.makeText(getApplicationContext(), "Automatic Option Disabled", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
+            }
+        });
+
+        automaticButton.setChecked(true);
+
         return true;
     }
 
@@ -792,17 +828,17 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         menu.getItem(0).setVisible(true);
-        menu.getItem(3).setVisible(true);
-
+        menu.getItem(1).setVisible(true);
+        menu.getItem(4).setVisible(true);
         menu.findItem(R.id.title).setTitle("(" + (counter + 1) + "/" + numView + ")");
 
         if(isCurrentDestinationFavourited){
-            menu.getItem(1).setVisible(false);
-            menu.getItem(2).setVisible(true);
+            menu.getItem(2).setVisible(false);
+            menu.getItem(3).setVisible(true);
             Log.d("EZDIRECTION/Bar", "FAVOURITE TRUE");
         }else{
-            menu.getItem(1).setVisible(true);
-            menu.getItem(2).setVisible(false);
+            menu.getItem(2).setVisible(true);
+            menu.getItem(3).setVisible(false);
             Log.d("EZDIRECTION/Bar", "FAVOURITE FALSE");
         }
 
@@ -835,17 +871,6 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 return true;
             }
 
-            if(id == R.id.automaticSwitch){
-                if(isAutomatic){
-                    isAutomatic = false;
-                    Toast.makeText(getApplicationContext(), "Automatic Option False", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    isAutomatic = true;
-                    Toast.makeText(getApplicationContext(), "Automatic Option True", Toast.LENGTH_SHORT).show();
-
-                }
-            }
         }
 
         return super.onOptionsItemSelected(item);
