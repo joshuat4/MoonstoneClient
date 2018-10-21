@@ -27,24 +27,23 @@ import com.moonstone.ezmaps_app.main.Tab3Fragment;
 
 import java.util.ArrayList;
 
+//allows loading and displaying of groupchats
 public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<GroupchatRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<ArrayList<String>> groupchatNames = new ArrayList<>();
-    private ArrayList<ArrayList<String>> groupchatUserIds = new ArrayList<>();
-    private ArrayList<Boolean> unread = new ArrayList<>();
-    private ArrayList<String> groupchatOrder = new ArrayList<>();
-    private ArrayList<String> unreadGroupchatOrder = new ArrayList<>();
+    private ArrayList<ArrayList<String>> groupchatNames = new ArrayList<>(); //names of all users in the groupchat
+    private ArrayList<ArrayList<String>> groupchatUserIds = new ArrayList<>(); //ids of all users in the groupchat
     private Context mContext;
     private Activity mActivity;
-    private Tab3Fragment fragment;
+    private Tab3Fragment fragment; //the fragment the recycler view is in
 
     private ArrayList<Integer> mSelected = new ArrayList<>();
 
-    private ArrayList<String> groupchats = new ArrayList<>();
+    private ArrayList<String> groupchats = new ArrayList<>(); //firestore document id of groupchats
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    //display all groupchats the user is in
     public GroupchatRecyclerViewAdapter(Tab3Fragment fragment, Context context, ArrayList<String> groupchatIds, ArrayList<ArrayList<String>> groupchatNames, ArrayList<ArrayList<String>> groupchatUserIds, FirebaseFirestore db, FirebaseAuth mAuth){
         Log.d("groupchat", "INITIALISED ");
         this.groupchatNames = groupchatNames;
@@ -52,9 +51,7 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
         this.fragment = fragment;
         this.groupchats = groupchatIds;
         this.groupchatUserIds = groupchatUserIds;
-//        this.unread = unread;
-//        this.groupchatOrder = groupchatOrder;
-//        this.unreadGroupchatOrder = unreadGroupchatOrder;
+
         this.db = db;
         this.mAuth = mAuth;
         Log.d("GroupchatRecyclerView", "groupchats: "+ groupchats.toString());
@@ -79,7 +76,7 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 
         viewHolder.GroupchatParentLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-        //format the list of names into a printable manner
+        //format the list of names into a printable manner, such that it doesn't include the current user's name
         String editString = new String();
         Log.d("groupchat", "onbndvwhldr groupchat names: " + groupchatNames.size());
         Log.d("groupchat", "onbndvwhldr groupchat names: " + groupchatNames.toString());
@@ -97,27 +94,7 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
 
         viewHolder.groupchatName.setText(editString);
 
-        //set unread message notification visibility
-//        if(unread.size() > 0){
-//            if(unreadGroupchatOrder.contains(groupchatOrder.get(i))){
-//                if(unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))){
-//                    Log.d("groupchat", "unreadGroupchatOrder: " + unreadGroupchatOrder.toString());
-//                    Log.d("groupchat", "groupchatOrder: " + groupchatOrder.toString());
-//                    Log.d("groupchat", "unread: " + unread.toString());
-//                    viewHolder.unreadNotification.setVisibility(View.VISIBLE);
-//                } else if(!unread.get(unreadGroupchatOrder.indexOf(groupchatOrder.get(i)))) {
-//                    Log.d("unread", "invisible");
-//                    viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-//                }
-//            } else {
-//                viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-//            }
-//        } else {
-//            Log.d("unread", "invisible, no unread list");
-//            viewHolder.unreadNotification.setVisibility(View.INVISIBLE);
-//        }
-
-        //Add onclicklistener to each list entry
+        //Add onclicklistener to each list entry, to open a relevant GroupchatActivity
         viewHolder.GroupchatParentLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -176,9 +153,6 @@ public class GroupchatRecyclerViewAdapter extends RecyclerView.Adapter<Groupchat
             for(int i =0; i<size; i++){
                 groupchatNames.remove(0);
                 groupchats.remove(0);
-                unread.remove(0);
-                groupchatOrder.remove(0);
-                unreadGroupchatOrder.remove(0);
             }
         }
         notifyItemRangeRemoved(0, size);
