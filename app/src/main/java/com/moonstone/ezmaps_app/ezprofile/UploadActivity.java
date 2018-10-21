@@ -55,7 +55,7 @@ public class UploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Display the Layout
+        // get a reference to the proper layout elements
         setContentView(R.layout.activity_image_upload);
         cancelButton = findViewById(R.id.cancelButton);
         uploadButton = findViewById(R.id.uploadButton);
@@ -76,10 +76,14 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
 
+
+        //required to access the DB
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 
+
+        //set on click listener for the upload image button.
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +117,7 @@ public class UploadActivity extends AppCompatActivity {
                 .setPhotoUri(Uri.parse(downloadUrl))
                 .build();
 
+        //update user profile
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -144,6 +149,7 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
+    //get file extension of the image type
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();

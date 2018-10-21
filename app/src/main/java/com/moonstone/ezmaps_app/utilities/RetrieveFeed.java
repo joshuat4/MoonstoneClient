@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+//this class is created to send out a http request async. to the app for ezdirections. The returned
+//JSON is then returned as a JSONARRAY to the ezDirection class.
 public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
     private Exception exception;
 
@@ -30,9 +32,11 @@ public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
 
 
 
+    //the actual async. process
     protected JSONArray doInBackground(String...urlString){
 
         try {
+            //make the http request
             HttpURLConnection urlConnection = null;
             URL url = null;
             url = new URL(urlString[0]);
@@ -42,6 +46,8 @@ public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.setDoOutput(true);
             urlConnection.connect();
+
+            //read the actual response.
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -50,7 +56,6 @@ public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
             }
             br.close();
             String jsonString = sb.toString();
-//            System.out.println("JSON: " + jsonString);
             JSONArray reply = new JSONArray(jsonString);
             return reply;
         }
@@ -60,7 +65,7 @@ public class RetrieveFeed extends AsyncTask<String, Void, JSONArray> {
         }
     }
 
-
+    //after response is received.
     protected void onPostExecute(JSONArray reply) {
 
         delegate.processFinish(reply);

@@ -11,6 +11,8 @@ import android.widget.Button;
 
 import com.moonstone.ezmaps_app.R;
 
+
+//this activity displays the QRCode.
 public class QRCode extends AppCompatActivity {
 
 
@@ -20,7 +22,7 @@ public class QRCode extends AppCompatActivity {
         setContentView(R.layout.activity_qr_pop_up);
 
 
-
+        //dimensions of the activity. Dont want it to take up whole screen.
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 

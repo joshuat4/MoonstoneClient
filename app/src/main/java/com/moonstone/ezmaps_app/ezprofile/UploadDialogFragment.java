@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import com.moonstone.ezmaps_app.R;
 
 
+//this class is the fragment that appears when a user clicks on edit profile pic
 public class UploadDialogFragment extends BottomSheetDialogFragment implements OnClickListener {
 
     private Button _choosePhote;
@@ -36,6 +37,7 @@ public class UploadDialogFragment extends BottomSheetDialogFragment implements O
     }
 
 
+    //the fragment has only two buttons choose photos or cancel.
     @Override
     public void onClick(View v){
         switch (v.getId()){
