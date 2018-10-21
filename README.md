@@ -96,7 +96,7 @@ EZMaps is a frame-by-frame picture location service application that caters to t
     2) The current GPS system that we are using is updating at a rate of 0.1 second. Despite this, the default *Stimulate Travelling* may be travelling too fast to detect if it has arrived at the destination. In light of this, a buffer zone around the location of each card has been set up. However, there are still instances of where it would fail to catch the next stop and causing it to skip. 
     3) The best way to actually test this is by going out on the field and actually using the app, albeit it might be a big hassle.
 
-4) To switch to Manual state of EZDirection, hit the switch at the top of toolbar. When the GPS is null, EZDirection automatically switches back to Manual state. 
+4) To switch to Manual state of EZDirection, hit the switch at the top of toolbar. You can scroll using swiping, or Click on the Side buttons to switch between Cards. When the GPS is null, EZDirection automatically switches back to Manual state. 
 
 |![screenshot_1540113040](https://user-images.githubusercontent.com/12033253/47265082-38270400-d56e-11e8-8c1c-bcbfee807546.png) | ![screenshot_1540113088](https://user-images.githubusercontent.com/12033253/47265087-3e1ce500-d56e-11e8-964f-b89123cde02c.png) | ![screenshot_1540113492](https://user-images.githubusercontent.com/12033253/47265113-876d3480-d56e-11e8-9317-47b240c7ab67.png)  |
 | ------------- |:-------------:| -----:|
@@ -154,7 +154,7 @@ To test fast transition between navigation and contacts:
 | ![imt1](https://user-images.githubusercontent.com/31301775/47263698-93e39400-d552-11e8-9243-fda002addd74.JPG)   | ![imt2](https://user-images.githubusercontent.com/31301775/47263922-f9398400-d556-11e8-8c97-d4a04cb905c2.jpg)   | ![imt3](https://user-images.githubusercontent.com/31301775/47263923-f9d21a80-d556-11e8-94fb-2792b96b518f.jpg)   |
 | ------------- |:-------------:| -----:|
 
-To test groupchats:
+## Testing Group Messages
 1) Click on the checkbox 'Select Contacts for a Groupchat'.
 2) Select all the contacts you want to be in the groupchat by clicking on them in the 'Contacts' list, and press the floating '+' button
 3) Select 'Create Group Chat' and wait for the lists to reload
@@ -219,5 +219,9 @@ Before starting to unit test EZMaps, we first need to stimulate our device as if
 | <img width="389" alt="em" src="https://user-images.githubusercontent.com/12033253/46915870-c1ce5300-cffd-11e8-9439-3674fa63a469.png">   | <img width="820" alt="screen shot 2018-10-14 at 10 06 12 pm" src="https://user-images.githubusercontent.com/12033253/46915871-c1ce5300-cffd-11e8-80dd-5b6a8b072f2e.png">  | 
 | ------------- |:-------------:|
 
-
-
+## Testing UI 
+* We have set up unit testing of our application for the UI. Since the majority of the app utilises heavily on the UI section of the app, our androidTest tests if any of the inflated elements are not showing up. To do this, go to the AndroidTest folder and click Run. 
+* There are multiple problems regarding unit testing with GPS coordinates. We have used MOCK Locations as was provided. Unfortunately, the permission prevents us from allowing us to do more testing with the logic that we have set up for Automatic Swiping. 
+    * For instance, in our EZDirection, Android is stubbornly prevents us from taking in permission from AndroidManifest and requests us to do it at Run Time. Hence, there's no way of testing the retrieval of GPS coordinates in the Unit Testing, given that Android Test runs the activity once and doesn't allow User interaction.  
+    * **TLDR**: We can't give Permission dynamically but only at Run Time. This prevents us from unit testing anything with GPS. 
+    * Since we can't do it in EZDirection, we have decided to unit test mock locations that is generated from the Android Test instead of the EZDirectionActivity to test case the logic of automatic swiping. This requeires the enabling of *Developer Options*. However, *it was working fine a week ago, but it stopped working since then.* 
