@@ -50,6 +50,7 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        //Setting relevant onclick listeners
         _signUpLink.setOnClickListener(this);
         _loginButton.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
@@ -111,6 +112,7 @@ public class UserLoginActivity extends AppCompatActivity implements View.OnClick
     });
     }
 
+    //Override physical back button
     @Override
     public void onBackPressed() {
         super.onBackPressed();

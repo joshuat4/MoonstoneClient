@@ -32,19 +32,21 @@ public class incomingCall extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.temp);
+        //Information gets passed through from the FirebaseMessagingService notification handler
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             callerString= extras.getString("callerName");
             roomId = extras.getString("roomId");
             callerPicUrl = extras.getString("callerPic");
         }
+
+        //Attaching relevant views
         accept = findViewById(R.id.acceptCall);
         decline = findViewById(R.id.declineCall);
         callerName = findViewById(R.id.callerName);
         callerPic = findViewById(R.id.callerPic);
 
         if(!callerPicUrl.isEmpty()){
-            Log.d("overhere", callerPicUrl);
             Picasso.get().load(callerPicUrl).into(callerPic);
         }
 
@@ -79,7 +81,6 @@ public class incomingCall extends AppCompatActivity {
         mMediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setLooping(true);
-        Log.d("nononono", "What about here xxxx");
         mMediaPlayer.start();
     }
 }

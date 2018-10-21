@@ -72,20 +72,15 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
     //Called every time a new item is added to the list
     @Override
     public void onBindViewHolder(@NonNull RequestsRecyclerViewAdapter.ViewHolder viewHolder, final int i) {
-        Log.d("HERE", Integer.toString(i));
 
         Picasso.get().load(profilePics.get(i)).into(viewHolder.profilePic);
-
-        /*Glide.with(mContext)
-                .asBitmap()
-                .load(profilePics.get(i))
-                .into(viewHolder.profilePic);*/
 
         viewHolder.contactName.setText(contactNames.get(i));
 
         acceptButton = viewHolder.itemView.findViewById(R.id.acceptReq);
         declineButton = viewHolder.itemView.findViewById(R.id.declineReq);
 
+        //Describes how the accept and decline buttons work within the request view
 
         //Add onclicklistener to each list entry
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +89,6 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
                 final String currentUser = mAuth.getUid();
                 if(ids.size() != 0) {
                     final String target = ids.get(i);
-                    Log.d("ChooseContactRecyclerView", "Accepted");
                     //add contact
                     addContact(target, currentUser);
                     addContact(currentUser, target, target);
@@ -110,7 +104,6 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
         declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ChooseContactRecyclerView", "Declined");
                 final String currentUser = mAuth.getUid();
                 if(ids.size() != 0) {
                     final String target = ids.get(i);
@@ -125,6 +118,7 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
 
 
         viewHolder.id = ids.get(i);
+
         //last one
         if(i == contactNames.size() - 1){
             fragment.updateLoaded(RecView.REQUESTS);
@@ -177,7 +171,6 @@ public class RequestsRecyclerViewAdapter extends RecyclerView.Adapter<RequestsRe
             notifyItemRangeRemoved(0, size);
         }
     }
-
 
 
     public void addContact(final String currentUser, final String contactToBeAdded, final String contactToBeDeleted){
