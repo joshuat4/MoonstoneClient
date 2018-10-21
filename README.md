@@ -144,6 +144,13 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 
 ### Testing QR Code Scanner (TBA)
+1) To add someone via QR Code, navigate to profiles, and click on the 'QR Code' button to view the QR Code assosciated with the account.
+2) Then, on a second device navigate to the Contacts tab, and click on the 'add through QR button' at the bottom right.
+3) Scan the QR Code, the contact should be added to the contacts list.
+
+|![screenshot_1540102531](https://user-images.githubusercontent.com/37135456/47263827-22591500-d555-11e8-9566-f514c5145362.png) | ![screenshot_1540102535](https://user-images.githubusercontent.com/37135456/47263840-592f2b00-d555-11e8-97cd-07472c683e44.png) | ![screenshot_1540102547](https://user-images.githubusercontent.com/37135456/47263846-b32ff080-d555-11e8-9557-b3a6f8c0423e.png) |![screenshot_1540102556](https://user-images.githubusercontent.com/37135456/47263850-bf1bb280-d555-11e8-9495-3a4324520bfb.png)|
+| ------------- |:-------------:| -----:| -----:|
+
 
 
 ## Unit Testing 
