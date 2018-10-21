@@ -90,14 +90,27 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 ### Testing Automatic/ Manual Card Swiping (TBA)
 
+### Testing Navigation-Contacts Rapid Switching
+To test fast transition between navigation and contacts:
+1) Observe that there is no navigation bar at the top of the screen in the 'CONTACTS' tab
+2) Begin navigation to a location
+3) Swipe through any number of cards, as if you were travelling the route, and press 'CONTACTS' to go to the 'CONTACTS' tab
+4) Note that there is now a 'RETURN TO NAVIGATION' bar at the top of the screen. Press this to return to your navigation
+5) Note that the navigation is still up to the same card as when it was left
+
+|![nct1](https://user-images.githubusercontent.com/31301775/47263776-c6da5780-d553-11e8-822e-ea607783f7df.JPG)  | ![nct2](https://user-images.githubusercontent.com/31301775/47263777-c6da5780-d553-11e8-851b-a861333b4322.JPG)  | ![nct3](https://user-images.githubusercontent.com/31301775/47263778-c6da5780-d553-11e8-91d9-1b6de8769a21.jpg)  | ![nct4](https://user-images.githubusercontent.com/31301775/47263779-c772ee00-d553-11e8-9ab6-5a29c27c60b2.jpg)  | ![nct5](https://user-images.githubusercontent.com/31301775/47263780-c772ee00-d553-11e8-8766-74872ceb4301.jpg) |
+| ------------- |:-------------:| -----:| -----:| -----:|
+
+
 ### Testing Favourite Route List 
 1) Type in a query to the search bar (Melbourne University etc) and click on *Search* at the Home page.
 2) At the top right hand corner, click on the *Favourite* button (Heart shaped), it will automatically turn to red. 
 3) Returning to the Home page, you will be able to see your favourited route. 
 4) Clicking on the favourite route will bring up the EZMap to that particular location.
 
-| ![screenshot_1538235875](https://user-images.githubusercontent.com/12033253/46247807-23b28880-c454-11e8-875e-2fc0dda5a065.png)         |  ![screenshot_1538235893](https://user-images.githubusercontent.com/12033253/46247808-23b28880-c454-11e8-86ef-9927657c9ae4.png)         | ![screenshot_1538236584](https://user-images.githubusercontent.com/12033253/46247809-244b1f00-c454-11e8-85ea-af125853cfc4.png)         |
+| ![screenshot_1538235875](https://user-images.githubusercontent.com/12033253/46247807-23b28880-c454-11e8-875e-2fc0dda5a065.png)  |  ![screenshot_1538235893](https://user-images.githubusercontent.com/12033253/46247808-23b28880-c454-11e8-86ef-9927657c9ae4.png)  | ![screenshot_1538236584](https://user-images.githubusercontent.com/12033253/46247809-244b1f00-c454-11e8-85ea-af125853cfc4.png)  |
 | ------------- |:-------------:| -----:|
+
 
 ### Testing Contact List & Searching 
 1) Go to the Contacts page by clicking or swiping to the *Contacts*
@@ -105,8 +118,9 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 3) Type in a name and click on *Search*
 4) After clicking on the button *Add* next to the caretaker's info, they will appear in your contact list
 
-| ![screenshot_1538236861](https://user-images.githubusercontent.com/12033253/46247878-1ba71880-c455-11e8-9285-dec2d4276bda.png)  | ![screenshot_1538236906](https://user-images.githubusercontent.com/12033253/46247879-1ba71880-c455-11e8-85ea-0988fd614ac7.png)   | ![screenshot_1538236980](https://user-images.githubusercontent.com/12033253/46247880-1ba71880-c455-11e8-8821-498d61899226.png)   |
-| ------------- |:-------------:| -----:|
+| ![add1](https://user-images.githubusercontent.com/31301775/47263708-ba093400-d552-11e8-9f7b-ff8978066c21.JPG)   |  ![add2](https://user-images.githubusercontent.com/31301775/47263709-baa1ca80-d552-11e8-9500-0a9fb1b127e4.JPG)   | ![add3](https://user-images.githubusercontent.com/31301775/47263938-26863200-d557-11e8-8aaa-2b7f514679e8.jpg)   | ![add4](https://user-images.githubusercontent.com/31301775/47263937-26863200-d557-11e8-9b9f-20a6f7001c21.jpg)  | 
+| ------------- |:-------------:| -----:| -----:|
+
 
 ### Testing Video Call (DOES NOT WORK IN EMULATORS)
 1) Go to contacts page by clicking or swiping to *Contacts*
@@ -122,8 +136,20 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 3) Type in a text and send it by hitting the Blue *Send* Button.
 4) The text would appear in at the screen.
 
-| ![screenshot_1538237319](https://user-images.githubusercontent.com/12033253/46247987-9d4b7600-c456-11e8-82ec-569fe64da32f.png)   |  ![screenshot_1538237406](https://user-images.githubusercontent.com/12033253/46247988-9d4b7600-c456-11e8-9937-5627afa47ddc.png)   | ![screenshot_1538237641](https://user-images.githubusercontent.com/12033253/46247989-9de40c80-c456-11e8-8769-3a99ad557ef6.png)   |
+| ![imt1](https://user-images.githubusercontent.com/31301775/47263698-93e39400-d552-11e8-9243-fda002addd74.JPG)   | ![imt2](https://user-images.githubusercontent.com/31301775/47263922-f9398400-d556-11e8-8c97-d4a04cb905c2.jpg)   | ![imt3](https://user-images.githubusercontent.com/31301775/47263923-f9d21a80-d556-11e8-94fb-2792b96b518f.jpg)   |
 | ------------- |:-------------:| -----:|
+
+To test groupchats:
+1) Click on the checkbox 'Select Contacts for a Groupchat'.
+2) Select all the contacts you want to be in the groupchat by clicking on them in the 'Contacts' list, and press the floating '+' button
+3) Select 'Create Group Chat' and wait for the lists to reload
+4) Scroll to the groupchat you just made in the 'Groupchats' list, and select it
+5) Chat by sending text or images, just as in a one-on-one chat. Messages from other members of the groupchat should appear on the left of the screen, along with their name. Messages from the current user should appear on the right
+
+| ![gct1](https://user-images.githubusercontent.com/31301775/47263830-2b49e680-d555-11e8-9283-84c4a3f592e3.JPG)  | ![gct2](https://user-images.githubusercontent.com/31301775/47263831-2be27d00-d555-11e8-8d44-8f60c4ec168d.JPG)  | ![gct3](https://user-images.githubusercontent.com/31301775/47263832-2be27d00-d555-11e8-9f98-cda68c20b214.JPG)  | ![gct4](https://user-images.githubusercontent.com/31301775/47263833-2c7b1380-d555-11e8-8b1a-b13e1a0d26cd.JPG)  | ![gct5](https://user-images.githubusercontent.com/31301775/47263834-2c7b1380-d555-11e8-92c6-8b8c074ed2c9.JPG) |
+| ------------- |:-------------:| -----:| -----:| -----:|
+
+
 
 
 ### Testing Image Sharing and Sending
