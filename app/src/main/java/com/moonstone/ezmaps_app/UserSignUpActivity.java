@@ -69,18 +69,6 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    /* This method automatically logs user in
-    @Override
-    protected void onStart(){
-        super.onStart();
-
-        if(mAuth.getCurrentUser() != null){
-            Intent intent = new Intent(UserSignUpActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-    }
-    */
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -137,6 +125,8 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
 
                    qrcodeURL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + email ;
 
+                   //Fields that must be uploaded to firebase
+
                    final Map<String, Object> userMap = new HashMap<>();
                    final ArrayList<String> contacts = new ArrayList<>();
                    final ArrayList<String> favouritePlaces = new ArrayList<>();
@@ -157,19 +147,14 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
 
 
                    //This goes to Cloud Firestore
-                   Log.d("Herewego", mAuth.getUid());
                    db.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                        @Override
                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                           Log.d("Herewego", "activity  started0");
                            if (!documentSnapshot.exists()) {
-                               Log.d("Herewego", "activity  started1");
-
                                db.collection("users").document(mAuth.getUid()).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                    @Override
                                    public void onSuccess(Void aVoid) {
                                        //Setup complete
-                                       Log.d("Herewego", "activity  started");
                                        signUpInProgress = false;
                                        startActivity(intent);
                                    }

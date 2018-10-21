@@ -58,6 +58,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     public static Boolean inCall = false;
 
     private IRtcEngineEventHandler myRtcEventHandler = new IRtcEngineEventHandler() {
+
+        //Triggers when the user first enters the room
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
             runOnUiThread(new Runnable() {
@@ -68,6 +70,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             });
         }
 
+        //Triggers when a new user enters the room
         @Override
         public void onUserJoined(final int uid, int elapsed) {
             runOnUiThread(new Runnable() {
@@ -88,6 +91,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
                 }
             });
         }
+
+        //Triggers when a the other caller ends their call / leaves the room
         @Override
         public void onUserOffline(int uid, int reason){
             myRtcEngine.leaveChannel();
@@ -99,30 +104,26 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         }
     };
 
+    //Initialises other callers remove video stream in the UI
     private void setupRemoteVideo(int uid) {
-        Log.d("callingmy", "remote video set up2a");
 
         if (remoteContainer.getChildCount() >= 1) {
             return;
         }
 
-
-
         SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
 
-
-
-
-        Log.d("callingmy", "remote video set up2cc");
         remoteContainer.addView(surfaceView);
-        Log.d("callingmy", "remote video set up2");
+
         myRtcEngine.setupRemoteVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, uid));
 
         surfaceView.setTag(uid);
-    //new LongOperation().execute(Integer.toString(uid));
 }
 
+    //Communicates with the firebase cloud function server through http in order to send a call notification
+    //to the chosen target (This is the basis of how all of calling works)
     private void notifyRecipient(){
+        //Data is passed through from the previous chat activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             toUserId = extras.getString("toUserId");
@@ -133,16 +134,18 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         if(user!=null){
             if(user.getPhotoUrl().toString()!= null){
                 profilePic = user.getPhotoUrl().toString();
-                Log.d("xxxxx", profilePic);
             }
         }
 
+
+        //Deals with a nuance of how http get requests work in which they seem to replace %2F with blank characters
+        //which ruins how the call request works in the server
         profilePic = profilePic.replace("%2F", "*");
         String url = "https://us-central1-it-project-moonstone-43019.cloudfunctions.net/callNotification2?text=" + mAuth.getCurrentUser().getDisplayName()+ "---" + toUserId  +  "---" + roomId +
                 "---" + profilePic;
         //execute async task
 
-        Log.d("XDXDXD", url);
+        //Send the http request to make the call
         new RetrieveFeed(this).execute(url);
 
     }
@@ -162,10 +165,9 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         //Setup room id
         roomId = "MoonstoneCallRoom:" + Integer.toString(new Random().nextInt(100000) + 1);
 
+        //Bind relevant views
         localContainer = findViewById(R.id.frontCameraContainer);
         remoteContainer =  findViewById(R.id.remote_video_view_container);
-        Log.d("callingmy", "initiallising");
-
         switchCamera = findViewById(R.id.switch_camera);
         audioMode = findViewById(R.id.mic_button);
         audioMode.setTag("audio");
@@ -177,10 +179,11 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
         //Get data passed through from ContactRecyclerViewAdapter
         Bundle extras = getIntent().getExtras();
+        //Essentially means this is being called from contacts
         if (extras != null) {
             callerName.setText(extras.getString("name"));
             String profilePic = extras.getString("picture");
-            Log.d("hereitis1", profilePic);
+            //Populates the image view in the UI with the targets profile picture
             Glide.with(this).asBitmap().load(profilePic).into(callerPic);
             if(extras.getString("roomId")!=null){
                 roomId = extras.getString("roomId");
@@ -188,15 +191,17 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             }
         }
 
+        //Intialises the Agora engine
         initializeRtcEngine();
 
+        //This means it's an outgoing call
         if(!recieveMode){
             //Starting a new call from contacts
             localContainer.setVisibility(View.INVISIBLE);
             remoteContainer.setVisibility(View.INVISIBLE);
-
             callerPic.setVisibility(View.VISIBLE);
             callerName.setVisibility(View.VISIBLE);
+
             //The current device is the calling device
             notifyRecipient();
             pulsator.start();
@@ -204,6 +209,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         }
 
 
+        //Adding relevant onclicklisteners
         switchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,7 +241,6 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         audioMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ok", audioMode.getTag().toString());
                 //Go to video mode
                 if (audioMode.getTag().toString().equals("video_cam")) {
                     myRtcEngine.enableVideo();
@@ -265,6 +270,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
 
     }
 
+    //Permissions checking (cancels the call if you don't enable them)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -300,8 +306,8 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 101);
     }
 
+    //Initialises video settings for the RTC engine
     private void setupVideoProfile() {
-
         myRtcEngine.enableAudio();
         myRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_240P_3, false);
     }
@@ -314,9 +320,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
             localVideoConfig();
             setupVideoProfile();
             myRtcEngine.startPreview();
-            Log.d("callingmy", "does this work asda s");
         } catch (Exception e) {
-            Log.d("callingmy", "does this work");
             e.printStackTrace();
         }
     }
@@ -342,6 +346,7 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
     }
 
 
+    //Overrides when the physical back button is pressed to make sure the service is halted
     @Override
     public void onBackPressed() {
         myRtcEngine.leaveChannel();
