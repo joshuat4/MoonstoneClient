@@ -88,6 +88,15 @@ public class Calling extends AppCompatActivity implements RetrieveFeed.AsyncResp
                 }
             });
         }
+        @Override
+        public void onUserOffline(int uid, int reason){
+            myRtcEngine.leaveChannel();
+            if(mMediaPlayer != null){
+                mMediaPlayer.stop();
+            }
+            inCall = false;
+            finish();
+        }
     };
 
     private void setupRemoteVideo(int uid) {
