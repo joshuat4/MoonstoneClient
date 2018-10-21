@@ -206,10 +206,14 @@ public class NewContactSearchActivity extends AppCompatActivity{
                         if(compareContacts(inputText, name) ||
                                 compareContacts(inputText, email)){
 
-                            profilePics.add(doc.get("profilePic").toString());
-                            emails.add(doc.get("email").toString());
-                            names.add(doc.get("name").toString());
-                            ids.add(doc.getId());
+                            //add things that aren't already in the view
+                            if (!ids.contains(doc.getId())) {
+                                profilePics.add(doc.get("profilePic").toString());
+                                emails.add(doc.get("email").toString());
+                                names.add(doc.get("name").toString());
+                                ids.add(doc.getId());
+
+                            }
                         }
 
                     }

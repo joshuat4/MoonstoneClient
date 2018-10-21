@@ -105,10 +105,30 @@ public class FriendRequestActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        profilePics.add(documentSnapshot.get("profilePic").toString());
-                                        emails.add(documentSnapshot.get("email").toString());
-                                        names.add(documentSnapshot.get("name").toString());
-                                        ids.add(documentSnapshot.getId());
+                                        //add things that aren't already in the view
+                                        if (!ids.contains(documentSnapshot.getId())) {
+                                            profilePics.add(documentSnapshot.get("profilePic").toString());
+                                            emails.add(documentSnapshot.get("email").toString());
+                                            names.add(documentSnapshot.get("name").toString());
+                                            ids.add(documentSnapshot.getId());
+
+                                        }
+
+                                        //remove things that are in the view, but dropped from the server
+                                        ArrayList<String> removal = new ArrayList<>();
+                                        int index;
+                                        for (int item = 0; item < ids.size(); item++) {
+                                            if (!requests.contains(ids.get(item))) {
+                                                removal.add(ids.get(item));
+                                            }
+                                        }
+                                        for (String s : removal) {
+                                            index = ids.indexOf(s);
+                                            names.remove(index);
+                                            emails.remove(index);
+                                            ids.remove(index);
+                                            profilePics.remove(index);
+                                        }
 
                                         if (names.size() == requests.size()) {
                                             Log.d("FriendRequestsActivity", "second list num: " + names.size());
