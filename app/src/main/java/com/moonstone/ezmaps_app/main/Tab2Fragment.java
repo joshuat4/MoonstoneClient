@@ -189,6 +189,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
     }
 
+    // Load favourite places from Cloud Firestore
     public void loadFavouritePlaces(final View view){
         final String Uid = mAuth.getUid();
         final DocumentReference docRef = db.collection("users").document(Uid);
@@ -223,7 +224,7 @@ public class Tab2Fragment extends Fragment  implements FavRecyclerViewAdapter.Li
 
     }
 
-
+    // Initialise Favourite Recycler View
     public void initFavRecyclerView(View view, ArrayList<String> favouritePlaces){
         layoutManager = new GridLayoutManager(getActivity(), 2);
         favRecyclerView = view.findViewById(R.id.favRecyclerView);

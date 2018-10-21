@@ -51,23 +51,9 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 ### Testing Image Upload
 1) At the Edit Profile page, if you wish to change your profile picture , hit the *Edit Image* button.
-2) There will be 2 options; *Take Photo* and *Choose Photo*.
-3) Click on *Take Photo* and you will enter in your camera's photo mode.
-
-|  ![screenshot_1538234173](https://user-images.githubusercontent.com/12033253/46247451-fb745b00-c44e-11e8-8e38-0a60c89ed293.png)        |      ![screenshot_1538234138](https://user-images.githubusercontent.com/12033253/46247457-03cc9600-c44f-11e8-8e44-6f04cc75b293.png)   |   ![screenshot_1538234329](https://user-images.githubusercontent.com/12033253/46247463-1cd54700-c44f-11e8-9c2b-1e8c8841c7df.png)| 
-| ------------- |:-------------:| -----:|
-
-4) After taking a photo of your liking, you would be brought out to your photo gallery, where you should navigate to your photo album by clicking on *Photos*
-5) Look for your image in the album and select it by clicking on it.
-6) You will then be at the uploading stage, where you have the option to upload the image and turn it to your profile picture. Click on *Confirm* to make the image as your profile picture, and *Cancel* to return.
-
-| ![screenshot_1538234335](https://user-images.githubusercontent.com/12033253/46247527-15626d80-c450-11e8-8fac-52424157ab49.png)  | ![screenshot_1538234342](https://user-images.githubusercontent.com/12033253/46247528-15626d80-c450-11e8-82a3-710b1a43a7a2.png)  | ![screenshot_1538234347](https://user-images.githubusercontent.com/12033253/46247604-1778fc00-c451-11e8-8ad4-fa3ee41761ae.png)      | 
-| ------------- |:-------------:| -----:|
-
-
-7) Clicking on *Choose Photo* would skip past the photo mode and land you at your phone's gallery.
-8) There, you can navigate your folders and pick and image.
-9) After picking an image you would be back at the uploading stage where you can *Confirm* to set the image as your profile picture or *Cancel*.
+2) Clicking on *Choose Photo* would skip past the photo mode and land you at your phone's gallery.
+3) There, you can navigate your folders and pick and image.
+4) After picking an image you would be back at the uploading stage where you can *Confirm* to set the image as your profile picture or *Cancel*.
 
 | ![screenshot_1538235049](https://user-images.githubusercontent.com/12033253/46247583-e26ca980-c450-11e8-80b8-d031d696be77.png) | ![screenshot_1538235110](https://user-images.githubusercontent.com/12033253/46247584-e3054000-c450-11e8-8aea-aeefd9d07514.png) | ![screenshot_1538235190](https://user-images.githubusercontent.com/12033253/46247585-e3054000-c450-11e8-8758-fc88642a914c.png)  | 
 | ------------- |:-------------:| -----:|
@@ -100,7 +86,6 @@ EZMaps is a frame-by-frame picture location service application that caters to t
 
 |![screenshot_1540113040](https://user-images.githubusercontent.com/12033253/47265082-38270400-d56e-11e8-8c1c-bcbfee807546.png) | ![screenshot_1540113088](https://user-images.githubusercontent.com/12033253/47265087-3e1ce500-d56e-11e8-964f-b89123cde02c.png) | ![screenshot_1540113492](https://user-images.githubusercontent.com/12033253/47265113-876d3480-d56e-11e8-9317-47b240c7ab67.png)  |
 | ------------- |:-------------:| -----:|
-
 
 
 
@@ -179,8 +164,8 @@ To test fast transition between navigation and contacts:
 5) Click on the *Camera Button* and your phone would open up the camera allowing you to take a picture. 
 6) After taking a picture, you would be at the uploading dock. Hit the *Complete* session, and the image would be sent to the caretaker. 
 
-|![send_image_1](https://user-images.githubusercontent.com/12033253/46715697-ea2c1980-ccac-11e8-8025-8949d4df2b6a.png) | ![send_image_2](https://user-images.githubusercontent.com/12033253/46715698-ea2c1980-ccac-11e8-9275-bf33155f0e2f.png) | ![send_image_3](https://user-images.githubusercontent.com/12033253/46715699-ea2c1980-ccac-11e8-82bd-786775d2d71a.png) |![send_image_4](https://user-images.githubusercontent.com/12033253/46715700-eac4b000-ccac-11e8-889a-1a2f4107befa.png)|
-| ------------- |:-------------:| -----:| -----:|
+|![send_image_1](https://user-images.githubusercontent.com/12033253/46715697-ea2c1980-ccac-11e8-8025-8949d4df2b6a.png) | ![screenshot_1538235110](https://user-images.githubusercontent.com/12033253/46247584-e3054000-c450-11e8-8aea-aeefd9d07514.png) | ![screenshot_1538235190](https://user-images.githubusercontent.com/12033253/46247585-e3054000-c450-11e8-8758-fc88642a914c.png) |
+| ------------- |:-------------:| -----:|
 
 
 

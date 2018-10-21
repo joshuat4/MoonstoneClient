@@ -3,6 +3,8 @@ package com.moonstone.ezmaps_app.ezdirection;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 
+
+/* Custom LinearL Layout to handle disabling and enabling scrolling */
 public class CustomLinearLayoutManager extends LinearLayoutManager {
     private boolean isScrollEnabled = true;
 
