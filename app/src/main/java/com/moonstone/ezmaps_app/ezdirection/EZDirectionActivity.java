@@ -106,7 +106,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
 
     private View recyclerView;
     private EZCardRecyclerViewAdapter adapter;
-    private LinearLayoutManager layoutManager;
+    private CustomLinearLayoutManager layoutManager;
     private TextView notFoundText;
     private TextView notFoundSubtext;
     private ImageView notFoundImg;
@@ -653,8 +653,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private void initRecyclerView() {
         Log.d("EZDIRECTION/Recycler", "initRecyclerView: init recyclerview");
 
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
-                false);
+        layoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
@@ -807,10 +806,15 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 if(isCardLoaded){
                     if(isChecked){
                         isAutomatic = true;
+                        setLeftRightButtonVisibility("GONE");
+                        layoutManager.setScrollEnabled(false);
                         Toast.makeText(getApplicationContext(), "Automatic Option Enabled", Toast.LENGTH_SHORT).show();
 
                     }else{
                         isAutomatic = false;
+                        setLeftRightButtonVisibility("VISIBLE");
+                        layoutManager.setScrollEnabled(true);
+                        recyclerView.setNestedScrollingEnabled(true);
                         Toast.makeText(getApplicationContext(), "Automatic Option Disabled", Toast.LENGTH_SHORT).show();
 
                     }
@@ -819,7 +823,12 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             }
         });
 
-        automaticButton.setChecked(true);
+        if(isAutomatic){
+            automaticButton.setChecked(true);
+        }else{
+            automaticButton.setChecked(false);
+        }
+
 
         return true;
     }
