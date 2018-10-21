@@ -112,6 +112,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
     private int progressStatus = 0;
     private boolean isLocationNotFound = false;
     private boolean isCardLoaded = false;
+    private boolean isAutomatic = true;
 
     /* Utilities */
     private int REQUEST_CODE = 1;
@@ -237,7 +238,7 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
             Log.d("EZDIRECTION/StatusCheck", "URL Executed");
         }
 
-        if(isCardLoaded){
+        if(isCardLoaded && isAutomatic){
             checkIfArrivedAtNextStop(mCurrentLocation);
         }
 
@@ -832,6 +833,18 @@ public class EZDirectionActivity extends AppCompatActivity implements RetrieveFe
                 bottomSheet.setArguments(bundle);
                 bottomSheet.show(getSupportFragmentManager(), "ShareImageDialogFragment");
                 return true;
+            }
+
+            if(id == R.id.automaticSwitch){
+                if(isAutomatic){
+                    isAutomatic = false;
+                    Toast.makeText(getApplicationContext(), "Automatic Option False", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    isAutomatic = true;
+                    Toast.makeText(getApplicationContext(), "Automatic Option True", Toast.LENGTH_SHORT).show();
+
+                }
             }
         }
 
