@@ -64,7 +64,6 @@ public class EZDirectionActivityTest  {
         assertNotNull(g);
         assertNotNull(h);
         assertNotNull(i);
-
         assertNotNull(j);
     }
 

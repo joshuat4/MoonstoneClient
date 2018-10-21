@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.BindView;
 
 public class UserLoginActivity extends AppCompatActivity implements View.OnClickListener{
-    String TAG = "UserLoginActiviy";
+    String TAG = "UserLoginActivity";
 
 
 

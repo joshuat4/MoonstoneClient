@@ -1,9 +1,10 @@
-package com.moonstone.ezmaps_app.ezchat;
+package com.moonstone.ezmaps_app.ezprofile;
 
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 
 import com.moonstone.ezmaps_app.R;
+import com.moonstone.ezmaps_app.ezprofile.UploadActivity;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,11 +13,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ChatActivityTest {
+public class UploadActivityTest {
     @Rule
-    public ActivityTestRule<ChatActivity> mActivityTestRule = new ActivityTestRule<>(ChatActivity.class);
+    public ActivityTestRule<UploadActivity> mActivityTestRule = new ActivityTestRule<>(UploadActivity.class);
 
-    private ChatActivity mActivity = null;
+    private UploadActivity mActivity = null;
 
     @Before
     public void setUp() throws Exception {
@@ -26,12 +27,11 @@ public class ChatActivityTest {
     @Test
     public void testLaunch(){
 
-        View a = mActivity.findViewById(R.id.textField);
-        View b = mActivity.findViewById(R.id.sendButton);
-        View c = mActivity.findViewById(R.id.cameraButton);
-        View d = mActivity.findViewById(R.id.messagesLoading);
+        View a = mActivity.findViewById(R.id.cancelButton);
+        View b = mActivity.findViewById(R.id.uploadButton);
+        View c = mActivity.findViewById(R.id.imageView);
+        View d = mActivity.findViewById(R.id.progressBar);
         View e = mActivity.findViewById(R.id.my_toolbar);
-        View f = mActivity.findViewById(R.id.messageRecyclerView);
 
 
         assertNotNull(a);
@@ -39,7 +39,6 @@ public class ChatActivityTest {
         assertNotNull(c);
         assertNotNull(d);
         assertNotNull(e);
-        assertNotNull(f);
 
     }
 
@@ -50,6 +49,5 @@ public class ChatActivityTest {
     public void tearDown() throws Exception {
         mActivity = null;
     }
-
 
 }
