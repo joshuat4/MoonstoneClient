@@ -194,8 +194,6 @@ public class UserSignUpActivity extends AppCompatActivity implements View.OnClic
         });
 
 
-
-
     }
 
     @Override

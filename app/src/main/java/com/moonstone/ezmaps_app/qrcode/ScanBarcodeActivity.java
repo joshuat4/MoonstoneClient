@@ -44,7 +44,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
     SurfaceView cameraPreview;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    String TAG = "DEBUGSCANBARCODEACTIVITY";
+    String TAG = "DEBUG_SCANBARCODEACTIVITY";
     private static boolean trigger = false;
     private static boolean trigger2 = false;
 
@@ -57,12 +57,15 @@ public class ScanBarcodeActivity extends FragmentActivity {
         setContentView(R.layout.activity_scan_barcode);
         trigger = false;
         exitButton = findViewById(R.id.exitButton);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        if (!checkIfAlreadyhavePermission()) {
+        if (!checkIfAlreadyhavePermission()) {  // Permission checks and handling
             requestForSpecificPermission();
         }
 
-        exitButton.setOnClickListener(new Button.OnClickListener(){
+
+        exitButton.setOnClickListener(new Button.OnClickListener(){ // On click, return to previous
             @Override
             public void onClick(View v){
                 Log.d("Scan Barcode","Exit");
@@ -77,8 +80,6 @@ public class ScanBarcodeActivity extends FragmentActivity {
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
         createCameraSource();
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -114,14 +115,8 @@ public class ScanBarcodeActivity extends FragmentActivity {
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                if (ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+                if (ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 try {
@@ -133,7 +128,6 @@ public class ScanBarcodeActivity extends FragmentActivity {
 
             @Override
             public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-
             }
 
             @Override
@@ -174,7 +168,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
         d.show(getSupportFragmentManager(), "alertBox");
     }
 
-// Depricated.
+// Deprecated.
 //    public void sendFriendRequest(String targetEmailInput){
 //        Log.d("DEBUG_SCANBARCODEACTIVITY", "sendFriendRequest: " + targetEmailInput);
 //
@@ -215,7 +209,10 @@ public class ScanBarcodeActivity extends FragmentActivity {
 //    }
 
 
-
+    /*
+        Helper method that takes an email address and sends a friend request to the user
+        associated with it.
+    */
     public void sendFriendRequest(String targetEmailInput){
         Log.d("DEBUG_SCANBARCODEACTIVITY", "sendFriendRequest: " + targetEmailInput);
 
@@ -242,7 +239,8 @@ public class ScanBarcodeActivity extends FragmentActivity {
                         if (compareContacts(targetEmail, email)) {
                             targetUid[0] = doc.getId();
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
-                            // If found, call the add method.
+
+                            // If found, call the add methods.
                             addSelfToUid(targetUid[0]);
                             addToPending(targetUid[0]);
 
@@ -250,14 +248,14 @@ public class ScanBarcodeActivity extends FragmentActivity {
 
                     }
                 }
-                Log.d(TAG, "onComplete1: "+ targetUid[0]);
-
             }
         });
     }
 
 
-
+/*
+    Helper method that adds this user to the contacts list of the user associated with a targetEmail
+ */
     public void addContact(String targetEmailInput){
         Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetEmailInput);
 
@@ -286,18 +284,18 @@ public class ScanBarcodeActivity extends FragmentActivity {
                             Log.d(TAG, "onComplete: "+ targetUid[0]);
                             // If found, call the add method.
                             addSelfToUid(targetUid[0]);
-//                            addContactFromUid(targetUid[0]);
 
                         }
 
                     }
                 }
-                Log.d(TAG, "onComplete1: "+ targetUid[0]);
-
             }
         });
     }
 
+    /*
+        Adds a target user to the pending list of this user.
+     */
     public void addToPending(final String userToAdd){
 
         final String Uid = mAuth.getUid();
@@ -311,12 +309,16 @@ public class ScanBarcodeActivity extends FragmentActivity {
                         Log.d("FINDRECYCLER", "SUCCESSFULLY ADDED TO PENDING: " + userToAdd);
                     }
                     else{
+                        // Do nothing.
                     }
                 }
             }
         });
     }
 
+    /*
+        Helper function to add this user to a target user's list of requests.
+     */
     public void addSelfToUid(String targetUidInput){
         final String targetUid = targetUidInput;
         final String selfUid = mAuth.getUid();
@@ -338,6 +340,9 @@ public class ScanBarcodeActivity extends FragmentActivity {
 
     }
 
+    /*
+        Helper function to add a contact using a UID as input.
+     */
     public boolean addContactFromUid(String targetUidInput) {
         final String targetUid = targetUidInput;
         Log.d("DEBUG_SCANBARCODEACTIVITY", "addContact: " + targetUid);
@@ -368,6 +373,9 @@ public class ScanBarcodeActivity extends FragmentActivity {
 
 
 
+    /*
+        Helper function used to compare contacts.
+     */
 
     private boolean compareContacts(String text, String against){
 
@@ -384,7 +392,7 @@ public class ScanBarcodeActivity extends FragmentActivity {
         return false;
     }
 
-    //permissions
+    //Permission handling
     private boolean checkIfAlreadyhavePermission() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (result == PackageManager.PERMISSION_GRANTED) {
